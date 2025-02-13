@@ -1,9 +1,12 @@
 # animate
 A python toolbox for creating animations.
 
-## Installation:
+## Installation
 
 ```
-pip3 install --upgrade pip
-pip install numpy matplotlib pyqt6 imageio[ffmpeg]
+pip install animate
 ```
+
+## Dependencies
+
+Depends on `numpy`, `matplotlib`, `pyqt6` and `imageio[ffmpeg]`

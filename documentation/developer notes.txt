@@ -1,0 +1,7 @@
+To publish the packpage
+
+pip install build setuptools sphinx pydata-sphinx-theme
+
+Follow
+https://circleci.com/blog/publishing-a-python-package/
+https://medium.com/@blackary/publishing-a-python-package-from-github-to-pypi-in-2024-a6fb8635d45d
