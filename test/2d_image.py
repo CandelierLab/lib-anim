@@ -1,9 +1,9 @@
-from Animation.Window import *
-from Animation.Animation_2d import *
+import numpy as np
+import animate
 
-# --- 2D Animation ---------------------------------------------------------
+# === 2D Animation =========================================================
 
-class Anim(Animation_2d):
+class myAnimation(animate.plane.view):
 
   def __init__(self, W):
 
@@ -11,9 +11,9 @@ class Anim(Animation_2d):
 
     self.npix = 500
 
-    self.add(image, 'background',
+    self.add(animate.plane.image, 'background',
       image = self.ripple(0),
-      cmap = Colormap('gnuplot', range=[-1, 1]),
+      cmap = animate.colormap('gnuplot', range=[-1, 1]),
       zvalue = -1,
     )
 
@@ -34,11 +34,11 @@ class Anim(Animation_2d):
 
     self.item['background'].image = self.ripple(t.step)
 
-# --- Main -----------------------------------------------------------------
+# === Main =================================================================
 
-if __name__ == "__main__":
+W = animate.window('Simple animation')
 
-  W = Window('Image animation')
-  W.add(Anim(W))
+# Add animation
+W.add(myAnimation)
 
-  W.show()
+W.show()

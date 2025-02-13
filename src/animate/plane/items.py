@@ -1,5 +1,5 @@
 import numpy as np
-from Animation.Colormap import *
+import animate
 
 from PyQt6.QtCore import Qt, QPointF, QRectF, QSize
 from PyQt6.QtGui import QColor, QPen, QBrush, QPolygonF, QFont, QPainterPath, QTransform, QPixmap, QImage, qRgb

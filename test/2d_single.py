@@ -1,13 +1,13 @@
-from Animation.Window import *
-from Animation.Animation_2d import *
+import numpy as np
+import animate
 
-# === Animation ============================================================
+# === 2D Animation =========================================================
 
-class Anim(Animation_2d):
+class myAnimation(animate.plane.view):
 
-  def __init__(self, W, color):
+  def __init__(self, window):
 
-    super().__init__(W)
+    super().__init__(window, boundaries=[[0,1],[0,1]])
 
     self.padding = 0.01
 
@@ -16,14 +16,14 @@ class Anim(Animation_2d):
     self.R = 0.25
     self.r = 0.01
 
-    self.add(ellipse, 'E0',
+    self.add(animate.plane.ellipse, 'E0',
       position = [self.x0, self.y0],
       major = 0.005,
       minor = 0.005,
       colors = ('white', None),
     )
 
-    self.add(circle, 'C0',
+    self.add(animate.plane.circle, 'C0',
       position = [self.x0, self.y0],
       radius = self.R,
       colors = (None, 'grey'),
@@ -31,14 +31,14 @@ class Anim(Animation_2d):
       linestyle = '--'
     )
 
-    self.add(circle, 'C',
+    self.add(animate.plane.circle, 'C',
       position = [self.x0 + self.R, self.y0],
       radius = self.r,
-      colors = (color, None),
+      colors = ('red', None),
     )
 
   def update(self, t):
-    
+
     # Update timer display
     super().update(t)
 
@@ -49,13 +49,16 @@ class Anim(Animation_2d):
 
 # === Main =================================================================
 
-if __name__ == "__main__":
+W = animate.window('Simple animation')
 
-  W = Window(display_information=True)
+# Add animation
+W.add(myAnimation)
 
-  W.title = 'Multiple animation'
+# Allow backward animation
+W.allow_backward = True
+W.allow_negative_time = False
 
-  W.add(Anim(W, 'red'))
-  W.add(Anim(W, 'green'))
+# W.movieFile = '/home/raphael/Bureau/test.mp4'
+# W.movieWidth = 1600*2
 
-  W.show()
+W.show()

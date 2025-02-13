@@ -1,10 +1,7 @@
 import re
+import animate
 
-from Animation.Time import *
-from Animation.Animation_2d import *
-from Animation.Items_2d import *
-
-class Information(Animation_2d):
+class information(animate.plane.view):
     
   # ========================================================================
   def __init__(self, W, disp_time=True):
@@ -20,9 +17,9 @@ class Information(Animation_2d):
     self.disp_time = disp_time
 
     if self.disp_time:
-      self.add(text, 'Time',
+      self.add(animate.plane.text, 'Time',
         stack = True,
-        string = self.time_str(time(0,0)),
+        string = self.time_str(animate.time(0,0)),
         fontsize = 12,
       )
 

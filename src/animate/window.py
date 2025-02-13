@@ -1,21 +1,14 @@
 import os
-
+import inspect
+import numpy as np
 import imageio
-  
-try:
-  import imageio
-except:
-  # The try-except structure is for pdoc, which may have trouble to find imageio
-  pass
-
-from Animation.Information import *
-from Animation.Animation_2d import *
-
 from PyQt6.QtCore import pyqtSignal, QTimer
 from PyQt6.QtGui import QKeySequence, QImage, QShortcut, QGuiApplication
 from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout
 
-class Window(QWidget):
+import animate 
+
+class window(QWidget):
   """
   Animation-specific window.
 
@@ -98,7 +91,7 @@ class Window(QWidget):
 
     self.style = style
 
-    with open(os.path.dirname(os.path.abspath(__file__)) + f'/Style/{self.style}.css', 'r') as f:
+    with open(os.path.dirname(os.path.abspath(__file__)) + f'/style/{self.style}.css', 'r') as f:
       css = f.read()
       self.app.setStyleSheet(css)
 
@@ -106,7 +99,7 @@ class Window(QWidget):
 
     if display_information:
 
-      self.information = Information(self)
+      self.information = animate.information(self)
     
       self.layout.addWidget(self.information.view, 0, 0)
       self.events.connect(self.information.receive)
@@ -164,9 +157,14 @@ class Window(QWidget):
     if col is None:
       col = self.layout.columnCount()
 
+    # --- Instantiate classes
+
+    if inspect.isclass(panel):
+      panel = panel(self)
+
     # --- Append animation or layout
 
-    if isinstance(panel, Animation_2d):
+    if isinstance(panel, animate.plane.view):
 
       self.layout.addWidget(panel.view, row, col)
       self.events.connect(panel.receive)
@@ -279,7 +277,7 @@ class Window(QWidget):
         return
         
     # Emit event
-    self.events.emit({'type': 'update', 'time': time(self.step, self.step*self.dt)})
+    self.events.emit({'type': 'update', 'time': animate.time(self.step, self.step*self.dt)})
 
   # ========================================================================
   def capture(self, force=False):

@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import cm
 from PyQt6.QtGui import QColor, qRgb
 
-class Colormap():
+class colormap():
   """
   A class to manage colormaps
   It is mainly used to convert scaler values to colors.

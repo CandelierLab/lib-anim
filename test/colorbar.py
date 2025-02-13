@@ -1,10 +1,9 @@
-from Animation.Window import *
-from Animation.Animation_2d import *
-from Animation.Colormap import *
+import numpy as np
+import animate
 
-# --- 2D Animation ---------------------------------------------------------
+# === 2D Animation =========================================================
 
-class Anim(Animation_2d):
+class myAnimation(animate.plane.view):
 
   def __init__(self, W):
 
@@ -12,10 +11,10 @@ class Anim(Animation_2d):
 
     # --- Colorbar
 
-    self.colormap = Colormap()
+    self.colormap = animate.colormap()
     self.colormap.range = [-1,1]
 
-    self.add(colorbar, 'Cb',
+    self.add(animate.plane.colorbar, 'Cb',
       colormap = self.colormap,
       position = [0.05, 0.1],
       height = 0.8,
@@ -30,14 +29,14 @@ class Anim(Animation_2d):
     self.R = 0.25
     self.r = 0.01
 
-    self.add(ellipse, 'E0',
+    self.add(animate.plane.ellipse, 'E0',
       position = [self.x0, self.y0],
       major = 0.005,
       minor = 0.005,
       colors = ('white', None),
     )
 
-    self.add(circle, 'C0',
+    self.add(animate.plane.circle, 'C0',
       position = [self.x0, self.y0],
       radius = self.R,
       colors = (None, 'grey'),
@@ -45,7 +44,7 @@ class Anim(Animation_2d):
       linestyle = '--'
     )
 
-    self.add(circle, 'C',
+    self.add(animate.plane.circle, 'C',
       position = [self.x0 + self.R, self.y0],
       radius = self.r,
       colors = (None, None),
@@ -69,11 +68,12 @@ class Anim(Animation_2d):
     # Update color
     self.item['C'].colors = (self.colormap.qcolor(x_), self.colormap.qcolor(y_))
 
+# === Main =================================================================
 
-# --- Main -----------------------------------------------------------------
+W = animate.window('Colorbar')
 
-if __name__ == "__main__":
+# Add animation
+W.add(myAnimation)
 
-  W = Window('Colorbar example')
-  W.add(Anim(W))
-  W.show()
+
+W.show()

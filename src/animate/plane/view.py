@@ -31,15 +31,14 @@ created without parent (``QWidget`` or :class:`Window`), the default
 """
 
 from PyQt6.QtCore import Qt, QObject, pyqtSignal
-from PyQt6.QtGui import QPalette, QPainter, QPen, QColorConstants
+from PyQt6.QtGui import QColor, QPainter, QPen, QColorConstants
 from PyQt6.QtWidgets import QApplication, QGraphicsScene, QGraphicsView, QGraphicsRectItem
 
-from Animation.Items_2d import *
-from Animation.Composites_2d import *
+import animate
 
 # ==========================================================================
 
-class view(QGraphicsView):
+class GraphicsView(QGraphicsView):
   
   def __init__(self, scene, *args, **kwargs):
 
@@ -69,7 +68,7 @@ class view(QGraphicsView):
 
 # ==========================================================================
 
-class Animation_2d(QObject):
+class view(QObject):
   """
   2D Animation
 
@@ -183,7 +182,7 @@ class Animation_2d(QObject):
     
     # Scene
     self.scene = QGraphicsScene()
-    self.view = view(self.scene)
+    self.view = GraphicsView(self.scene)
 
     # Style management
     match self.window.style:
@@ -246,7 +245,7 @@ class Animation_2d(QObject):
       kwargs['height'] = height
       
     # Add items
-    if issubclass(type, composite):
+    if issubclass(type, animate.plane.composite):
 
       # Let composite elements create items
       self.composite[name] = type(self, name, **kwargs)
@@ -307,7 +306,7 @@ class Animation_2d(QObject):
       case 'show':
         
         for name in self.composite:
-          if isinstance(self.composite[name], arrow):
+          if isinstance(self.composite[name], animate.plane.arrow):
             self.composite[name].points = self.composite[name].points
 
       case 'update':

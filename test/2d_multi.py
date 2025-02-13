@@ -1,29 +1,29 @@
 import numpy as np
-import animate, animate.plane as a2d
+import animate
 
 # === 2D Animation =========================================================
 
-class myAnimation(a2d.view):
+class myAnimation(animate.plane.view):
 
-  def __init__(self, W):
+  def __init__(self, W, color):
 
-    super().__init__(W, boundaries=[[0,1],[0,1]])
+    super().__init__(W)
 
-    self.padding=0.01
+    self.padding = 0.01
 
     self.x0 = 0.5
     self.y0 = 0.5
     self.R = 0.25
     self.r = 0.01
 
-    self.add(a2d.ellipse, 'E0',
+    self.add(animate.plane.ellipse, 'E0',
       position = [self.x0, self.y0],
       major = 0.005,
       minor = 0.005,
       colors = ('white', None),
     )
 
-    self.add(a2d.circle, 'C0',
+    self.add(animate.plane.circle, 'C0',
       position = [self.x0, self.y0],
       radius = self.R,
       colors = (None, 'grey'),
@@ -31,21 +31,14 @@ class myAnimation(a2d.view):
       linestyle = '--'
     )
 
-    self.add(a2d.circle, 'C',
+    self.add(animate.plane.circle, 'C',
       position = [self.x0 + self.R, self.y0],
       radius = self.r,
-      colors = ('red', None),
-    )
-
-    self.add(a2d.text, 'T',
-      position = [0.5, 0.53],
-      string = 'a&#946;c',
-      fontsize = 25,
-      center = True
+      colors = (color, None),
     )
 
   def update(self, t):
-
+    
     # Update timer display
     super().update(t)
 
@@ -56,8 +49,14 @@ class myAnimation(a2d.view):
 
 # === Main =================================================================
 
-W = animate.window('Light style', style='light')
+W = animate.window('Multiple animation')
 
-W.add(myAnimation)
+# Add animation
+W.add(myAnimation(W, 'red'))
+W.add(myAnimation(W, 'green'))
+
+# Allow backward animation
+W.allow_backward = True
+W.allow_negative_time = False
 
 W.show()
