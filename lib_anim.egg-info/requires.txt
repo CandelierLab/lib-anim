@@ -1,4 +1,0 @@
-numpy
-matplotlib
-pyqt6
-imageio[ffmpeg]
