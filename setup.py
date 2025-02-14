@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 VERSION = '0.0.1'
 DESCRIPTION = 'Beautifully simple animations'
@@ -12,7 +12,7 @@ setup(
     author="Raphaël Candelier",
     author_email="raphael.candelier@sorbonne-universite.fr",
     license='GNU GPL v3',
-    packages=find_packages(),
+    packages=['animate'],
     install_requires=['numpy', 'matplotlib', 'pyqt6', 'imageio[ffmpeg]'],
     keywords='conversion',
     classifiers= [
