@@ -1,5 +1,3 @@
-/doc/build
-/doc/source/_autosummary
-
+/documentation
 /.venv
 /.venv_prod
