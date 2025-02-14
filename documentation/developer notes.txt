@@ -1,6 +1,6 @@
 To publish the packpage
 
-pip install build setuptools sphinx pydata-sphinx-theme
+pip install numpy matplotlib pyqt6 imageio[ffmpeg] build setuptools sphinx pydata-sphinx-theme
 
 Follow
 https://circleci.com/blog/publishing-a-python-package/

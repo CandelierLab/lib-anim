@@ -1,17 +1,17 @@
 import numpy as np
-import animate
+import anim
 
 # === 2D Animation =========================================================
 
-class myAnimation(animate.plane.view):
+class myAnimation(anim.plane.view):
 
   def __init__(self, W):
 
     super().__init__(W)
 
-    self.add(animate.plane.field, 'background',
+    self.add(anim.plane.field, 'background',
       field = self.ripple(0),
-      cmap = animate.colormap('gnuplot', range=[-1, 1]),
+      cmap = anim.colormap('gnuplot', range=[-1, 1]),
       zvalue = -1,
     )
 
@@ -29,7 +29,7 @@ class myAnimation(animate.plane.view):
 
 # === Main =================================================================
 
-W = animate.window('Simple animation')
+W = anim.window('Simple animation')
 
 # Add animation
 W.add(myAnimation)

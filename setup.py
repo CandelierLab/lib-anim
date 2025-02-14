@@ -5,14 +5,14 @@ DESCRIPTION = 'Beautifully simple animations'
 LONG_DESCRIPTION = 'A content-oriented package to create animations'
 
 setup(
-    name="animate",
+    name="lib_anim",
     version=VERSION,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     author="Raphaël Candelier",
     author_email="raphael.candelier@sorbonne-universite.fr",
     license='GNU GPL v3',
-    packages=['animate'],
+    packages=['anim'],
     install_requires=['numpy', 'matplotlib', 'pyqt6', 'imageio[ffmpeg]'],
     keywords='conversion',
     classifiers= [

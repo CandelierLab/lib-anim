@@ -1,9 +1,9 @@
 import numpy as np
-import animate
+import anim
 
 # === 2D Animation =========================================================
 
-class myAnimation(animate.plane.view):
+class myAnimation(anim.plane.view):
 
   def __init__(self, W):
 
@@ -11,10 +11,10 @@ class myAnimation(animate.plane.view):
 
     # --- Colorbar
 
-    self.colormap = animate.colormap()
+    self.colormap = anim.colormap()
     self.colormap.range = [-1,1]
 
-    self.add(animate.plane.colorbar, 'Cb',
+    self.add(anim.plane.colorbar, 'Cb',
       colormap = self.colormap,
       position = [0.05, 0.1],
       height = 0.8,
@@ -29,14 +29,14 @@ class myAnimation(animate.plane.view):
     self.R = 0.25
     self.r = 0.01
 
-    self.add(animate.plane.ellipse, 'E0',
+    self.add(anim.plane.ellipse, 'E0',
       position = [self.x0, self.y0],
       major = 0.005,
       minor = 0.005,
       colors = ('white', None),
     )
 
-    self.add(animate.plane.circle, 'C0',
+    self.add(anim.plane.circle, 'C0',
       position = [self.x0, self.y0],
       radius = self.R,
       colors = (None, 'grey'),
@@ -44,7 +44,7 @@ class myAnimation(animate.plane.view):
       linestyle = '--'
     )
 
-    self.add(animate.plane.circle, 'C',
+    self.add(anim.plane.circle, 'C',
       position = [self.x0 + self.R, self.y0],
       radius = self.r,
       colors = (None, None),
@@ -70,7 +70,7 @@ class myAnimation(animate.plane.view):
 
 # === Main =================================================================
 
-W = animate.window('Colorbar')
+W = anim.window('Colorbar')
 
 # Add animation
 W.add(myAnimation)

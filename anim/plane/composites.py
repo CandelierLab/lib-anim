@@ -1,8 +1,8 @@
 import numpy as np
 from PyQt6.QtGui import QLinearGradient
 
-import animate
-import animate.plane
+import anim
+import anim.plane
 
 # === COMPOSITE ELEMENTS ===================================================
 
@@ -26,7 +26,7 @@ class composite():
     self.position = kwargs['position'] if 'position' in kwargs else (0,0)
 
     # Main item
-    self.animation.add(animate.plane.group, self.name, **kwargs)
+    self.animation.add(anim.plane.group, self.name, **kwargs)
 
   # --- Points -------------------------------------------------------------
 
@@ -61,12 +61,12 @@ class arrow(composite):
     self.text = self.name + '_text'
 
     # Items
-    self.animation.add(animate.plane.line, self.line,
+    self.animation.add(anim.plane.line, self.line,
       parent = self.name, 
       points = [[0,0],[0,0]]
     )
 
-    self.animation.add(animate.plane.text, self.text,
+    self.animation.add(anim.plane.text, self.text,
       parent = self.name,
       position = (0,0),
       fontsize = self.fontsize,
@@ -147,14 +147,14 @@ class arrow(composite):
 
         case 'dart':
           
-          self.animation.item[self.head] = animate.plane.polygon(self.animation, self.head,
+          self.animation.item[self.head] = anim.plane.polygon(self.animation, self.head,
             parent = self.name,
             position = [np.abs(self._z)*self._locus,0],
             points = [[0,0]])
 
         case 'disk':
 
-          self.animation.item[self.head] = animate.plane.circle(self.animation, self.head,
+          self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
             parent = self.name,
             position = [np.abs(self._z)*self._locus,0],
             radius = 0)
@@ -166,14 +166,14 @@ class arrow(composite):
 
         case 'dart':
 
-          self.animation.item[self.head] = animate.plane.polygon(self.animation, self.head,
+          self.animation.item[self.head] = anim.plane.polygon(self.animation, self.head,
             parent = self.name,
             position = [0,0],
             points = [[0,0]])
 
         case 'disk':
 
-          self.animation.item[self.head] = animate.plane.circle(self.animation, self.head,
+          self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
             parent = self.name,
             position = [0,0],
             radius = 0)
@@ -315,7 +315,7 @@ class colorbar(composite):
     self.rect = self.name + '_rect'
 
     # Items
-    self.animation.add(animate.plane.rectangle, self.rect, parent = self.name,
+    self.animation.add(anim.plane.rectangle, self.rect, parent = self.name,
       width = self.width,
       height = self.height,
       center = False,
@@ -339,7 +339,7 @@ class colorbar(composite):
       v = self.cm.range[0] + z*(self.cm.range[1]-self.cm.range[0])
       y = z*self.height
 
-      self.animation.add(animate.plane.text, 'tick_0', parent = self.name,
+      self.animation.add(anim.plane.text, 'tick_0', parent = self.name,
         position = [self.width, y],
         string = '<span style="color: ' + self.cm.htmlcolor(z, scaled=True) + ';">◄</span> <span style="color: #AAA;">{:.0{:d}f}</span>'.format(v, self.precision),
         color = 'white',

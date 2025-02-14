@@ -1,0 +1,19 @@
+REACHING DECENCY
+- Push version 0.0.1 to PyPI
+- Uninstall (=>1.0.0)
+- Publish documentation on github (automatic)
+- Work on documentation
+  
+DEVELOPMENTS
+- Rework window sizing
+- Better handling of theme styles
+- Rework information panel: html or view widget ?
+- Snapshots
+- Smart scrollbar
+- Parameters panel
+
+NEW FEATURES
+- Compatibility wih matplotlib:
+  - Internal plots
+  - External plots
+- Let's go 3D: volume.items and volume.view

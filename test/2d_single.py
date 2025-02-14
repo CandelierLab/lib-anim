@@ -1,9 +1,9 @@
 import numpy as np
-import animate
+import anim
 
 # === 2D Animation =========================================================
 
-class myAnimation(animate.plane.view):
+class myAnimation(anim.plane.view):
 
   def __init__(self, window):
 
@@ -16,14 +16,14 @@ class myAnimation(animate.plane.view):
     self.R = 0.25
     self.r = 0.01
 
-    self.add(animate.plane.ellipse, 'E0',
+    self.add(anim.plane.ellipse, 'E0',
       position = [self.x0, self.y0],
       major = 0.005,
       minor = 0.005,
       colors = ('white', None),
     )
 
-    self.add(animate.plane.circle, 'C0',
+    self.add(anim.plane.circle, 'C0',
       position = [self.x0, self.y0],
       radius = self.R,
       colors = (None, 'grey'),
@@ -31,7 +31,7 @@ class myAnimation(animate.plane.view):
       linestyle = '--'
     )
 
-    self.add(animate.plane.circle, 'C',
+    self.add(anim.plane.circle, 'C',
       position = [self.x0 + self.R, self.y0],
       radius = self.r,
       colors = ('red', None),
@@ -49,7 +49,7 @@ class myAnimation(animate.plane.view):
 
 # === Main =================================================================
 
-W = animate.window('Simple animation')
+W = anim.window('Simple animation')
 
 # Add animation
 W.add(myAnimation)

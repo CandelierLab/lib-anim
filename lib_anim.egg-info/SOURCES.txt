@@ -1,0 +1,13 @@
+LICENSE
+README.md
+setup.py
+anim/__init__.py
+anim/colormap.py
+anim/information.py
+anim/time.py
+anim/window.py
+lib_anim.egg-info/PKG-INFO
+lib_anim.egg-info/SOURCES.txt
+lib_anim.egg-info/dependency_links.txt
+lib_anim.egg-info/requires.txt
+lib_anim.egg-info/top_level.txt

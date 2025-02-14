@@ -1,7 +1,7 @@
 import re
-import animate
+import anim
 
-class information(animate.plane.view):
+class information(anim.plane.view):
     
   # ========================================================================
   def __init__(self, W, disp_time=True):
@@ -17,9 +17,9 @@ class information(animate.plane.view):
     self.disp_time = disp_time
 
     if self.disp_time:
-      self.add(animate.plane.text, 'Time',
+      self.add(anim.plane.text, 'Time',
         stack = True,
-        string = self.time_str(animate.time(0,0)),
+        string = self.time_str(anim.time(0,0)),
         fontsize = 12,
       )
 

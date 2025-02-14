@@ -6,7 +6,7 @@ from PyQt6.QtCore import pyqtSignal, QTimer
 from PyQt6.QtGui import QKeySequence, QImage, QShortcut, QGuiApplication
 from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout
 
-import animate 
+import anim 
 
 class window(QWidget):
   """
@@ -99,7 +99,7 @@ class window(QWidget):
 
     if display_information:
 
-      self.information = animate.information(self)
+      self.information = anim.information(self)
     
       self.layout.addWidget(self.information.view, 0, 0)
       self.events.connect(self.information.receive)
@@ -164,7 +164,7 @@ class window(QWidget):
 
     # --- Append animation or layout
 
-    if isinstance(panel, animate.plane.view):
+    if isinstance(panel, anim.plane.view):
 
       self.layout.addWidget(panel.view, row, col)
       self.events.connect(panel.receive)
@@ -277,7 +277,7 @@ class window(QWidget):
         return
         
     # Emit event
-    self.events.emit({'type': 'update', 'time': animate.time(self.step, self.step*self.dt)})
+    self.events.emit({'type': 'update', 'time': anim.time(self.step, self.step*self.dt)})
 
   # ========================================================================
   def capture(self, force=False):

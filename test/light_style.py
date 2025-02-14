@@ -1,5 +1,5 @@
 import numpy as np
-import animate, animate.plane as a2d
+import anim, anim.plane as a2d
 
 # === 2D Animation =========================================================
 
@@ -56,7 +56,7 @@ class myAnimation(a2d.view):
 
 # === Main =================================================================
 
-W = animate.window('Light style', style='light')
+W = anim.window('Light style', style='light')
 
 W.add(myAnimation)
 

@@ -34,7 +34,7 @@ from PyQt6.QtCore import Qt, QObject, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPen, QColorConstants
 from PyQt6.QtWidgets import QApplication, QGraphicsScene, QGraphicsView, QGraphicsRectItem
 
-import animate
+import anim
 
 # ==========================================================================
 
@@ -245,7 +245,7 @@ class view(QObject):
       kwargs['height'] = height
       
     # Add items
-    if issubclass(type, animate.plane.composite):
+    if issubclass(type, anim.plane.composite):
 
       # Let composite elements create items
       self.composite[name] = type(self, name, **kwargs)
@@ -306,7 +306,7 @@ class view(QObject):
       case 'show':
         
         for name in self.composite:
-          if isinstance(self.composite[name], animate.plane.arrow):
+          if isinstance(self.composite[name], anim.plane.arrow):
             self.composite[name].points = self.composite[name].points
 
       case 'update':
