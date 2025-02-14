@@ -1,7 +1,9 @@
 REACHING DECENCY
-- Publish documentation on github (automatic)
 - Uninstall + Link to github and documentation (=>1.0.0)
 - Work on documentation
+  - Add .nojekyll file when building
+  - Change template
+  - Document everything ^-^'
   
 DEVELOPMENTS
 - Rework window sizing
