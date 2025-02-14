@@ -1,0 +1,17 @@
+To publish the packpage
+
+pip install numpy matplotlib pyqt6 imageio[ffmpeg] build setuptools sphinx pydata-sphinx-theme
+
+Follow
+https://circleci.com/blog/publishing-a-python-package/
+https://medium.com/@blackary/publishing-a-python-package-from-github-to-pypi-in-2024-a6fb8635d45d
+
+------------------------------------------------------
+Update documentation
+
+
+* Change version number (release) in doc/source/conf.pydata
+
+* Generate documentation
+
+sphinx-build documentation/source/ docs
