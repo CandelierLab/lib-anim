@@ -13,6 +13,4 @@ Update documentation
 
 * Generate documentation
 
-sphinx-build documentation/source/ docs
-
-+ add an empty .nojekyll file in the /docs folder !!
+sphinx-build doc/source/ doc/build/html
