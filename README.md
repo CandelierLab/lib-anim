@@ -1,10 +1,11 @@
-# animate
+# lib_anim
+
 A python toolbox for creating animations.
 
 ## Installation
 
 ```
-pip install animate
+pip install lib_anim
 ```
 
 ## Dependencies
