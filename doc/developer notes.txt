@@ -1,16 +1,51 @@
-To publish the packpage
+============================================================================
+Working environment
 
+* Create the environment and activate it
+python3 -m venv .venv
+source .venv/bin/activate
+
+* Install all packages
 pip install numpy matplotlib pyqt6 imageio[ffmpeg] build setuptools sphinx pydata-sphinx-theme
 
-Follow
-https://olgarithms.github.io/sphinx-tutorial/docs/7-hosting-on-github-pages.html
+============================================================================
+Update package
 
-------------------------------------------------------
+* Create the package
+python -m build
+
+Check package in a production environment
+-----------------------------------------
+
+* Go to test folder
+cd ~/Science/Packages/test/lib-anim
+
+* Create the environment and activate it
+python3 -m venv .venv_prod
+source .venv_prod/bin/activate
+
+* Install the package wheel
+pip install ../../lib-anim/dist/lib_anim-0.0.1-py3-none-any.whl
+
+* To unincstall:
+pip uninstall lib-anim
+
+Publish package
+---------------
+
+* Push to github
+* Create a new release
+
+============================================================================
 Update documentation
-
 
 * Change version number (release) in doc/source/conf.pydata
 
 * Generate documentation
 
-sphinx-build doc/source/ doc/build/html
+sphinx-build doc/source/ doc/build
+
+------------------------------------------------------------------
+| The action workflow documentation.yml updates automatically the 
+| github pages at every push.
+------------------------------------------------------------------

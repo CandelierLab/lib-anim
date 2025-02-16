@@ -9,7 +9,7 @@
 # import os, sys
 # sys.path.insert(0, os.path.abspath('../..'))
 
-project = 'lib_anim'
+project = 'lib-anim'
 copyright = 'Raphaël Candelier'
 author = 'Raphaël Candelier'
 release = '0.0.1'

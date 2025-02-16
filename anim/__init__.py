@@ -1,11 +1,11 @@
 '''
-animate API
+lib-anim API
 '''
 
 from .window import window
 from .time import time
 from .colormap import colormap
 
-from .plane import *
+from . import plane
 
 from .information import information

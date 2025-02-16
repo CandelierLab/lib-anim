@@ -1,0 +1,29 @@
+Metadata-Version: 2.2
+Name: lib-anim
+Version: 0.0.1
+Summary: Beautifully simple animations
+Author: Raphaël Candelier
+Author-email: raphael.candelier@sorbonne-universite.fr
+License: GNU GPL v3
+Keywords: conversion
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Education
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Visualization
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: pyqt6
+Requires-Dist: imageio[ffmpeg]
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: keywords
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: summary
+
+A content-oriented package to create animations

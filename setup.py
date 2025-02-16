@@ -1,18 +1,20 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+
 
 VERSION = '0.0.1'
 DESCRIPTION = 'Beautifully simple animations'
 LONG_DESCRIPTION = 'A content-oriented package to create animations'
 
 setup(
-    name="lib_anim",
+    name="lib-anim",
     version=VERSION,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     author="Raphaël Candelier",
     author_email="raphael.candelier@sorbonne-universite.fr",
     license='GNU GPL v3',
-    packages=['anim'],
+    packages=find_packages(),
+    include_package_data=True,
     install_requires=['numpy', 'matplotlib', 'pyqt6', 'imageio[ffmpeg]'],
     keywords='conversion',
     classifiers= [
