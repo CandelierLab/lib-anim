@@ -6,7 +6,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 * Install all packages
-pip install numpy matplotlib pyqt6 imageio[ffmpeg] build setuptools sphinx pydata-sphinx-theme
+pip install numpy matplotlib pyqt6 imageio[ffmpeg] build setuptools sphinx furo
 
 ============================================================================
 Update package
@@ -33,13 +33,14 @@ pip uninstall lib-anim
 Publish package
 ---------------
 
+* Change version number in setyp.py
 * Push to github
 * Create a new release
 
 ============================================================================
 Update documentation
 
-* Change version number (release) in doc/source/conf.pydata
+* Change version number (release) in doc/source/conf.py
 
 * Generate documentation
 

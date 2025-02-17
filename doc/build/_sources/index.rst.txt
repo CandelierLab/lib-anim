@@ -1,12 +1,15 @@
-Animation toolbox
-=================
+lib-anim documentation
+======================
 
 .. include:: home.rst
 
+Documentation content
+---------------------
+
 .. toctree::
-  :hidden:
-  home
-  tuto_1
+  installation
+  quickstart
+  guide/index
 
 .. autosummary::
   :toctree: _autosummary

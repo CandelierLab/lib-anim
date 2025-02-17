@@ -1,24 +1,22 @@
-The :py:mod:`Animation` toolbox aims at using minimal code to leverage the power of ``Qt`` and produce smooth animations. All the complexity of ``Qt`` programming is hidden, so the end user only manages meaningfull objects and variables directly related to the animation — like rectangles, positions or colors — instead of ``QGraphicsScene`` or ``QInputMethodQueryEvent`` 😱.
+The ``lib-anim`` toolbox aims at using minimal code to leverage the power of ``Qt`` and produce smooth animations.
 
-If you are discovering the toolbox, you may want to read the Concepts section below, follow the quickstart tutorial and run some demonstrations.
+No need to be a Qt guru
+-----------------------
 
-Concepts
---------
+The user manages meaningfull objects and variables directly related to the animation like rectangles, positions or colors, and not abstract objects like ``QGraphicsScene`` or ``QInputMethodQueryEvent`` 😱. In other words, all the complexity of ``Qt`` programming is hidden, so you can spend your time on what matters for the final result.
 
-**Windows**
+Key features
+------------
 
-Animations are displayed in dedicated windows.
+* Animations are rendered in separate :doc:`windows <guide/windows>` with customizable layouts.
+* :doc:`2D animations <guide/2D animations>` are supported.
+* Multiple cross-linked animations can be displayed in the same window.
+* An :doc:`information panel <guide/information>` can display textual information (html), with live updates.
+* Animations can be recorded in movies.
 
-* Windows are created *via* the :py:class:`Window<Animation.Window>` class. Users typically just have to instantiate a :py:class:`Window<Animation.Window>` object to have a functional animation window, where all the complexity of ``Qt`` windows (layout, events, etc.) and of animations (main loop, keyboard shortcuts, recording movies, etc.) are managed under the hood.
-* Windows embed one or several animation panels, as well as other useful elements like an information panel. These different elements are automatically synchronized during the animation.
+Installation
+------------
 
-**Animation panels**
+.. code-block:: console
 
-Animation panels are the widgets where animations are rendered.
-
-* There are only 2D animation panels for the moment.
-* 
-
-**Information panel**
-
-The information panel displays useful information alongside the animation. It is highly customizable.
+  $ pip install lib-anim

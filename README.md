@@ -5,6 +5,7 @@ A python toolbox for creating animations.
 ## Installation
 
 ```
+pip install --upgrade pip
 pip install lib-anim
 ```
 
