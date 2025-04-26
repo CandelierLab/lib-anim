@@ -1,4 +1,4 @@
-anim.window
+﻿anim.window
 ===========
 
 .. currentmodule:: anim
@@ -342,5 +342,6 @@ anim.window
       ~window.windowIconChanged
       ~window.windowIconTextChanged
       ~window.windowTitleChanged
+      ~window.app
    
    

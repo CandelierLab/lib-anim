@@ -27,7 +27,7 @@ source .venv_prod/bin/activate
 * Install the package wheel
 pip install ../../lib-anim/dist/lib_anim-0.0.1-py3-none-any.whl
 
-* To unincstall:
+* To uninstall:
 pip uninstall lib-anim
 
 Publish package

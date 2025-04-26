@@ -5,22 +5,22 @@ from PyQt6.QtCore import Qt, QPointF, QRectF, QSize
 from PyQt6.QtGui import QColor, QPen, QBrush, QPolygonF, QFont, QPainterPath, QTransform, QPixmap, QImage, qRgb
 from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsItemGroup, QGraphicsTextItem, QGraphicsLineItem, QGraphicsEllipseItem, QGraphicsPolygonItem, QGraphicsRectItem, QGraphicsPathItem, QGraphicsPixmapItem
 
-# === ITEMS ================================================================
-
-# --- Generic Item ---------------------------------------------------------
+# ══════════════════════════════════════════════════════════════════════════
+#                             GENERIC ITEM
+# ══════════════════════════════════════════════════════════════════════════
 
 class item():
   """
-  Item of the animation (generic class)
+  Item of the view (generic class)
 
-  Items are the elements displayed in the :py:attr:`Animation2d.Qscene`. 
+  Items are the elements displayed in the :py:attr:`view2d.Qscene`. 
   This class provides a common constructor, conversions of positions
   to scene coordinates and styling of ``QAbstractGraphicsShapeItem`` 
   children.
 
   Attr:
 
-    animation (:class:`Animation2d`): Parent animation.
+    view (:class:`view2d`): Parent view.
 
     name (str): Unique identifier of the item.
 
@@ -32,16 +32,17 @@ class item():
     zvalue (float): Z-value (stack order).
   """
 
-  def __init__(self, animation, name, **kwargs):
+  # ────────────────────────────────────────────────────────────────────────
+  def __init__(self, view, name, **kwargs):
     """
     Generic item constructor
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): Name of the item. It should be unique, as it is used as an
-        identifier in the :py:attr:`Animation2d.item` dict.
+        identifier in the :py:attr:`view2d.item` dict.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem``.
 
@@ -60,8 +61,8 @@ class item():
 
     # --- Definitions
 
-    # Reference animation
-    self.animation = animation
+    # Reference view
+    self.view = view
 
     # Assign name
     self.name = name
@@ -88,8 +89,9 @@ class item():
     if 'draggable' in kwargs: self.draggable = kwargs['draggable']
 
     # Default color
-    self.default_colors = ('white', 'gray') if self.animation.window.style is 'dark' else ('black', 'gray')
+    self.default_colors = ('white', 'gray') if self.view.window.style=='dark' else ('black', 'gray')
 
+  # ────────────────────────────────────────────────────────────────────────
   def x2scene(self, x):
     """
     Convert the :math:`x` position in scene coordinates
@@ -101,12 +103,13 @@ class item():
       The :math:`x` position in scene coordinates.
     """
     if self.parent is None:
-      # return x*self.animation.factor
-      # print(self.animation.boundaries['x'][0])
-      return (x-self.animation.boundaries['x'][0])*self.animation.factor
+      # return x*self.view.factor
+      # print(self.view.boundaries['x'][0])
+      return (x-self.view.boundaries['x'][0])*self.view.factor
     else:
-      return x*self.animation.factor
+      return x*self.view.factor
 
+  # ────────────────────────────────────────────────────────────────────────
   def y2scene(self, y):
     """
     Convert the :math:`y` position in scene coordinates
@@ -119,10 +122,11 @@ class item():
     """
     
     if self.parent is None:
-      return (self.animation.boundaries['y'][0]-y)*self.animation.factor
+      return (self.view.boundaries['y'][0]-y)*self.view.factor
     else:
-      return -y*self.animation.factor
+      return -y*self.view.factor
 
+  # ────────────────────────────────────────────────────────────────────────
   def xy2scene(self, xy):
     """
     Convert the :math:`x` and :math:`y` positions in scene coordinates
@@ -136,6 +140,7 @@ class item():
 
     return self.x2scene(xy[0]), self.y2scene(xy[1])
 
+  # ────────────────────────────────────────────────────────────────────────
   def d2scene(self, d):
     """
     Convert a distance in scene coordinates
@@ -147,8 +152,9 @@ class item():
       The distance in scene coordinates.
     """
 
-    return d*self.animation.factor
+    return d*self.view.factor
 
+  # ────────────────────────────────────────────────────────────────────────
   def a2scene(self, a):
     """
     Convert an angle in scene coordinates (radian to degrees)
@@ -162,6 +168,7 @@ class item():
 
     return -a*180/np.pi
   
+  # ────────────────────────────────────────────────────────────────────────
   def scene2x(self, u):
     """
     Convert horizontal scene coordinates into :math:`x` position
@@ -174,10 +181,11 @@ class item():
     """
 
     if self._parent is None:
-      return self.animation.boundaries['x'][0] + u/self.animation.factor
+      return self.view.boundaries['x'][0] + u/self.view.factor
     else:
-      return u/self.animation.factor
+      return u/self.view.factor
 
+  # ────────────────────────────────────────────────────────────────────────
   def scene2y(self, v):
     """
     Convert vertical scene coordinates into :math:`y` position
@@ -190,10 +198,11 @@ class item():
     """
 
     if self._parent is None:
-      return self.animation.boundaries['y'][0] - v/self.animation.factor
+      return self.view.boundaries['y'][0] - v/self.view.factor
     else:
-      return -v/self.animation.factor
+      return -v/self.view.factor
 
+  # ────────────────────────────────────────────────────────────────────────
   def scene2xy(self, pos):
     """
     Convert scene coordinates into :math:`x` and :math:`y` positions
@@ -214,10 +223,12 @@ class item():
 
     return self.scene2x(u), self.scene2y(v)
 
+  # ────────────────────────────────────────────────────────────────────────
   def scene2d(self, d):
    
-    return d/self.animation.factor
+    return d/self.view.factor
 
+  # ────────────────────────────────────────────────────────────────────────
   def width(self):
 
     if isinstance(self, group):
@@ -225,8 +236,9 @@ class item():
     else:
       bRect = self.boundingRect()
 
-    return bRect.width()/self.animation.factor
+    return bRect.width()/self.view.factor
 
+  # ────────────────────────────────────────────────────────────────────────
   def height(self):
 
     if isinstance(self, group):      
@@ -234,8 +246,9 @@ class item():
     else:
       bRect = self.boundingRect()
 
-    return bRect.height()/self.animation.factor
+    return bRect.height()/self.view.factor
 
+  # ────────────────────────────────────────────────────────────────────────
   def place(self):
     """
     Absolute positionning
@@ -255,6 +268,7 @@ class item():
     self.setPos(self.x2scene(self._position[0])-self._shift[0], 
       self.y2scene(self._position[1])-self._shift[1])
 
+  # ────────────────────────────────────────────────────────────────────────
   def move(self, dx=None, dy=None, z=None):
     """
     Relative displacement
@@ -285,6 +299,7 @@ class item():
 
     self.place()
 
+  # ────────────────────────────────────────────────────────────────────────
   def rotate(self, angle):
     """
     Relative rotation
@@ -298,6 +313,7 @@ class item():
     self._orientation += angle
     self.setRotation(self.a2scene(self.orientation))
 
+  # ────────────────────────────────────────────────────────────────────────
   def setStyle(self):
     """
     Item styling
@@ -335,6 +351,7 @@ class item():
       
       self.setPen(Pen)
 
+  # ────────────────────────────────────────────────────────────────────────
   def mousePressEvent(self, event):
     """
     Simple click event
@@ -345,15 +362,10 @@ class item():
       event (QGraphicsSceneMouseEvent): The click event.
     """
 
-    match event.button():
-      case 1: type = 'leftclick'
-      case 2: type = 'rightclick'
-      case 4: type = 'middleclick'
-      case 8: type = 'sideclick'
-
-    self.animation.change(type, self)
+    self.view.change(event.button(), self)
     super().mousePressEvent(event)
 
+  # ────────────────────────────────────────────────────────────────────────
   def mouseDoubleClickEvent(self, event):
     """
     Double click event
@@ -364,9 +376,10 @@ class item():
       event (QGraphicsSceneMouseEvent): The double click event.
     """
 
-    self.animation.change('doubleclick', self)
+    self.view.change(event.button().__str__() + '.double', self)
     super().mousePressEvent(event)
 
+  # ────────────────────────────────────────────────────────────────────────
   def itemChange(self, change, value):
     """
     Item change notification
@@ -391,9 +404,9 @@ class item():
       case QGraphicsItem.GraphicsItemChange.ItemPositionHasChanged:
         type = 'move'
 
-    # Report to animation
+    # Report to view
     if type is not None:
-      self.animation.change(type, self)
+      self.view.change(type, self)
 
     # Propagate change
     return super().itemChange(change, value)
@@ -406,7 +419,7 @@ class item():
   @parent.setter
   def parent(self, pName):
     self._parent = pName
-    self.setParentItem(self.animation.item[self._parent])
+    self.setParentItem(self.view.item[self._parent])
 
   # --- belowParent --------------------------------------------------------
 
@@ -510,12 +523,16 @@ class item():
     
     self._draggable = z
     
-    self.setFlag(QGraphicsItem.ItemIsMovable, self._draggable)
-    self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, self._draggable)
+    self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, self._draggable)
+    self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, self._draggable)
     if self._draggable:
-      self.setCacheMode(QGraphicsItem.DeviceCoordinateCache)
-    
-# --- Group ----------------------------------------------------------------
+      self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+
+# ══════════════════════════════════════════════════════════════════════════
+#                                ITEMS
+# ══════════════════════════════════════════════════════════════════════════
+
+# ═══ group ════════════════════════════════════════════════════════════════
 
 class group(item, QGraphicsItemGroup):
   """
@@ -525,7 +542,8 @@ class group(item, QGraphicsItemGroup):
   multiple other items in order to create and manipulate composed objects.  
   """
 
-  def __init__(self, animation, name, **kwargs):
+  # ────────────────────────────────────────────────────────────────────────
+  def __init__(self, view, name, **kwargs):
     """
     Group item constructor
 
@@ -534,10 +552,10 @@ class group(item, QGraphicsItemGroup):
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): The item's identifier, which should be unique. It is used as a
-        reference by :class:`Animation2d`. This is the only mandatory argument.
+        reference by :class:`view2d`. This is the only mandatory argument.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem`` in the ``QGraphicsScene``.
         Default is ``None``, which means the parent is the ``QGraphicsScene`` itself.
@@ -555,9 +573,9 @@ class group(item, QGraphicsItemGroup):
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
    
-# --- Text -----------------------------------------------------------------
+# ═══ text ═════════════════════════════════════════════════════════════════
 
 class text(item, QGraphicsTextItem):
   """
@@ -574,7 +592,7 @@ class text(item, QGraphicsTextItem):
     minor (float): Length of the minor axis.
   """
 
-  def __init__(self, animation, name, **kwargs):
+  def __init__(self, view, name, **kwargs):
     """
     Text item constructor
 
@@ -583,10 +601,10 @@ class text(item, QGraphicsTextItem):
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): The item's identifier, which should be unique. It is used as a
-        reference by :class:`Animation2d`. This is the only mandatory argument.
+        reference by :class:`view2d`. This is the only mandatory argument.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem`` in the ``QGraphicsScene``.
         Default is ``None``, which means the parent is the ``QGraphicsScene`` itself.
@@ -611,7 +629,7 @@ class text(item, QGraphicsTextItem):
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
   
@@ -711,7 +729,7 @@ class ellipse(item, QGraphicsEllipseItem):
     minor (float): Length of the minor axis.
   """
 
-  def __init__(self, animation, name, **kwargs):
+  def __init__(self, view, name, **kwargs):
     """
     Ellipse item constructor
 
@@ -720,10 +738,10 @@ class ellipse(item, QGraphicsEllipseItem):
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): The item's identifier, which should be unique. It is used as a
-        reference by :class:`Animation2d`. This is the only mandatory argument.
+        reference by :class:`view2d`. This is the only mandatory argument.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem`` in the ``QGraphicsScene``.
         Default is ``None``, which means the parent is the ``QGraphicsScene`` itself.
@@ -750,7 +768,7 @@ class ellipse(item, QGraphicsEllipseItem):
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
 
@@ -872,7 +890,7 @@ class circle(item, QGraphicsEllipseItem):
     minor (float): Length of the minor axis.
   """
 
-  def __init__(self, animation, name, **kwargs):
+  def __init__(self, view, name, **kwargs):
     """
     Circle item constructor
 
@@ -881,10 +899,10 @@ class circle(item, QGraphicsEllipseItem):
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): The item's identifier, which should be unique. It is used as a
-        reference by :class:`Animation2d`. This is the only mandatory argument.
+        reference by :class:`view2d`. This is the only mandatory argument.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem`` in the ``QGraphicsScene``.
         Default is ``None``, which means the parent is the ``QGraphicsScene`` itself.
@@ -911,7 +929,7 @@ class circle(item, QGraphicsEllipseItem):
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
 
@@ -1007,7 +1025,7 @@ class rectangle(item, QGraphicsRectItem):
     minor (float): Length of the minor axis.
   """
 
-  def __init__(self, animation, name, **kwargs):
+  def __init__(self, view, name, **kwargs):
     """
     Rectangle item constructor
 
@@ -1016,10 +1034,10 @@ class rectangle(item, QGraphicsRectItem):
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): The item's identifier, which should be unique. It is used as a
-        reference by :class:`Animation2d`. This is the only mandatory argument.
+        reference by :class:`view2d`. This is the only mandatory argument.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem`` in the ``QGraphicsScene``.
         Default is ``None``, which means the parent is the ``QGraphicsScene`` itself.
@@ -1046,7 +1064,7 @@ class rectangle(item, QGraphicsRectItem):
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
 
@@ -1171,7 +1189,7 @@ class line(item, QGraphicsLineItem):
     minor (float): Length of the minor axis.
   """
 
-  def __init__(self, animation, name, **kwargs):
+  def __init__(self, view, name, **kwargs):
     """
     Line item constructor
 
@@ -1180,10 +1198,10 @@ class line(item, QGraphicsLineItem):
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): The item's identifier, which should be unique. It is used as a
-        reference by :class:`Animation2d`. This is the only mandatory argument.
+        reference by :class:`view2d`. This is the only mandatory argument.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem`` in the ``QGraphicsScene``.
         Default is ``None``, which means the parent is the ``QGraphicsScene`` itself.
@@ -1210,7 +1228,7 @@ class line(item, QGraphicsLineItem):
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
 
@@ -1293,7 +1311,7 @@ class polygon(item, QGraphicsPolygonItem):
     minor (float): Length of the minor axis.
   """
 
-  def __init__(self, animation, name, **kwargs):
+  def __init__(self, view, name, **kwargs):
     """
     Polygon item constructor
 
@@ -1302,10 +1320,10 @@ class polygon(item, QGraphicsPolygonItem):
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): The item's identifier, which should be unique. It is used as a
-        reference by :class:`Animation2d`. This is the only mandatory argument.
+        reference by :class:`view2d`. This is the only mandatory argument.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem`` in the ``QGraphicsScene``.
         Default is ``None``, which means the parent is the ``QGraphicsScene`` itself.
@@ -1332,7 +1350,7 @@ class polygon(item, QGraphicsPolygonItem):
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
 
@@ -1414,7 +1432,7 @@ class path(item, QGraphicsPathItem):
     minor (float): Length of the minor axis.
   """
 
-  def __init__(self, animation, name, **kwargs):
+  def __init__(self, view, name, **kwargs):
     """
     Path item constructor
 
@@ -1423,10 +1441,10 @@ class path(item, QGraphicsPathItem):
 
     Args:
 
-      animation (:class:`Animaton2d`): The animation container.
+      view (:class:`Animaton2d`): The view container.
 
       name (str): The item's identifier, which should be unique. It is used as a
-        reference by :class:`Animation2d`. This is the only mandatory argument.
+        reference by :class:`view2d`. This is the only mandatory argument.
 
       parent (*QGraphicsItem*): The parent ``QGraphicsItem`` in the ``QGraphicsScene``.
         Default is ``None``, which means the parent is the ``QGraphicsScene`` itself.
@@ -1453,7 +1471,7 @@ class path(item, QGraphicsPathItem):
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
 
@@ -1530,13 +1548,13 @@ class image(item, QGraphicsPixmapItem):
   If the source is a numpy array, the three channels must have values in [0,1]
   """
 
-  def __init__(self, animation, name, position=[0,0], width=None, height=None, **kwargs):
+  def __init__(self, view, name, position=[0,0], width=None, height=None, **kwargs):
     """
     Image item constructor
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
 
@@ -1550,8 +1568,8 @@ class image(item, QGraphicsPixmapItem):
     
     # --- Initialization
 
-    self.width = width if width is not None else self.animation.boundaries['width']
-    self.height = height if height is not None else self.animation.boundaries['height']
+    self.width = width if width is not None else self.view.boundaries['width']
+    self.height = height if height is not None else self.view.boundaries['height']
     self.position = position
 
     self.cmap = kwargs['cmap'] if 'cmap' in kwargs else Colormap('grey', ncolors=256)
@@ -1663,13 +1681,13 @@ class field(item, QGraphicsPixmapItem):
   field item
   """
 
-  def __init__(self, animation, name, position=[0,0], width=None, height=None, **kwargs):
+  def __init__(self, view, name, position=[0,0], width=None, height=None, **kwargs):
     """
     Field item constructor
     """  
 
     # Generic item constructor
-    super().__init__(animation, name, **kwargs)
+    super().__init__(view, name, **kwargs)
     
     # --- Definitions
 
@@ -1682,8 +1700,8 @@ class field(item, QGraphicsPixmapItem):
     
     # --- Initialization
 
-    self.width = width if width is not None else self.animation.boundaries['width']
-    self.height = height if height is not None else self.animation.boundaries['height']
+    self.width = width if width is not None else self.view.boundaries['width']
+    self.height = height if height is not None else self.view.boundaries['height']
     self.position = position
 
     self.cmap = kwargs['cmap'] if 'cmap' in kwargs else Colormap('turbo', ncolors=256)

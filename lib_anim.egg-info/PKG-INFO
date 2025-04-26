@@ -1,6 +1,6 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: lib-anim
-Version: 0.0.2
+Version: 0.0.5
 Summary: Beautifully simple animations
 Author: Raphaël Candelier
 Author-email: raphael.candelier@sorbonne-universite.fr
@@ -23,6 +23,7 @@ Dynamic: classifier
 Dynamic: description
 Dynamic: keywords
 Dynamic: license
+Dynamic: license-file
 Dynamic: requires-dist
 Dynamic: summary
 

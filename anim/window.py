@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout
 import anim 
 
 class window(QWidget):
-  """
+  '''
   Animation-specific window.
 
   Subclass of Qwidget. Creates a new window containing an animation.
@@ -27,8 +27,7 @@ class window(QWidget):
     dt (float):
     timer (QTime)
     allow_backward (bool):
-  
-  """
+  '''
 
   # Generic event signal
   events = pyqtSignal(dict)
@@ -42,23 +41,25 @@ class window(QWidget):
                dt=None, 
                style='dark', 
                height=0.75):
-    """
-    Window constructor.
-
-    In particular, it initializes the QApplication `app` and the animation to display `anim`.
+    '''
+    Creates a new window
+    
+    * Initializes a QApplication in :py:attr:`self.app`
+    * Defines the window layout in :py:attr:`self.layout`
     
     The dark style is set by defaut (if the corresponding stylesheet is found).
 
     Args:
-      title (string): Window title. Default: 'Animation'.
+      title (string): . Default: 'Animation'.
       display_information (bool): Determines if the extra information have to be displayed. Default: True.
       autoplay (bool): Indicating if autoplay is on or off. Default: True.
       dt (frames): time increment between two frames (in seconds). Default: None.
       style   ['dark', 'light', 'white']
-    """
+    '''
 
     # Qapplication
     self.app = QApplication([])
+    '''The qApplication of the animation window'''
 
     # Attributes
     self.title = title
@@ -180,14 +181,11 @@ class window(QWidget):
   # ========================================================================
   def show(self):
     """
-    Creates the animation window
+    Display the animation window
     
-    Create the window to display the animation, defines the shortcuts,
-    initialize and start the animation.
-
-    Args:
-      size (float): Height of the ``QGraphicsView`` widget, defining the 
-        height of the window.
+    * Display the animation
+    * Defines the shortcuts
+    * Initialize and start the animation
     """
 
     # --- Settings ---------------------------------------------------------

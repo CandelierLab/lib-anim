@@ -399,13 +399,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="anim.window.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Animation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_information</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoplay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dark'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#anim.window.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Window constructor.</p>
-<p>In particular, it initializes the QApplication <cite>app</cite> and the animation to display <cite>anim</cite>.</p>
+<dd><p>Creates a new window</p>
+<ul class="simple">
+<li><p>Initializes a QApplication in <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.app</span></code></p></li>
+<li><p>Defines the window layout in <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.layout</span></code></p></li>
+</ul>
 <p>The dark style is set by defaut (if the corresponding stylesheet is found).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>title</strong> (<em>string</em>) – Window title. Default: ‘Animation’.</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – . Default: ‘Animation’.</p></li>
 <li><p><strong>display_information</strong> (<em>bool</em>) – Determines if the extra information have to be displayed. Default: True.</p></li>
 <li><p><strong>autoplay</strong> (<em>bool</em>) – Indicating if autoplay is on or off. Default: True.</p></li>
 <li><p><strong>dt</strong> (<em>frames</em>) – time increment between two frames (in seconds). Default: None.</p></li>
@@ -422,7 +425,7 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code>([title, display_information, ...])</p></td>
-<td><p>Window constructor.</p></td>
+<td><p>Creates a new window</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">acceptDrops</span></code>(self)</p></td>
 <td><p></p></td>
@@ -1389,6 +1392,9 @@
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">windowTitleChanged</span></code></p></td>
 <td><p>int = ..., arguments: Sequence = ...) -&gt; PYQT_SIGNAL</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">app</span></code></p></td>
+<td><p>the qApplication of the animation window</p></td>
 </tr>
 </tbody>
 </table>
