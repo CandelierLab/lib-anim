@@ -36,6 +36,7 @@ Publish package
 * Change version number in setyp.py
 * Push to github
 * Create a new release
+  > If action fails, recreate the certificate (https://pypi.org/manage/project/lib-anim/settings/publishing/) and re-run the failed job.
 
 ============================================================================
 Update documentation
