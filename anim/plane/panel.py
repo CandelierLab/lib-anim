@@ -68,7 +68,7 @@ class GraphicsView(QGraphicsView):
 
 # ==========================================================================
 
-class view(QObject):
+class panel(QObject):
   """
   2D Animation
 

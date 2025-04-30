@@ -3,7 +3,7 @@ import anim, anim.plane as a2d
 
 # === 2D Animation =========================================================
 
-class myAnimation(a2d.view):
+class myAnimation(a2d.panel):
 
   def __init__(self, W):
 

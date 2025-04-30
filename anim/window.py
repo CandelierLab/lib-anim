@@ -145,9 +145,7 @@ class window(QWidget):
   # ========================================================================
   def add(self, panel, row=None, col=None):
     """ 
-    Add a panel
-
-    A panel can be a layout or an Animation2d object.
+    Add a panel or a layout
     """
 
     # --- Default row / column
@@ -163,9 +161,9 @@ class window(QWidget):
     if inspect.isclass(panel):
       panel = panel(self)
 
-    # --- Append animation or layout
+    # --- Append panel or layout
 
-    if isinstance(panel, anim.plane.view):
+    if isinstance(panel, anim.plane.panel):
 
       self.layout.addWidget(panel.view, row, col)
       self.events.connect(panel.receive)
