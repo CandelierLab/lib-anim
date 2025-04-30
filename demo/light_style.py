@@ -9,7 +9,7 @@ class myAnimation(a2d.panel):
 
     super().__init__(W, boundaries=[[0,1],[0,1]])
 
-    self.padding=0.01
+    self.padding = 0.01
 
     self.x0 = 0.5
     self.y0 = 0.5

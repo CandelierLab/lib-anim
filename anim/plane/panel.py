@@ -122,7 +122,7 @@ class panel(QObject):
   """
 
   # Events
-  updated = pyqtSignal()
+  signal = pyqtSignal()
 
   # ========================================================================
   def __init__(self, W, 
@@ -293,7 +293,7 @@ class panel(QObject):
     self.view.viewport().repaint()
 
     # Confirm update
-    self.updated.emit()
+    self.signal.emit()
 
   # ========================================================================
   def receive(self, event):

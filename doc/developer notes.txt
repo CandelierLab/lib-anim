@@ -34,6 +34,7 @@ pip uninstall lib-anim
 Publish package
 ---------------
 
+* Remove previous packages in dist
 * git commit
 * Push to github
 * Create a new release

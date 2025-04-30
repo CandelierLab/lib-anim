@@ -30,7 +30,7 @@ class window(QWidget):
   '''
 
   # Generic event signal
-  events = pyqtSignal(dict)
+  signal = pyqtSignal(dict)
   ''' A pyqtSignal object to manage external events.'''
 
   # ========================================================================
@@ -103,8 +103,8 @@ class window(QWidget):
       self.information = anim.information(self)
     
       self.layout.addWidget(self.information.view, 0, 0)
-      self.events.connect(self.information.receive)
-      self.information.updated.connect(self.capture)
+      self.signal.connect(self.information.receive)
+      self.information.signal.connect(self.capture)
       self._nAnim += 1
 
       self.aspect_ratios.append(self.information.aspect_ratio)
@@ -166,8 +166,8 @@ class window(QWidget):
     if isinstance(panel, anim.plane.panel):
 
       self.layout.addWidget(panel.view, row, col)
-      self.events.connect(panel.receive)
-      panel.updated.connect(self.capture)
+      self.signal.connect(panel.receive)
+      panel.signal.connect(self.capture)
       self._nAnim += 1
 
       self.aspect_ratios.append(panel.aspect_ratio)
@@ -214,7 +214,7 @@ class window(QWidget):
     # --- Display animation ------------------------------------------------
 
     super().show()
-    self.events.emit({'type': 'show'})
+    self.signal.emit({'type': 'show'})
 
     # --- Sizing
 
@@ -273,7 +273,7 @@ class window(QWidget):
         return
         
     # Emit event
-    self.events.emit({'type': 'update', 'time': anim.time(self.step, self.step*self.dt)})
+    self.signal.emit({'type': 'update', 'time': anim.time(self.step, self.step*self.dt)})
 
   # ========================================================================
   def capture(self, force=False):
@@ -310,7 +310,7 @@ class window(QWidget):
       self.timer.stop()
 
       # Emit event
-      self.events.emit({'type': 'pause'})
+      self.signal.emit({'type': 'pause'})
 
     else:
 
@@ -318,7 +318,7 @@ class window(QWidget):
       self.timer.start()
     
       # Emit event
-      self.events.emit({'type': 'play'})
+      self.signal.emit({'type': 'play'})
 
   # ========================================================================
   def increment(self):
@@ -350,7 +350,7 @@ class window(QWidget):
     self.timer.stop()
 
     # Emit event
-    self.events.emit({'type': 'stop'})
+    self.signal.emit({'type': 'stop'})
 
     # Movie
     if self.movieWriter is not None:
