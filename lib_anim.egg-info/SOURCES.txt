@@ -10,7 +10,7 @@ anim/window.py
 anim/plane/__init__.py
 anim/plane/composites.py
 anim/plane/items.py
-anim/plane/view.py
+anim/plane/panel.py
 anim/style/dark.css
 anim/style/light.css
 anim/style/white.css
