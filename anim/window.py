@@ -2,59 +2,31 @@ import os
 import inspect
 import numpy as np
 import imageio
-from PyQt6.QtCore import pyqtSignal, QTimer
-from PyQt6.QtGui import QKeySequence, QImage, QShortcut, QGuiApplication
-from PyQt6.QtWidgets import QApplication, QWidget, QGridLayout
+from PyQt6.QtCore import pyqtSignal, QTimer, Qt
+from PyQt6.QtGui import QKeySequence, QImage, QShortcut
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QSizeGrip
 
 import anim 
 
-class window(QWidget):
+class window(QMainWindow):
   '''
   Animation-specific window.
-
-  Subclass of Qwidget. Creates a new window containing an animation.
-  
-  Attributes:
-    title (string): Title of the window.
-    app (QApplication): Underlying QApplication.
-    anim (`Animation2d`): Animation to display.
-    layout (QGridLayout): The main layout.
-    information (`Information`): The object controlling the extra information displayed.
-    width (?): width of the window (in ?)
-    height (?): height of the window (in ?)
-    fpt (int): The windows' fps. Default: 25.
-    step (int):
-    dt (float):
-    timer (QTime)
-    allow_backward (bool):
   '''
 
   # Generic event signal
   signal = pyqtSignal(dict)
   ''' A pyqtSignal object to manage external events.'''
 
-  # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
   def __init__(self, 
-               title='Animation', 
-               display_information=True, 
-               autoplay=True, 
-               dt=None, 
-               style='dark', 
-               height=0.75):
+               title = 'Animation', 
+               style = 'dark',
+               height = 0.75,
+               display_information = True):
     '''
-    Creates a new window
-    
-    * Initializes a QApplication in :py:attr:`self.app`
-    * Defines the window layout in :py:attr:`self.layout`
-    
+    Creates a new window.
+        
     The dark style is set by defaut (if the corresponding stylesheet is found).
-
-    Args:
-      title (string): . Default: 'Animation'.
-      display_information (bool): Determines if the extra information have to be displayed. Default: True.
-      autoplay (bool): Indicating if autoplay is on or off. Default: True.
-      dt (frames): time increment between two frames (in seconds). Default: None.
-      style   ['dark', 'light', 'white']
     '''
 
     # Qapplication
@@ -65,30 +37,37 @@ class window(QWidget):
     self.title = title
 
     # Misc private properties
-    self._nAnim = 0
+    self._nPanel = 0
     self._movieCounter = 0
     
     # Call widget parent's constructor (otherwise no signal can be caught)
     super().__init__()
 
-    # --- Main Layout
-
-    self.layout = QGridLayout()
-    self.setLayout(self.layout)
-
-    self.layout.setSpacing(0)
-    # self.layout.setContentsMargins(0,0,0,0)
+    # ─── Main widged and layout ────────────────
 
     # Window size
-    if height<=1:
-      self.height = int(self.app.screens()[0].size().height()*height);      
-    else:
-      self.height = int(height)
+    self.height = height
     self.width = None
+    self.aspect_ratio = 1
+    ''' The aspect ratio is the window's width / height. '''
 
-    self.aspect_ratios = []
+    # Main widget
+    self.mainWidget = QWidget()
+    self.setCentralWidget(self.mainWidget)
 
-    # --- Style
+    # ─── Grid layout ───────────────────────────
+
+    self.layout = QGridLayout()
+    self.mainWidget.setLayout(self.layout)
+
+    # Default layout spacing
+    self.layout.setSpacing(0)
+
+    # Strech ratios
+    self.rowHeights = None
+    self.colWidths = None
+
+    # ─── Style ─────────────────────────────────
 
     self.style = style
 
@@ -96,7 +75,7 @@ class window(QWidget):
       css = f.read()
       self.app.setStyleSheet(css)
 
-    # --- Information
+    # ─── Information panel ─────────────────────
 
     if display_information:
 
@@ -105,9 +84,7 @@ class window(QWidget):
       self.layout.addWidget(self.information.view, 0, 0)
       self.signal.connect(self.information.receive)
       self.information.signal.connect(self.capture)
-      self._nAnim += 1
-
-      self.aspect_ratios.append(self.information.aspect_ratio)
+      self._nPanel += 1
 
     else:
       self.information = None
@@ -119,14 +96,14 @@ class window(QWidget):
 
     # Time
     self.step = 0
-    self.dt = dt if dt is not None else 1/self.fps
+    self.dt = 1/self.fps
 
     # Timer
     self.timer = QTimer()
     self.timer.timeout.connect(self.set_step)
 
     # Play
-    self.autoplay = autoplay
+    self.autoplay = True
     self.step_max = None
     self.allow_backward = False
     self.allow_negative_time = False
@@ -142,41 +119,62 @@ class window(QWidget):
     self.moviefps = 25
     self.keep_every = 1
     
-  # ========================================================================
-  def add(self, panel, row=None, col=None):
+  # ────────────────────────────────────────────────────────────────────────
+  def add(self, panel, row=None, col=None, **kwargs):
     """ 
     Add a panel or a layout
     """
 
-    # --- Default row / column
+    # ─── Default row / column ──────────────────
 
-    if row is None:
-      row = self.layout.rowCount()-1
+    '''
+    NB: rowCount() and columnCount() will always return a number equal or
+    greater than 1, even if the layout is empty. We therefore have to compute 
+    the 'real' number of rows and columns occupied.
+    '''
 
-    if col is None:
-      col = self.layout.columnCount()
+    if row is None or col is None:
+      nextrow = 0
+      nextcol = 0
+      for i in range(self.layout.count()):
+        r, c, rspan, cspan = self.layout.getItemPosition(i)
+        nextrow = max(nextrow, r + rspan)
+        nextcol = max(nextcol, c + cspan)
 
-    # --- Instantiate classes
+      if row is None: row = max(0, nextrow-1)
+      if col is None: col = nextcol
+
+    # ─── Instantiate class ─────────────────────
 
     if inspect.isclass(panel):
-      panel = panel(self)
+      panel = panel(self, **kwargs)
 
-    # --- Append panel or layout
+    # ─── Append panel or layout ────────────────
 
     if isinstance(panel, anim.plane.panel):
 
       self.layout.addWidget(panel.view, row, col)
       self.signal.connect(panel.receive)
       panel.signal.connect(self.capture)
-      self._nAnim += 1
-
-      self.aspect_ratios.append(panel.aspect_ratio)
+      self._nPanel += 1
 
     else:
 
       self.layout.addLayout(panel, row, col)
 
-  # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
+  def compute_panel_size(self, panel):
+
+    for i in range(self.layout.count()):
+      r, c, rspan, cspan = self.layout.getItemPosition(i)
+      nextrow = max(nextrow, r + rspan)
+      nextcol = max(nextcol, c + cspan)
+
+    print(panel.vspan)
+
+    return None
+
+  # ────────────────────────────────────────────────────────────────────────
   def show(self):
     """
     Display the animation window
@@ -186,12 +184,16 @@ class window(QWidget):
     * Initialize and start the animation
     """
 
-    # --- Settings ---------------------------------------------------------
+    # ─── Settings ──────────────────────────────
     
     # Window title
     self.setWindowTitle(self.title)
 
-    # --- Shortcuts
+    # Window flags
+    self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowMinimizeButtonHint)
+    self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowMaximizeButtonHint)
+       
+    # ─── Shortcuts
 
     self.shortcut = {}
 
@@ -211,19 +213,21 @@ class window(QWidget):
     self.shortcut['next'] = QShortcut(QKeySequence.StandardKey.MoveToNextChar, self)
     self.shortcut['next'].activated.connect(self.increment)
 
-    # --- Display animation ------------------------------------------------
+    # ─── Window display ────────────────────────
 
     super().show()
     self.signal.emit({'type': 'show'})
 
-    # --- Sizing
+    # ─── Sizing
 
-    # Default size
-    if self.height is None:
-      self.height = int(self.information.viewHeight)
+    # Height
+    if self.height<=1:
+      self.height = self.app.screens()[0].size().height()*self.height
+    self.height = int(self.height)
 
+    # Compute width
     if self.width is None:
-      self.width = int(self.height*np.sum(self.aspect_ratios)) + 35
+      self.width = int(self.height*self.aspect_ratio)
 
     # Set window size
     self.resize(self.width, self.height)
@@ -254,7 +258,7 @@ class window(QWidget):
 
     self.app.exec()
 
- # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
   def set_step(self, step=None):
 
     if step is None:
@@ -275,14 +279,14 @@ class window(QWidget):
     # Emit event
     self.signal.emit({'type': 'update', 'time': anim.time(self.step, self.step*self.dt)})
 
-  # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
   def capture(self, force=False):
 
     if self.movieWriter is not None and not (self.step % self.keep_every):
 
       self._movieCounter += 1
 
-      if force or self._movieCounter == self._nAnim:
+      if force or self._movieCounter == self._nPanel:
 
         # Reset counter
         self._movieCounter = 0
@@ -301,7 +305,7 @@ class window(QWidget):
         # Append array to movie
         self.movieWriter.append_data(A)
 
-  # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
   def play_pause(self, force=None):
 
     if self.timer.isActive():
@@ -320,7 +324,7 @@ class window(QWidget):
       # Emit event
       self.signal.emit({'type': 'play'})
 
-  # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
   def increment(self):
 
     self.play_forward = True
@@ -328,7 +332,7 @@ class window(QWidget):
     if not self.timer.isActive():
       self.set_step()
 
-  # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
   def decrement(self):
 
     if self.allow_backward:
@@ -338,7 +342,7 @@ class window(QWidget):
       if not self.timer.isActive():
         self.set_step()
 
-  # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
   def close(self):
     """
     Stop the animation

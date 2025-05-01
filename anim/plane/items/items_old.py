@@ -1,5 +1,4 @@
 import numpy as np
-import anim
 
 from PyQt6.QtCore import Qt, QPointF, QRectF, QSize
 from PyQt6.QtGui import QColor, QPen, QBrush, QPolygonF, QFont, QPainterPath, QTransform, QPixmap, QImage, qRgb
@@ -13,10 +12,9 @@ class item():
   """
   Item of the view (generic class)
 
-  Items are the elements displayed in the :py:attr:`view2d.Qscene`. 
-  This class provides a common constructor, conversions of positions
-  to scene coordinates and styling of ``QAbstractGraphicsShapeItem`` 
-  children.
+  Items are the elements displayed in the Qscene. 
+  This class provides a common constructor, positioning scheme
+  and styling of ``QAbstractGraphicsShapeItem`` children.
 
   Attr:
 
@@ -105,7 +103,7 @@ class item():
     if self.parent is None:
       # return x*self.view.factor
       # print(self.view.boundaries['x'][0])
-      return (x-self.view.boundaries['x'][0])*self.view.factor
+      return (x-self.view.boundaries.x0)*self.view.factor
     else:
       return x*self.view.factor
 
@@ -122,7 +120,7 @@ class item():
     """
     
     if self.parent is None:
-      return (self.view.boundaries['y'][0]-y)*self.view.factor
+      return (self.view.boundaries.y0-y)*self.view.factor
     else:
       return -y*self.view.factor
 
@@ -1100,10 +1098,10 @@ class rectangle(item, QGraphicsRectItem):
       
       bb = self.boundingRect()
       if self._center[0]: dx = -W/2
-      if self._center[1]: dy = H/2
+      if self._center[1]: dy = -H/2
 
     # Set geometry
-    self.setRect(QRectF(dx, dy, W, -H))
+    self.setRect(QRectF(dx, dy, W, H))
 
   # --- Width --------------------------------------------------------------
 

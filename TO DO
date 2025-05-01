@@ -1,9 +1,10 @@
 REACHING DECENCY
+- base demo
+- items clickability + demo
 - Work on documentation
   
 DEVELOPMENTS
 - Initialization and loop mode
-- Rework window sizing
 - Better handling of theme styles
 - Rework information panel: html or view widget ?
 - Smart scrollbar

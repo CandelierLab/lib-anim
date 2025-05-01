@@ -9,7 +9,8 @@ class information(anim.plane.panel):
     # Parent contructor
     super().__init__(W, 
                      boundaries=[[0, 0.2], [0, 1]], 
-                     boundaries_color = None)
+                     boundaries_color = None,
+                     background_color='#555')
 
     # --- Optional display
 

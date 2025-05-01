@@ -9,8 +9,6 @@ class myAnimation(anim.plane.panel):
 
     super().__init__(window, boundaries=[[0,1],[0,1]])
 
-    self.padding = 0.01
-
     self.x0 = 0.5
     self.y0 = 0.5
     self.R = 0.25
