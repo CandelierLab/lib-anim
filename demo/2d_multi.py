@@ -5,7 +5,7 @@ import os
 os.system('clear')
 
 # ══════════════════════════════════════════════════════════════════════════
-class myAnimation(anim.plane.panel):
+class myAnimation(anim.plane.canva):
 
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, window, color, **kwargs):

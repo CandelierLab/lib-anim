@@ -2,19 +2,22 @@
 Generic item
 '''
 
+import numbers
 import numpy as np
 
 from PyQt6.QtCore import Qt, QPointF, QRectF, QSize
 from PyQt6.QtGui import QColor, QPen, QBrush, QPolygonF, QFont, QPainterPath, QTransform, QPixmap, QImage, qRgb
 from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsItemGroup, QGraphicsTextItem, QGraphicsLineItem, QGraphicsEllipseItem, QGraphicsPolygonItem, QGraphicsRectItem, QGraphicsPathItem, QGraphicsPixmapItem
 
+from ..canva import canva
+
 # ══════════════════════════════════════════════════════════════════════════
 #                               GENERIC ITEM
 # ══════════════════════════════════════════════════════════════════════════
 
-class item:
+class item(QGraphicsRectItem):
   '''
-  Item of the view (generic class)
+  Item of the canva (generic class)
 
   Items are the elements displayed in the Qscene. 
   This class provides a common constructor, positioning scheme
@@ -25,10 +28,12 @@ class item:
     width():  return the item width
     height(): return the item height
 
+  Position of the item, in parent coordinates. For items with no parent, it is in scene coordinates.
+
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, view, name, **kwargs):
+  def __init__(self, canva:canva, name, **kwargs):
     '''
     Constructor
     '''
@@ -38,34 +43,41 @@ class item:
 
     # ─── Definitions
 
-    # Reference view
-    self.view = view
+    # Reference canva
+    self.canva = canva
 
     # Assign name
     self.name = name
 
     # Internal properties
-    self._parent = None
-    self._behindParent = None
-    self._position = [0,0]
-    self._shift = [0,0]
-    self._transformPt = [0,0]
-    self._orientation = None
-    self._scale = None
-    self._zvalue = None
-    self._draggable = None
-      
-    # ─── Initialization
+    self._parent = kwargs['parent'] if 'parent' in kwargs else None
+    self._behindParent = kwargs['behindParent'] if 'behindParent' in kwargs else None
 
-    if 'parent' in kwargs: self.parent = kwargs['parent']
-    if 'behindParent' in kwargs: self.behindParent = kwargs['behindParent']
-    if 'position' in kwargs: self.position = kwargs['position']
-    if 'transformPt' in kwargs: self.transformPt = kwargs['transformPt']
-    if 'orientation' in kwargs: self.orientation = kwargs['orientation']
-    if 'scale' in kwargs: self.scale = kwargs['scale']
-    if 'zvalue' in kwargs: self.zvalue = kwargs['zvalue']
-    if 'draggable' in kwargs: self.draggable = kwargs['draggable']
-    
+    self._position = kwargs['position'] if 'position' in kwargs else [0,0]
+    self._transformPt = kwargs['transformPt'] if 'transformPt' in kwargs else [0,0]
+    self._orientation = kwargs['orientation'] if 'orientation' in kwargs else 0
+    self._scale = kwargs['scale'] if 'scale' in kwargs else 1 
+    self._zvalue = kwargs['zvalue'] if 'zvalue' in kwargs else 0
+    self._draggable = kwargs['draggable'] if 'draggable' in kwargs else False
+      
+
+  # ────────────────────────────────────────────────────────────────────────
+  def init_display(self):
+    '''
+    Initialize the display
+    '''
+
+    if self._parent is not None: self.parent = self._parent
+    if self._behindParent is not None : self.behindParent = self._behindParent
+
+    self.position = self._position
+    self.transformPt = self._transformPt
+    self.orientation = self._orientation
+    self.scale = self._scale
+
+    self.zvalue = self._zvalue
+    self.draggable = self._draggable
+
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS
   # ════════════════════════════════════════════════════════════════════════
@@ -83,16 +95,7 @@ class item:
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
-  def place(self):
-    '''
-    Absolute positionning
-    '''
-
-    # Set position
-    self.setPos(self._position[0]-self._shift[0], self._position[1]-self._shift[1])
-
-  # ────────────────────────────────────────────────────────────────────────
-  def move(self, dx=None, dy=None, z=None):
+  def move(self, dx=0, dy=0, z=None):
     '''
     Relative displacement
 
@@ -116,11 +119,9 @@ class item:
       dx = np.real(z)
       dy = np.imag(z)
 
-    # Store position
-    if dx is not None: self._position[0] += dx
-    if dy is not None: self._position[1] += dy
-
-    self.place()
+    # Update position
+    self.position = [self._position[0] + dx, 
+                     self._position[1] + dy]
 
   # ────────────────────────────────────────────────────────────────────────
   def rotate(self, angle):
@@ -133,8 +134,7 @@ class item:
       angle (float): Orientational increment (rad)
     '''
 
-    self._orientation += angle
-    self.setRotation(rad2deg(self.orientation))
+    self.orientation += angle
 
   # ────────────────────────────────────────────────────────────────────────
   def setStyle(self):
@@ -189,7 +189,7 @@ class item:
       event (QGraphicsSceneMouseEvent): The click event.
     '''
 
-    self.view.change(event.button(), self)
+    self.canva.change(event.button(), self)
     super().mousePressEvent(event)
 
   # ────────────────────────────────────────────────────────────────────────
@@ -203,7 +203,7 @@ class item:
       event (QGraphicsSceneMouseEvent): The double click event.
     '''
 
-    self.view.change(event.button().__str__() + '.double', self)
+    self.canva.change(event.button().__str__() + '.double', self)
     super().mousePressEvent(event)
 
   # ────────────────────────────────────────────────────────────────────────
@@ -223,7 +223,9 @@ class item:
       change (QGraphicsItem constant): 
     '''
 
-    # -- Define type
+    print(change, value)
+
+    # ─── Define type
 
     type = None
 
@@ -231,9 +233,9 @@ class item:
       case QGraphicsItem.GraphicsItemChange.ItemPositionHasChanged:
         type = 'move'
 
-    # Report to view
+    # Report to canva
     if type is not None:
-      self.view.change(type, self)
+      self.canva.change(type, self)
 
     # Propagate change
     return super().itemChange(change, value)
@@ -252,7 +254,7 @@ class item:
   @parent.setter
   def parent(self, pName):
     self._parent = pName
-    self.setParentItem(self.view.item[self._parent])
+    self.setParentItem(self.canva.item[self._parent])
 
   # ─── behindParent ───────────────────────────────────────────────────────
     
@@ -264,7 +266,7 @@ class item:
   @behindParent.setter
   def behindParent(self, b):
     self._behindParent = b
-    self.setFlag(QGraphicsItem.ItemStacksBehindParent, b)
+    self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemStacksBehindParent, b)
 
   # ─── Position ───────────────────────────────────────────────────────────
   
@@ -292,11 +294,11 @@ class item:
     self._position = [x,y]
 
     # Set position
-    self.place()    
+    self.setPos(x, self.canva.boundaries.y1 - y)    
 
   # ─── Transform point ────────────────────────────────────────────────────
   
-  ''' The position of the iterm's transformation point (origin) '''
+  ''' The position of the item's transformation point (origin) '''
 
   @property
   def transformPt(self): return self._transformPt
@@ -320,7 +322,7 @@ class item:
     self._transformPt = [x,y]
 
     # Set transform point
-    self.setTransformOriginPoint(x, y)    
+    self.setTransformOriginPoint(x, -y)    
 
     # ─── Orientation ──────────────────────────────────────────────────────
   
@@ -343,7 +345,12 @@ class item:
 
   @scale.setter
   def scale(self, scale):
-    self._scale = scale
+
+    if isinstance(scale, numbers.Number):
+      scale = (scale, scale)
+
+    self._scale = scale    
+
     self.setTransform(QTransform.fromScale(scale[0], scale[1]), True)
 
   # ─── z-value ────────────────────────────────────────────────────────────
@@ -372,9 +379,11 @@ class item:
     
     self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, self._draggable)
     self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, self._draggable)
-    if self._draggable:
-      self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
 
+    if self._draggable:
+      # self.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
+      self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+      # self.setCacheMode(QGraphicsItem.CacheMode.NoCache)
 
 # ══════════════════════════════════════════════════════════════════════════
 #                        ITEMS WITH SPECIFIC PROPERTIES

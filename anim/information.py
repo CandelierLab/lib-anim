@@ -1,7 +1,7 @@
 import re
 import anim
 
-class information(anim.plane.panel):
+class information(anim.plane.canva):
     
   # ========================================================================
   def __init__(self, W, disp_time=True):

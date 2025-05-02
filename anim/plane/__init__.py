@@ -2,7 +2,7 @@
 animate API
 '''
 
-from .panel import panel
+from .canva import canva
 
 # ─── Items
 

@@ -37,7 +37,7 @@ class window(QMainWindow):
     self.title = title
 
     # Misc private properties
-    self._nPanel = 0
+    self._nCanva = 0
     self._movieCounter = 0
     
     # Call widget parent's constructor (otherwise no signal can be caught)
@@ -84,7 +84,7 @@ class window(QMainWindow):
       self.layout.addWidget(self.information.view, 0, 0)
       self.signal.connect(self.information.receive)
       self.information.signal.connect(self.capture)
-      self._nPanel += 1
+      self._nCanva += 1
 
     else:
       self.information = None
@@ -120,9 +120,9 @@ class window(QMainWindow):
     self.keep_every = 1
     
   # ────────────────────────────────────────────────────────────────────────
-  def add(self, panel, row=None, col=None, **kwargs):
+  def add(self, canva, row=None, col=None, **kwargs):
     """ 
-    Add a panel or a layout
+    Add a canva or a layout
     """
 
     # ─── Default row / column ──────────────────
@@ -146,31 +146,31 @@ class window(QMainWindow):
 
     # ─── Instantiate class ─────────────────────
 
-    if inspect.isclass(panel):
-      panel = panel(self, **kwargs)
+    if inspect.isclass(canva):
+      canva = canva(self, **kwargs)
 
-    # ─── Append panel or layout ────────────────
+    # ─── Append canva or layout ────────────────
 
-    if isinstance(panel, anim.plane.panel):
+    if isinstance(canva, anim.plane.canva):
 
-      self.layout.addWidget(panel.view, row, col)
-      self.signal.connect(panel.receive)
-      panel.signal.connect(self.capture)
-      self._nPanel += 1
+      self.layout.addWidget(canva.view, row, col)
+      self.signal.connect(canva.receive)
+      canva.signal.connect(self.capture)
+      self._nCanva += 1
 
     else:
 
-      self.layout.addLayout(panel, row, col)
+      self.layout.addLayout(canva, row, col)
 
   # ────────────────────────────────────────────────────────────────────────
-  def compute_panel_size(self, panel):
+  def compute_canva_size(self, canva):
 
     for i in range(self.layout.count()):
       r, c, rspan, cspan = self.layout.getItemPosition(i)
       nextrow = max(nextrow, r + rspan)
       nextcol = max(nextcol, c + cspan)
 
-    print(panel.vspan)
+    print(canva.vspan)
 
     return None
 
@@ -286,7 +286,7 @@ class window(QMainWindow):
 
       self._movieCounter += 1
 
-      if force or self._movieCounter == self._nPanel:
+      if force or self._movieCounter == self._nCanva:
 
         # Reset counter
         self._movieCounter = 0

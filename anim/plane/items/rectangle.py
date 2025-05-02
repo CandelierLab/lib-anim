@@ -14,8 +14,9 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
   - dimensions (width and height)
   - position of the point of reference
   - horizontal and vertical centering, with respect to the point of
-    reference. The defaut centering is (True, True), while (False,False)
-    defines the reference as the top-left corner.
+      reference. The defaut centering is (True,True), while (False,False)
+      defines the reference as the top-left corner. One can also use a single
+      value to set both at the same time.
   
   Parameters
   ══════════
@@ -27,7 +28,6 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
 
     * position    ([float, float])  Position of the reference point. Default: [0,0]
     * center  ([bool, bool] / bool) Centering around the reference point. Default: [True,True]
-    * shift       ([float, float])  Shift wi. Default: [0,0]
     * orientation (float)           Orientation of the item (rad). Default: 0
     * scale       (float)           Scaling factor. Default: None
     * transformPt ([float, float])  Origin of the transformation
@@ -84,21 +84,18 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
 
-    # Conversion
+    # Definitions
+    dx = 0
+    dy = 0
     W = self._width
     H = self._height
 
-    dx = 0
-    dy = 0
-    if self._center[0] or self._center[1]:
-      
-      bb = self.boundingRect()
-      if self._center[0]: dx = -W/2
-      if self._center[1]: dy = -H/2
+    # Centering
+    if self._center[0]: dx -= W/2      
+    if self._center[1]: dy += H/2
 
     # Set geometry
-    print((dx, dy, W, H))
-    self.setRect(QRectF(dx, dy, W, H))
+    self.setRect(QRectF(dx, dy, W, -H))
 
   # ─── width ──────────────────────────────────────────────────────────────
   

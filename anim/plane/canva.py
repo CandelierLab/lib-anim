@@ -3,109 +3,10 @@ from PyQt6.QtGui import QColor, QPainter, QPen, QColorConstants
 from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsRectItem
 
 import anim
+from .graphicsView import graphicsView
+from .boundingBox import boundingBox
 
-# ══════════════════════════════════════════════════════════════════════════
-#                              BOUNDING BOX
-# ══════════════════════════════════════════════════════════════════════════
-
-class boundingBox:
-
-  # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, display, boundaries, color, thickness):
-    '''
-    Boundaries inputs are formated as [[x0,x1],[y0,y1]]
-    '''
-
-    self.display = display
-
-    # ─── Reference points (bottom-left and top-right corners)
-
-    # Default values
-    if boundaries is None:
-      self.x0 = 0
-      self.x1 = 1
-      self.y0 = 0
-      self.y1 = 1
-    else:
-      self.x0 = boundaries[0][0]
-      self.x1 = boundaries[0][1]
-      self.y0 = boundaries[1][0]
-      self.y1 = boundaries[1][1]
-      
-    # ─── Extension
-
-    self.width = self.x1 - self.x0
-    self.height = self.y1 - self.y0
-
-    # ─── Aspect ratio
-
-    self.aspect_ration = self.width/self.height
-
-    # ─── Color
-
-    self.color = color if color is not None else 'gray'
-
-    # ─── Thickness
-
-    self.thickness = thickness if thickness is not None else 1
-
-# ══════════════════════════════════════════════════════════════════════════
-#                                 VIEW
-# ══════════════════════════════════════════════════════════════════════════
-
-class GraphicsView(QGraphicsView):
-    
-  # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, scene, boundaries:boundingBox, padding=0, *args, **kwargs):
-
-    # Parent constructor
-    super().__init__(*args, *kwargs)
-
-    # ─── View and scene
-
-    self.padding = padding
-    self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-    self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-
-    # Antialiasing
-    self.setRenderHints(QPainter.RenderHint.Antialiasing)
-
-    # Scene
-    self.setScene(scene)
-
-    # ─── Boundaries
-
-    self.boundaries = boundaries
-    if self.boundaries.display:
-      self.setStyleSheet(f'border: {self.boundaries.thickness}px solid {self.boundaries.color};')
-
-
-  # ────────────────────────────────────────────────────────────────────────
-  def fit(self):
-
-    self.fitInView(QRectF(self.boundaries.x0 - self.padding,
-                          self.boundaries.y1 - self.padding,
-                          self.boundaries.width + 2*self.padding,
-                          self.boundaries.height + 2*self.padding),
-                   Qt.AspectRatioMode.KeepAspectRatio)
-
-  # ────────────────────────────────────────────────────────────────────────
-  def showEvent(self, E):
-
-    self.fit()    
-    super().showEvent(E)
-
-  # ────────────────────────────────────────────────────────────────────────
-  def resizeEvent(self, E):
-    
-    self.fit()
-    super().resizeEvent(E)
-
-# ══════════════════════════════════════════════════════════════════════════
-#                                 PANEL
-# ══════════════════════════════════════════════════════════════════════════
-
-class panel(QObject):
+class canva(QObject):
 
   # Events
   signal = pyqtSignal()
@@ -119,7 +20,7 @@ class panel(QObject):
                padding = 0,
                background_color = None):
     '''
-    Panel constructor
+    Canva constructor
     '''
 
     # Parent constructor
@@ -138,7 +39,7 @@ class panel(QObject):
     self.scene = QGraphicsScene()    
 
     # View
-    self.view = GraphicsView(self.scene, self.boundaries, padding=padding)
+    self.view = graphicsView(self.scene, self.boundaries, padding=padding)
     
     # Scale factor
     self.factor = 1 # self.view.si/self.boundaries['height']
@@ -162,6 +63,19 @@ class panel(QObject):
                   'vmin': self.boundaries.y0,
                   'vpadding': 0.02}
     
+    # ─── Dummy boundary rectangle ──────────────
+
+    bounds = QGraphicsRectItem(self.boundaries.x0, 
+                               self.boundaries.y0,
+                               self.boundaries.width,
+                               self.boundaries.height)
+    Pen = QPen()
+    if self.boundaries.display:
+      Pen.setColor(QColor(self.boundaries.color))
+    Pen.setWidthF(0)
+    bounds.setPen(Pen)
+    self.scene.addItem(bounds)
+
   # ────────────────────────────────────────────────────────────────────────
   def add(self, type, name, **kwargs):
     '''
@@ -181,13 +95,18 @@ class panel(QObject):
       height = self.stack['vpos']-self.boundaries['y'][0]
       kwargs['height'] = height
       
-    # Add items
+    # ─── Add element ───────────────────────────
+
     if issubclass(type, anim.plane.composite):
+
+      ''' COMPOSITES '''
 
       # Let composite elements create their own items
       self.composite[name] = type(self, name, **kwargs)
 
     else:
+
+      ''' ITEMS '''
 
       # Create item
       self.item[name] = type(self, name, **kwargs)
@@ -196,7 +115,10 @@ class panel(QObject):
       if self.item[name].parent is None:
         self.scene.addItem(self.item[name])
     
-    # --- Stack
+    # Place the item on the canva (once created)
+    self.item[name].init_display()
+
+    # ─── Stack ─────────────────────────────────
 
     if stack:
 
@@ -250,7 +172,7 @@ class panel(QObject):
         self.stop()
 
       case _:
-        # print(event)
+        print(event)
         pass
         
   # ────────────────────────────────────────────────────────────────────────
@@ -269,7 +191,6 @@ class panel(QObject):
       type (str): Type of change (``move``).
       item (:class:`item` *subclass*): The changed item.
     '''
-
     pass
   
   # ────────────────────────────────────────────────────────────────────────
@@ -280,5 +201,4 @@ class panel(QObject):
     This method is triggered when the window is closed.
     It does nothing and has to be reimplemented in subclasses.
     '''
-
     pass

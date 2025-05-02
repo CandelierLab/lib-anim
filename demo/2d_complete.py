@@ -7,33 +7,31 @@ import anim
 
 # ═══ 2D Animation ═════════════════════════════════════════════════════════
 
-class myAnimation(anim.plane.panel):
+class Canva(anim.plane.canva):
 
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, window, **kwargs):
 
     super().__init__(window, 
-                     boundaries = [[0,1],[0,1]],
+                     boundaries = [[0,100],[0,100]],
                      display_boundaries = True,
                      padding = 0,                     
                      **kwargs)
 
     self.add(anim.plane.rectangle, 'rect',
-      position = [0, 0],
-      width = 0.5,
-      height = 0.2,
-      color = 'cyan',
+      position = [50, 50],
+      width = 50,
+      height = 50,
+      draggable = True
     )
 
-    self.add(anim.plane.rectangle, 'rect2',
-      position = [0.5, 0.5],
-      width = 0.2,
-      height = 0.5,
-      color = 'green',
-    )
-
-    # self.item['rect'].stroke = 'red'
-    # self.item['rect'].linestyle = '--'
+    # self.add(anim.plane.rectangle, 'rect2',
+    #   position = [0.5, 0.5],
+    #   width = 0.2,
+    #   height = 0.5,
+    #   color = 'green',
+    #   zvalue = -1
+    # )
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
@@ -41,13 +39,15 @@ class myAnimation(anim.plane.panel):
     # Update timer display
     super().update(t)
 
+    self.item['rect'].update()
+
+
     # Update position
     # self.item['rect'].height = self.h + t.step/100
-    self.item['rect'].position = [self.x0, self.y0 + t.step/10]
+    # self.item['rect'].position = [0, t.step/100]
     # self.item['rect'].position = [self.x0, self.y0 + t.step/10]
 
     # self.scene.setSceneRect(QRectF(0, 0, 10, 10))
-
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
@@ -57,7 +57,7 @@ os.system('clear')
 W = anim.window('Simple animation', display_information=False)
 
 # Add animation
-W.add(myAnimation)
+W.add(Canva)
 
 # Allow backward animation
 W.allow_backward = True
