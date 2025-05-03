@@ -22,7 +22,6 @@ class Canva(anim.plane.canva):
       position = [50, 50],
       width = 50,
       height = 50,
-      draggable = True
     )
 
     # self.add(anim.plane.rectangle, 'rect2',
@@ -39,7 +38,9 @@ class Canva(anim.plane.canva):
     # Update timer display
     super().update(t)
 
-    self.item['rect'].update()
+    self.item['rect'].draggable = True
+
+    # self.item['rect'].update()
 
 
     # Update position
@@ -48,6 +49,11 @@ class Canva(anim.plane.canva):
     # self.item['rect'].position = [self.x0, self.y0 + t.step/10]
 
     # self.scene.setSceneRect(QRectF(0, 0, 10, 10))
+
+  # ────────────────────────────────────────────────────────────────────────
+  def change(self, type, item):
+    
+    print(type, item)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 

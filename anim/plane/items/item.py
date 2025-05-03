@@ -15,7 +15,7 @@ from ..canva import canva
 #                               GENERIC ITEM
 # ══════════════════════════════════════════════════════════════════════════
 
-class item(QGraphicsRectItem):
+class item(QGraphicsItem):
   '''
   Item of the canva (generic class)
 
@@ -223,8 +223,6 @@ class item(QGraphicsRectItem):
       change (QGraphicsItem constant): 
     '''
 
-    print(change, value)
-
     # ─── Define type
 
     type = None
@@ -373,17 +371,25 @@ class item(QGraphicsRectItem):
   def draggable(self): return self._draggable
 
   @draggable.setter
-  def draggable(self, z):
+  def draggable(self, bdrag):
     
-    self._draggable = z
+    self._draggable = bdrag
     
     self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, self._draggable)
     self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, self._draggable)
 
     if self._draggable:
       # self.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
-      self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+      # self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
       # self.setCacheMode(QGraphicsItem.CacheMode.NoCache)
+      pass
+
+  def paint(self, *args, **kwargs):
+
+    print(*args, **kwargs)
+
+    super().paint(*args, **kwargs)
+
 
 # ══════════════════════════════════════════════════════════════════════════
 #                        ITEMS WITH SPECIFIC PROPERTIES
