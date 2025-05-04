@@ -36,7 +36,24 @@ class canva(QObject):
     self.window = window
 
     # Scene
-    self.scene = QGraphicsScene()    
+    self.scene = QGraphicsScene(0, 0, 2, 2)  
+
+    # Create a red square
+    from PyQt6.QtWidgets import QGraphicsItem, QGraphicsRectItem
+    from PyQt6.QtGui import QBrush
+    f = 0.9
+    rect = QGraphicsRectItem(0,0,f,f)
+    rect.setBrush(QBrush(Qt.GlobalColor.red))
+
+    # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
+    # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, True)
+
+    # rect.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
+    # rect.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+
+    # Display
+    self.scene.addItem(rect)
+
 
     # View
     self.view = graphicsView(self.scene, self.boundaries, padding=padding)

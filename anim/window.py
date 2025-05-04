@@ -118,7 +118,31 @@ class window(QMainWindow):
     self.movieWidth = 1600     # Must be a multiple of 16
     self.moviefps = 25
     self.keep_every = 1
-    
+
+  # def add_test(self):
+
+  #   from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsItem, QGraphicsRectItem
+  #   from PyQt6.QtGui import QBrush
+
+  #   # Define app and scene
+  #   scene = QGraphicsScene(0, 0, 500, 500)
+
+  #   # Create a red square
+  #   rect = QGraphicsRectItem(100, 100, 100, 100)
+  #   rect.setBrush(QBrush(Qt.GlobalColor.red))
+
+  #   rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
+  #   # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, True)
+
+  #   # rect.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
+  #   # rect.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+
+  #   # Display
+  #   scene.addItem(rect)
+  #   view = QGraphicsView(scene)
+
+  #   self.layout.addWidget(view, 0 , 0)
+
   # ────────────────────────────────────────────────────────────────────────
   def add(self, canva, row=None, col=None, **kwargs):
     """ 
