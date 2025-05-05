@@ -66,7 +66,7 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
                thickness = 0,
                linestyle = '-',
                parent = None,
-               behindParent = None,
+               behindParent = False,
                position = [0,0],
                transformPt = [0,0],
                orientation = 0,
@@ -77,7 +77,7 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     Rectangle item constructor
     '''  
 
-    # Parent constructors    
+    # Parent constructors
     item.__init__(self, 
                   parent = parent,
                   behindParent = behindParent,
@@ -139,11 +139,7 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     if self._center[1]: y0 += H/2
 
     # Set geometry
-    print(QRectF(x0, y0, W, H))
     self.setRect(QRectF(x0, y0, W, H))
-
-    self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, self._draggable)
-
 
   # ─── width ──────────────────────────────────────────────────────────────
   

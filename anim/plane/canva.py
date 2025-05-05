@@ -97,66 +97,66 @@ class canva(QObject):
     # # Display
     # self.scene.addItem(rect)
 
-  # ────────────────────────────────────────────────────────────────────────
-  def add(self, type, name, **kwargs):
-    '''
-    Add an item to the scene.
-    '''
+  # # ────────────────────────────────────────────────────────────────────────
+  # def add(self, type, name, **kwargs):
+  #   '''
+  #   Add an item to the scene.
+  #   '''
 
-    # Stack
-    if 'stack' in kwargs:
-      stack = kwargs['stack']
-      del kwargs['stack']
-    else:
-      stack = False
+  #   # Stack
+  #   if 'stack' in kwargs:
+  #     stack = kwargs['stack']
+  #     del kwargs['stack']
+  #   else:
+  #     stack = False
 
-    height = kwargs['height'] if 'height' in kwargs else None
+  #   height = kwargs['height'] if 'height' in kwargs else None
 
-    if height=='fill':
-      height = self.stack['vpos']-self.boundaries['y'][0]
-      kwargs['height'] = height
+  #   if height=='fill':
+  #     height = self.stack['vpos']-self.boundaries['y'][0]
+  #     kwargs['height'] = height
       
-    # ─── Add element ───────────────────────────
+  #   # ─── Add element ───────────────────────────
 
-    if issubclass(type, anim.plane.composite):
+  #   if issubclass(type, anim.plane.composite):
 
-      ''' COMPOSITES '''
+  #     ''' COMPOSITES '''
 
-      # Let composite elements create their own items
-      self.composite[name] = type(self, name, **kwargs)
+  #     # Let composite elements create their own items
+  #     self.composite[name] = type(self, name, **kwargs)
 
-    else:
+  #   else:
 
-      ''' ITEMS '''
+  #     ''' ITEMS '''
 
-      # Create item
-      self.item[name] = type(self, name, **kwargs)
+  #     # Create item
+  #     self.item[name] = type(self, name, **kwargs)
 
-      # Add item to the scene
-      if self.item[name].parent is None:
-        self.scene.addItem(self.item[name])
+  #     # Add item to the scene
+  #     if self.item[name].parent is None:
+  #       self.scene.addItem(self.item[name])
     
-    # Place the item on the canva (once created)
-    self.item[name].init_display()
+  #   # Place the item on the canva (once created)
+  #   self.item[name].init_display()
 
-    # ─── Stack ─────────────────────────────────
+  #   # ─── Stack ─────────────────────────────────
 
-    if stack:
+  #   if stack:
 
-      x = 0
-      y = self.stack['vpos']
+  #     x = 0
+  #     y = self.stack['vpos']
 
-      if height is None:
-        self.stack['vpos'] -= self.item[name].height()
-      else:
-        self.stack['vpos'] -= height
-        y -= height
+  #     if height is None:
+  #       self.stack['vpos'] -= self.item[name].height()
+  #     else:
+  #       self.stack['vpos'] -= height
+  #       y -= height
 
-      # Set position
-      self.item[name].position = [x, y]
+  #     # Set position
+  #     self.item[name].position = [x, y]
 
-      # Bottom padding
-      self.stack['vpos'] -= kwargs['vpadding'] if 'vpadding' in kwargs else self.stack['vpadding']
+  #     # Bottom padding
+  #     self.stack['vpos'] -= kwargs['vpadding'] if 'vpadding' in kwargs else self.stack['vpadding']
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t=None):

@@ -35,7 +35,7 @@ class item:
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, 
                parent = None,
-               behindParent = None,
+               behindParent = False,
                position = [0,0],
                transformPt = [0,0],
                orientation = 0,
@@ -58,15 +58,15 @@ class item:
     self.name = None
 
     # Internal properties
-    self._parent = parent
-    self._behindParent = behindParent
+    self.parent = parent
+    self.behindParent = behindParent
 
     self._position = position
-    self._transformPt = transformPt
-    self._orientation = orientation
-    self._scale = scale
-    self._zvalue = zvalue
-    self._draggable = draggable
+    self.transformPt = transformPt
+    self.orientation = orientation
+    self.scale = scale
+    self.zvalue = zvalue
+    self.draggable = draggable
 
     # Initialization attribute
     self.is_initialized = False
@@ -259,7 +259,11 @@ class item:
   @parent.setter
   def parent(self, pName):
     self._parent = pName
-    self.setParentItem(self.canva.item[self._parent])
+    if isinstance(self._parent, str):
+      self.setParentItem(self.canva.item[self._parent])
+    else:
+      self.setParentItem(self._parent)
+      # print(self.parentItem())
 
   # ─── behindParent ───────────────────────────────────────────────────────
     
