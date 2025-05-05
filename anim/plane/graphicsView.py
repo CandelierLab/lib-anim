@@ -35,14 +35,20 @@ class graphicsView(QGraphicsView):
   # ────────────────────────────────────────────────────────────────────────
   def fit(self):
 
-    self.fitInView(QRectF(self.boundaries.x0 - self.padding,
-                          self.boundaries.y1 - self.padding,
+    self.fitInView(QRectF(0, 0,
                           self.boundaries.width + 2*self.padding,
                           self.boundaries.height + 2*self.padding),
                    Qt.AspectRatioMode.KeepAspectRatio)
     
-    self.centerOn(QPointF(self.boundaries.x0 + self.boundaries.width/2,
-                          self.boundaries.y0 + self.boundaries.height/2))
+    # self.centerOn(QPointF(self.boundaries.x0 + self.boundaries.width/2,
+    #                       self.boundaries.y0 + self.boundaries.height/2))
+    
+    self.setSceneRect(QRectF(self.boundaries.x0 - self.padding,
+                      self.boundaries.y0 - self.padding,
+                      self.boundaries.width + 2*self.padding,
+                      self.boundaries.height + 2*self.padding))
+    
+    # self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.NoViewportUpdate)
 
   # ────────────────────────────────────────────────────────────────────────
   def showEvent(self, event):

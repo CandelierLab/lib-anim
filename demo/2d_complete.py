@@ -13,16 +13,26 @@ class Canva(anim.plane.canva):
   def __init__(self, window, **kwargs):
 
     super().__init__(window, 
-                     boundaries = [[0,100],[0,100]],
-                     display_boundaries = True,
-                     padding = 0,                     
+                     boundaries = [[0,1],[0,1]],
+                     display_boundaries = True,    
                      **kwargs)
 
-    self.add(anim.plane.rectangle, 'rect',
-      position = [50, 50],
-      width = 50,
-      height = 50,
+    self.item.rect = anim.plane.rectangle(
+      position = [0.5, 0.5],
+      width = 0.5,
+      height = 0.3,
+      center = True,
+      draggable = True
     )
+
+    # self.scene.addItem(self.item.rect)
+
+    # self.add(anim.plane.rectangle, 'rect',
+    #   position = [0.5, 0.5],
+    #   width = 0.5,
+    #   height = 0.5,
+    #   draggable = True
+    # )
 
     # self.add(anim.plane.rectangle, 'rect2',
     #   position = [0.5, 0.5],
@@ -38,7 +48,7 @@ class Canva(anim.plane.canva):
     # Update timer display
     super().update(t)
 
-    self.item['rect'].draggable = True
+    # self.item['rect'].draggable = True
 
     # self.item['rect'].update()
 
@@ -49,11 +59,6 @@ class Canva(anim.plane.canva):
     # self.item['rect'].position = [self.x0, self.y0 + t.step/10]
 
     # self.scene.setSceneRect(QRectF(0, 0, 10, 10))
-
-  # ────────────────────────────────────────────────────────────────────────
-  def change(self, type, item):
-    
-    print(type, item)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 

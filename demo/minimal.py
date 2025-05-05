@@ -10,7 +10,7 @@ os.system('clear')
 
 W = anim.window('minimal', display_information=False)
 
-C = anim.plane.canva(W, boundaries=[[0,2], [0,2]])
+C = anim.plane.canva(W, boundaries=[[0,1], [0,1]], padding=0)
 W.add(C)
 
 # C.

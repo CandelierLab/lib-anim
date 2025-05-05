@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QRectF
-from PyQt6.QtWidgets import QGraphicsRectItem
+from PyQt6.QtWidgets import QGraphicsItem, QGraphicsRectItem
 
 from .item import item, hasColor, hasStroke
 
@@ -24,6 +24,11 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     * name        (str)             The rectangle's name
     * parent      (*QGraphicsItem*) The rectangle's parent item
 
+    ─── dimensions ──────────────────────────────
+
+    * width       (str)             The rectangle's width
+    * height      (*QGraphicsItem*) The rectangle's height
+
     ─── position & transformations ──────────────
 
     * position    ([float, float])  Position of the reference point. Default: [0,0]
@@ -31,17 +36,17 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     * orientation (float)           Orientation of the item (rad). Default: 0
     * scale       (float)           Scaling factor. Default: None
     * transformPt ([float, float])  Origin of the transformation
+    * draggable   (bool)            Boolean specifying if the item can be 
+                                      dragged. If True, the dragging callback
+                                      is defined in the ... method. 
+                                      Default: False.
 
     ─── stack ───────────────────────────────────
 
     * zvalue      (float)           Z-value (stack order) of the item. Default: 1
     * behindParent (bool)           Boolean specifying if the item is behind
                                       its parent or not. Default: None
-    * draggable   (bool)            Boolean specifying if the item can be 
-                                      dragged. If True, the dragging callback
-                                      is defined in the ... method. 
-                                      Default: False.
-
+    
     ─── style ────────────────────────────────
 
     * fill        (str / QColor)    Fill color. None stands for transparency. Default: None
@@ -52,50 +57,93 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, view, name, **kwargs):
+  def __init__(self, 
+               width,
+               height,
+               center = (True, True),
+               color = None,
+               stroke = None,
+               thickness = 0,
+               linestyle = '-',
+               parent = None,
+               behindParent = None,
+               position = [0,0],
+               transformPt = [0,0],
+               orientation = 0,
+               scale = 1,
+               zvalue = 0,
+               draggable = False):
     '''
     Rectangle item constructor
     '''  
 
     # Parent constructors    
-    item.__init__(self, view, name, **kwargs)
-    hasColor.__init__(self, **kwargs)
-    hasStroke.__init__(self, **kwargs)
-        
-    # ─── Definitions
+    item.__init__(self, 
+                  parent = parent,
+                  behindParent = behindParent,
+                  position = position,
+                  transformPt = transformPt,
+                  orientation = orientation,
+                  scale = scale,
+                  zvalue = zvalue,
+                  draggable = draggable)
+    
+    hasColor.__init__(self, color)
+    hasStroke.__init__(self, 
+                       stroke = stroke, 
+                       thickness = thickness,
+                       linestyle = linestyle)
 
-    self._width = None
-    self._height = None
-    self._center = (True, True)
+    # ─── Internal properties
 
-    # ─── Initialization
+    self._width = None 
+    self._height = None 
+    self._center = None 
 
-    if 'width' not in kwargs or 'height' not in kwargs:
+    # ─── Rectangle attributes
+
+    if width is None or height is None:
       raise AttributeError("'width' and 'height' must be specified for rectangle items.")
     else:
-      self.width = kwargs['width']
-      self.height = kwargs['height']
+      self.width = width
+      self.height = height
 
-    if 'center' in kwargs: self.center = kwargs['center']
+    self.center = center
 
-    # Initialize style
-    self.setStyle()
+  # ────────────────────────────────────────────────────────────────────────
+  def initialize(self):
+    '''
+    Initialize the display
+    '''
+
+    # Parent initialization
+    super().initialize()
+
+    #  Initialize geometry
+    self.setGeometry()
 
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
 
+    # Wait for initialization
+    if not self.is_initialized: return
+
     # Definitions
-    dx = 0
-    dy = 0
+    x0 = self._position[0]
+    y0 = self.canva.boundaries.y1 - self._position[1] - self._height
     W = self._width
     H = self._height
 
     # Centering
-    if self._center[0]: dx -= W/2      
-    if self._center[1]: dy += H/2
+    if self._center[0]: x0 -= W/2      
+    if self._center[1]: y0 += H/2
 
     # Set geometry
-    self.setRect(QRectF(dx, dy, W, -H))
+    print(QRectF(x0, y0, W, H))
+    self.setRect(QRectF(x0, y0, W, H))
+
+    self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, self._draggable)
+
 
   # ─── width ──────────────────────────────────────────────────────────────
   

@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt, QPointF, QRectF, QSize
 from PyQt6.QtGui import QColor, QPen, QBrush, QPolygonF, QFont, QPainterPath, QTransform, QPixmap, QImage, qRgb
 from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsItemGroup, QGraphicsTextItem, QGraphicsLineItem, QGraphicsEllipseItem, QGraphicsPolygonItem, QGraphicsRectItem, QGraphicsPathItem, QGraphicsPixmapItem
 
-from .item import item
+from ..itemDict import item
 
 class group(item, QGraphicsItemGroup):
   """

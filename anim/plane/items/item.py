@@ -15,7 +15,7 @@ from ..canva import canva
 #                               GENERIC ITEM
 # ══════════════════════════════════════════════════════════════════════════
 
-class item(QGraphicsItem):
+class item:
   '''
   Item of the canva (generic class)
 
@@ -33,7 +33,15 @@ class item(QGraphicsItem):
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, canva:canva, name, **kwargs):
+  def __init__(self, 
+               parent = None,
+               behindParent = None,
+               position = [0,0],
+               transformPt = [0,0],
+               orientation = 0,
+               scale = 1,
+               zvalue = 0,
+               draggable = False):
     '''
     Constructor
     '''
@@ -44,39 +52,35 @@ class item(QGraphicsItem):
     # ─── Definitions
 
     # Reference canva
-    self.canva = canva
+    self.canva:canva = None
 
     # Assign name
-    self.name = name
+    self.name = None
 
     # Internal properties
-    self._parent = kwargs['parent'] if 'parent' in kwargs else None
-    self._behindParent = kwargs['behindParent'] if 'behindParent' in kwargs else None
+    self._parent = parent
+    self._behindParent = behindParent
 
-    self._position = kwargs['position'] if 'position' in kwargs else [0,0]
-    self._transformPt = kwargs['transformPt'] if 'transformPt' in kwargs else [0,0]
-    self._orientation = kwargs['orientation'] if 'orientation' in kwargs else 0
-    self._scale = kwargs['scale'] if 'scale' in kwargs else 1 
-    self._zvalue = kwargs['zvalue'] if 'zvalue' in kwargs else 0
-    self._draggable = kwargs['draggable'] if 'draggable' in kwargs else False
-      
+    self._position = position
+    self._transformPt = transformPt
+    self._orientation = orientation
+    self._scale = scale
+    self._zvalue = zvalue
+    self._draggable = draggable
+
+    # Initialization attribute
+    self.is_initialized = False
 
   # ────────────────────────────────────────────────────────────────────────
-  def init_display(self):
+  def initialize(self):
     '''
     Initialize the display
     '''
 
-    if self._parent is not None: self.parent = self._parent
-    if self._behindParent is not None : self.behindParent = self._behindParent
+    self.is_initialized = True
 
-    self.position = self._position
-    self.transformPt = self._transformPt
-    self.orientation = self._orientation
-    self.scale = self._scale
-
-    self.zvalue = self._zvalue
-    self.draggable = self._draggable
+    #  Initialize style
+    self.setStyle()
 
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS
@@ -144,6 +148,9 @@ class item(QGraphicsItem):
     This function does not take any argument, instead it applies the changes
     defined by each item's styling attributes (*e.g.* color, stroke thickness).
     '''
+
+    # Wait for initialization
+    if not self.is_initialized: return
 
     # ─── Fill
 
@@ -292,7 +299,7 @@ class item(QGraphicsItem):
     self._position = [x,y]
 
     # Set position
-    self.setPos(x, self.canva.boundaries.y1 - y)    
+    self.setPos(x, self.canva.boundaries.y1 - y)
 
   # ─── Transform point ────────────────────────────────────────────────────
   
@@ -320,7 +327,7 @@ class item(QGraphicsItem):
     self._transformPt = [x,y]
 
     # Set transform point
-    self.setTransformOriginPoint(x, -y)    
+    self.setTransformOriginPoint(x, -y)
 
     # ─── Orientation ──────────────────────────────────────────────────────
   
@@ -379,18 +386,8 @@ class item(QGraphicsItem):
     self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, self._draggable)
 
     if self._draggable:
-      # self.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
-      # self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
-      # self.setCacheMode(QGraphicsItem.CacheMode.NoCache)
-      pass
-
-  def paint(self, *args, **kwargs):
-
-    print(*args, **kwargs)
-
-    super().paint(*args, **kwargs)
-
-
+      self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+      
 # ══════════════════════════════════════════════════════════════════════════
 #                        ITEMS WITH SPECIFIC PROPERTIES
 # ══════════════════════════════════════════════════════════════════════════
@@ -399,12 +396,15 @@ class item(QGraphicsItem):
 class hasColor:
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, **kwargs):
+  def __init__(self, color='grey'):
 
     super().__init__()
 
-    # Color
-    self._color = kwargs['color'] if 'color' in kwargs else 'gray'
+    # Default color
+    if color is None: color = 'grey'
+
+    # Assign color
+    self._color = color
 
   # ─── color ──────────────────────────────────────────────────────────────
 
@@ -420,18 +420,18 @@ class hasColor:
 class hasStroke:
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, **kwargs):
+  def __init__(self, stroke=None, thickness=0, linestyle='-'):
 
     super().__init__()
 
     # Stroke color
-    self._stroke = kwargs['stroke'] if 'stroke' in kwargs else None
+    self._stroke = stroke
 
     # Thickness
-    self._thickness = kwargs['thickness'] if 'thickness' in kwargs else 0
+    self._thickness = thickness
 
     # Linestyle
-    self._linestyle = kwargs['linestyle'] if 'linestyle' in kwargs else '-'
+    self._linestyle = linestyle
 
   # ─── stroke ─────────────────────────────────────────────────────────────
 

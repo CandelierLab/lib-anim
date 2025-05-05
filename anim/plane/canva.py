@@ -1,10 +1,12 @@
 from PyQt6.QtCore import Qt, QObject, QRectF, pyqtSignal
-from PyQt6.QtGui import QColor, QPainter, QPen, QColorConstants
-from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsRectItem
+from PyQt6.QtGui import QColor, QPainter, QPen, QBrush, QColorConstants
+from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsItem, QGraphicsRectItem
 
 import anim
 from .graphicsView import graphicsView
 from .boundingBox import boundingBox
+
+from .itemDict import itemDict
 
 class canva(QObject):
 
@@ -36,31 +38,11 @@ class canva(QObject):
     self.window = window
 
     # Scene
-    self.scene = QGraphicsScene(0, 0, 2, 2)  
-
-    # Create a red square
-    from PyQt6.QtWidgets import QGraphicsItem, QGraphicsRectItem
-    from PyQt6.QtGui import QBrush
-    f = 0.9
-    rect = QGraphicsRectItem(0,0,f,f)
-    rect.setBrush(QBrush(Qt.GlobalColor.red))
-
-    # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
-    # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, True)
-
-    # rect.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
-    # rect.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
-
-    # Display
-    self.scene.addItem(rect)
-
+    self.scene = QGraphicsScene()  
 
     # View
     self.view = graphicsView(self.scene, self.boundaries, padding=padding)
     
-    # Scale factor
-    self.factor = 1 # self.view.si/self.boundaries['height']
-
     # ─── Background color
 
     if background_color is not None:
@@ -72,13 +54,13 @@ class canva(QObject):
     
     # ─── Display items ────────────────────────────
 
-    self.item = {}
+    self.item = itemDict(self)
     self.composite = {}
     
     # Stack
-    self.stack = {'vpos': self.boundaries.y1, 
-                  'vmin': self.boundaries.y0,
-                  'vpadding': 0.02}
+    # self.stack = {'vpos': self.boundaries.y1, 
+    #               'vmin': self.boundaries.y0,
+    #               'vpadding': 0.02}
     
     # ─── Dummy boundary rectangle ──────────────
 
@@ -90,8 +72,30 @@ class canva(QObject):
     if self.boundaries.display:
       Pen.setColor(QColor(self.boundaries.color))
     Pen.setWidthF(0)
+    Pen.setCosmetic(True)
     bounds.setPen(Pen)
+
     self.scene.addItem(bounds)
+
+    # # Create a red square
+    # f = 0.5
+    # rect = QGraphicsRectItem(QRectF(0,0,f,f))
+    
+    # # pen = QPen(Qt.GlobalColor.yellow)
+    # # pen.setWidth(0)
+    # # pen.setCosmetic(True)
+
+    # rect.setPen(QPen(Qt.PenStyle.NoPen))
+    # rect.setBrush(QBrush(Qt.GlobalColor.red))
+
+    # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
+    # # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, True)
+
+    # # rect.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
+    # # rect.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+
+    # # Display
+    # self.scene.addItem(rect)
 
   # ────────────────────────────────────────────────────────────────────────
   def add(self, type, name, **kwargs):
