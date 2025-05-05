@@ -58,7 +58,7 @@ class item:
     self.name = None
 
     # Internal properties
-    self.parent = parent
+    self._parent = parent
     self.behindParent = behindParent
 
     self._position = position
@@ -77,9 +77,21 @@ class item:
     Initialize the display
     '''
 
+    # Set as initialized
     self.is_initialized = True
 
-    #  Initialize style
+    # ─── Parent
+    if self._parent is not None:
+
+      # Assign parent
+      self.parent = self._parent
+
+      # Shift position
+      self._position[0] += self._parent._position[0]
+      self._position[1] += self._parent._position[1]
+
+    # ─── Style
+
     self.setStyle()
 
   # ════════════════════════════════════════════════════════════════════════
@@ -257,13 +269,14 @@ class item:
   def parent(self): return self._parent
 
   @parent.setter
-  def parent(self, pName):
-    self._parent = pName
+  def parent(self, parent):
+
     if isinstance(self._parent, str):
-      self.setParentItem(self.canva.item[self._parent])
+      self._parent = self.canva.item[self._parent]
     else:
-      self.setParentItem(self._parent)
-      # print(self.parentItem())
+      self._parent = parent
+
+    self.setParentItem(self._parent)
 
   # ─── behindParent ───────────────────────────────────────────────────────
     

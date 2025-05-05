@@ -139,7 +139,30 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     if self._center[1]: y0 += H/2
 
     # Set geometry
+    print('Final rect', x0, y0, W, H)
     self.setRect(QRectF(x0, y0, W, H))
+
+  # ─── Position ───────────────────────────────────────────────────────────
+  
+  ''' The position of the item's reference point '''
+
+  @property
+  def position(self): return self._position
+
+  @position.setter
+  def position(self, pos):
+    
+    if isinstance(pos, tuple): pos = pos[0]
+
+    print('pre', self._position)
+
+    # Set position
+    super(rectangle, rectangle).position.fset(self, pos)
+
+    print('post', self._position)
+
+    # Set geometry
+    self.setGeometry()
 
   # ─── width ──────────────────────────────────────────────────────────────
   

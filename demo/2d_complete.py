@@ -23,22 +23,22 @@ class Canva(anim.plane.canva):
     )
 
     self.item.rect = anim.plane.rectangle(
-      parent = 'G', 
+      parent = self.item.G,
       width = 0.5,
       height = 0.3,
     )
 
-    self.item.rect2 = anim.plane.rectangle(
-      parent = self.item.G, 
-      width = 0.3,
-      height = 0.5,
-      color = 'red'
-    )
+    self.item['rect'].position = [0.25, 0.25],
+    # self.item.rect.position = self.item.rect._position
 
-    self.scene.addItem(self.item.G)
 
-    print(self.item.rect)
-    print(self.item.rect.parentItem())
+    # self.item.rect2 = anim.plane.rectangle(
+    #   parent = self.item.G,
+    #   position = [0.1, 0.1],
+    #   width = 0.3,
+    #   height = 0.5,
+    #   color = 'red'
+    # )
 
     # self.scene.addItem(self.item.rect)
 

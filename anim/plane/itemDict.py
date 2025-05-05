@@ -53,12 +53,14 @@ class itemDict(dict):
     # Assign item name
     item.name = key
 
-    # Initialize item
-    item.initialize()
-
     # Add the item to the scene
+    ''' Items with a parent sare automatically added to the scene. '''
+    
     if item.parent is None:
       self._canva.scene.addItem(item)
+
+    # Initialize item
+    item.initialize()
 
     # Assign the key/value pair
     dict.__setitem__(self, key, item)
