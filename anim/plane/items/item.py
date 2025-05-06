@@ -36,7 +36,9 @@ class item:
   def __init__(self, 
                parent = None,
                behindParent = False,
-               position = [0,0],
+               x = 0,
+               y = 0,
+               position = None,
                transformPt = [0,0],
                orientation = 0,
                scale = 1,
@@ -61,7 +63,12 @@ class item:
     self._parent = parent
     self.behindParent = behindParent
 
-    self._position = position
+    self._x = x
+    self._y = y
+    if isinstance(position, (tuple, list)) and len(position)==2:
+      self._x = position[0]
+      self._y = position[1]
+
     self.transformPt = transformPt
     self.orientation = orientation
     self.scale = scale
@@ -81,14 +88,17 @@ class item:
     self.is_initialized = True
 
     # ─── Parent
+
     if self._parent is not None:
 
       # Assign parent
       self.parent = self._parent
 
       # Shift position
-      self._position[0] += self._parent._position[0]
-      self._position[1] += self._parent._position[1]
+      self._x += self._parent._x
+      self._y += self._parent._y
+
+      self.place()
 
     # ─── Style
 
@@ -109,6 +119,15 @@ class item:
   # ════════════════════════════════════════════════════════════════════════
   #                              SETTERS
   # ════════════════════════════════════════════════════════════════════════
+
+  # ────────────────────────────────────────────────────────────────────────
+  def place(self):
+    '''
+    Place the item in the scene
+    '''
+
+    self.setPos(self._x, self.canva.boundaries.y1 - self._y)
+
 
   # ────────────────────────────────────────────────────────────────────────
   def move(self, dx=0, dy=0, z=None):
@@ -136,8 +155,8 @@ class item:
       dy = np.imag(z)
 
     # Update position
-    self.position = [self._position[0] + dx, 
-                     self._position[1] + dy]
+    self.x += dx
+    self.y += dy
 
   # ────────────────────────────────────────────────────────────────────────
   def rotate(self, angle):
@@ -295,7 +314,23 @@ class item:
   ''' The position of the item's reference point '''
 
   @property
-  def position(self): return self._position
+  def x(self): return self._x
+
+  @x.setter
+  def x(self, f):
+    self._x = f
+    self.place()
+
+  @property
+  def y(self): return self._y
+
+  @x.setter
+  def y(self, f):
+    self._y = f
+    self.place()
+
+  @property
+  def position(self): return [self._x, self._y]
 
   @position.setter
   def position(self, pos):
@@ -303,20 +338,17 @@ class item:
     if isinstance(pos, complex):
 
       # Convert from complex coordinates
-      x = np.real(pos)
-      y = np.imag(pos)
+      self._x = np.real(pos)
+      self._y = np.imag(pos)
 
     else:
 
       # Doublet input
-      x = pos[0]  
-      y = pos[1]      
-
-    # Store position
-    self._position = [x,y]
+      self._x = pos[0]  
+      self._y = pos[1]      
 
     # Set position
-    self.setPos(x, self.canva.boundaries.y1 - y)
+    self.place()
 
   # ─── Transform point ────────────────────────────────────────────────────
   
