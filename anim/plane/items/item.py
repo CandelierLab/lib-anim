@@ -51,6 +51,9 @@ class item:
     # Parent constructor
     super().__init__()
 
+    # Initialization attribute
+    self.is_initialized = False
+
     # ─── Definitions
 
     # Reference canva
@@ -65,18 +68,22 @@ class item:
 
     self._x = x
     self._y = y
-    if isinstance(position, (tuple, list)) and len(position)==2:
-      self._x = position[0]
-      self._y = position[1]
+    
+    if position is not None and isinstance(position, (tuple, list, complex)):
+      self.position = position
+
+    elif x is None or y is None:
+      raise AttributeError("Item position must be specified, either with 'position' or with 'x' and 'y'.")
+      
+    else:
+      self.x = x
+      self.y = y
 
     self.transformPt = transformPt
     self.orientation = orientation
     self.scale = scale
     self.zvalue = zvalue
     self.draggable = draggable
-
-    # Initialization attribute
-    self.is_initialized = False
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -94,12 +101,6 @@ class item:
       # Assign parent
       self.parent = self._parent
 
-      # Shift position
-      self._x += self._parent._x
-      self._y += self._parent._y
-
-      self.place()
-
     # ─── Style
 
     self.setStyle()
@@ -109,25 +110,50 @@ class item:
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
-  def width(self):
+  def Lx(self):
     return self.boundingRect().width()
 
   # ────────────────────────────────────────────────────────────────────────
-  def height(self):
+  def Ly(self):
     return self.boundingRect().height()
+
+  # ────────────────────────────────────────────────────────────────────────
+  def absoluteCoordinates(self):
+
+    x = self._x
+    y = self._y
+
+    # Check parenthood
+    parent = self._parent
+    while parent is not None:
+
+      # Shift position
+      x += parent._x
+      y += parent._y
+
+      # Update parent
+      parent = parent._parent
+
+    return (x, y)
 
   # ════════════════════════════════════════════════════════════════════════
   #                              SETTERS
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
-  def place(self):
+  def put(self):
     '''
     Place the item in the scene
     '''
 
-    self.setPos(self._x, self.canva.boundaries.y1 - self._y)
+    # Wait for initialization
+    if not self.is_initialized: return
 
+    # Get absolute coordinates
+    x, y = self.absoluteCoordinates()
+
+    # Place on the canva
+    self.setPos(x, self.canva.boundaries.y1 - y)
 
   # ────────────────────────────────────────────────────────────────────────
   def move(self, dx=0, dy=0, z=None):
@@ -319,7 +345,7 @@ class item:
   @x.setter
   def x(self, f):
     self._x = f
-    self.place()
+    self.put()
 
   @property
   def y(self): return self._y
@@ -327,7 +353,7 @@ class item:
   @x.setter
   def y(self, f):
     self._y = f
-    self.place()
+    self.put()
 
   @property
   def position(self): return [self._x, self._y]
@@ -348,7 +374,7 @@ class item:
       self._y = pos[1]      
 
     # Set position
-    self.place()
+    self.put()
 
   # ─── Transform point ────────────────────────────────────────────────────
   

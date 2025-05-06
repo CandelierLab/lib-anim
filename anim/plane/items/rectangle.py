@@ -1,3 +1,5 @@
+import numpy as np
+
 from PyQt6.QtCore import QRectF
 from PyQt6.QtWidgets import QGraphicsItem, QGraphicsRectItem
 
@@ -26,15 +28,19 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
 
     ─── dimensions ──────────────────────────────
 
-    * width       (str)             The rectangle's width
-    * height      (*QGraphicsItem*) The rectangle's height
+    * Lx          (float)           The rectangle's width (length along x). Defau
+    * Ly          (float)           The rectangle's height (length along y)
+    * dimension   ([float, float])  Dimensions along the axis. Default: [0,0]
+                                      The user must define either Lx, Ly or the dimensions.
+                                      In case of conflicting definitions, the dimension attribute wins.
 
     ─── position & transformations ──────────────
 
     * x           (float)           x-position of the reference point. Default: 0
     * y           (float)           y-position of the reference point. Default: 0
     * position    ([float, float])  Position of the reference point. Default: [0,0]
-                                      The user can define either x and y or the position.
+                                      The user can define either x, y or the position.
+                                      In case of conflict, the position attribute  wins.
 
     * center  ([bool, bool] / bool) Centering around the reference point. Default: [True,True]
     * orientation (float)           Orientation of the item (rad). Default: 0
@@ -62,8 +68,9 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
 
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, 
-               width,
-               height,
+               Lx = None,
+               Ly = None,
+               dimension = None,
                center = (True, True),
                color = None,
                stroke = None,
@@ -104,17 +111,21 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
 
     # ─── Internal properties
 
-    self._width = None 
-    self._height = None 
+    self._Lx = None 
+    self._Ly = None 
     self._center = None 
 
     # ─── Rectangle attributes
 
-    if width is None or height is None:
-      raise AttributeError("'width' and 'height' must be specified for rectangle items.")
+    if dimension is not None and isinstance(dimension, (tuple, list, complex)):
+      self.dimension = dimension
+
+    elif Lx is None or Ly is None:
+      raise AttributeError("Rectangle dimensions must be specified for rectangle items, either with 'dimension' or with 'Lx' and 'Ly'.")
+      
     else:
-      self.width = width
-      self.height = height
+      self.Lx = Lx
+      self.Ly = Ly
 
     self.center = center
 
@@ -128,49 +139,74 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     super().initialize()
 
     #  Initialize geometry
-    self.setGeometry()
+    self.put()
 
   # ────────────────────────────────────────────────────────────────────────
-  def place(self):
+  def put(self):
 
     # Wait for initialization
     if not self.is_initialized: return
 
-    # Definitions
-    x0 = self._x
-    y0 = self.canva.boundaries.y1 - self._y - self._height
-    W = self._width
-    H = self._height
+    # Get absolute coordinates
+    x, y = self.absoluteCoordinates()
+
+    # Rectangle bottom-left corner
+    x0 = x
+    y0 = self.canva.boundaries.y1 - y - self._Ly
 
     # Centering
-    if self._center[0]: x0 -= W/2      
-    if self._center[1]: y0 += H/2
+    if self._center[0]: x0 -= self._Lx/2      
+    if self._center[1]: y0 += self._Ly/2
 
     # Set geometry
-    print('Final rect', x0, y0, W, H)
-    self.setRect(QRectF(x0, y0, W, H))
+    print('Final rect', x0, y0, self._Lx, self._Ly)
+    self.setRect(QRectF(x0, y0, self._Lx, self._Ly))
 
   # ─── width ──────────────────────────────────────────────────────────────
   
   @property
-  def width(self): return self._width
+  def Lx(self): return self._Lx
 
-  @width.setter
-  def width(self, w):
+  @Lx.setter
+  def Lx(self, w):
 
-    self._width = w
-    if self._height is not None: self.setGeometry()
+    self._Lx = w
+    if self._Ly is not None: self.put()
   
   # ─── height ─────────────────────────────────────────────────────────────
 
   @property
-  def height(self): return self._height
+  def Ly(self): return self._Ly
 
-  @height.setter
-  def height(self, h):
+  @Ly.setter
+  def Ly(self, h):
 
-    self._height = h
-    self.setGeometry()    
+    self._Ly = h
+    self.put()    
+
+  # ─── dimensions ─────────────────────────────────────────────────────────
+  
+  @property
+  def dimension(self): return [self._Lx, self._Ly]
+
+  @dimension.setter
+  def dimension(self, D):
+    
+    if isinstance(D, complex):
+
+      # Convert from complex coordinates
+      self._Lx = np.real(D)
+      self._Ly = np.imag(D)
+
+    else:
+
+      # Doublet input
+      self._Lx = D[0]
+      self._Ly = D[1]
+
+    # Set position
+    self.put()
+
 
   # ─── center ─────────────────────────────────────────────────────────────
 
@@ -185,6 +221,6 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     else:
       self._center = C
 
-    self.setGeometry()
+    self.put()
 
  

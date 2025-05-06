@@ -17,29 +17,25 @@ class Canva(anim.plane.canva):
                      display_boundaries = True,    
                      **kwargs)
 
-    # self.item.G = anim.plane.group(
-    #   # position = [0.5, 0.5],
-    #   x = 0.5,
-    #   y = 0.5,
-    #   draggable = True,
-    # )
-
-    self.item.rect = anim.plane.rectangle(
-      width = 0.5,
-      height = 0.3,
+    self.item.G = anim.plane.group(
+      # position = [0.5, 0.5],
+      x = 0.5,
+      y = 0.5,
+      draggable = True,
     )
 
-    # self.item['rect'].position = [0, 0],
-    # self.item.rect.position = self.item.rect._position
+    self.item.rect = anim.plane.rectangle(
+      parent = self.item.G,
+      dimension = [0.2, 0.1]
+    )
 
-
-    # self.item.rect2 = anim.plane.rectangle(
-    #   parent = self.item.G,
-    #   position = [0.1, 0.1],
-    #   width = 0.3,
-    #   height = 0.5,
-    #   color = 'red'
-    # )
+    self.item.rect2 = anim.plane.rectangle(
+      parent = self.item.G,
+      position = [0.1, 0.1],
+      Lx = 0.3,
+      Ly = 0.5,
+      color = 'red'
+    )
 
     # self.scene.addItem(self.item.rect)
 

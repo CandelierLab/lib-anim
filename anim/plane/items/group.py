@@ -21,7 +21,12 @@ class group(item, QGraphicsItemGroup):
 
     ─── position & transformations ──────────────
 
+    * x           (float)           x-position of the reference point. Default: 0
+    * y           (float)           y-position of the reference point. Default: 0
     * position    ([float, float])  Position of the reference point. Default: [0,0]
+                                      The user can define either x, y or the position.
+                                      In case of conflict, the position attribute  wins.
+
     * orientation (float)           Orientation of the item (rad). Default: 0
     * scale       (float)           Scaling factor. Default: None
     * transformPt ([float, float])  Origin of the transformation
@@ -38,10 +43,12 @@ class group(item, QGraphicsItemGroup):
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, 
+  def __init__(self,
                parent = None,
                behindParent = False,
-               position = [0,0],
+               x = 0,
+               y = 0,
+               position = None,
                transformPt = [0,0],
                orientation = 0,
                scale = 1,
@@ -58,6 +65,8 @@ class group(item, QGraphicsItemGroup):
     item.__init__(self, 
                   parent = parent,
                   behindParent = behindParent,
+                  x = x,
+                  y = y,
                   position = position,
                   transformPt = transformPt,
                   orientation = orientation,
@@ -66,9 +75,9 @@ class group(item, QGraphicsItemGroup):
                   draggable = draggable)
    
   # ────────────────────────────────────────────────────────────────────────
-  def width(self):
+  def Lx(self):
     return self.childrenBoundingRect().width()
 
   # ────────────────────────────────────────────────────────────────────────
-  def height(self):
+  def Ly(self):
     return self.childrenBoundingRect().height()
