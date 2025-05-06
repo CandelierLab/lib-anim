@@ -16,30 +16,75 @@ class group(item, QGraphicsItemGroup):
   Parameters
   ══════════
 
-    * name        (str)             The rectangle's name
-    * parent      (*QGraphicsItem*) The rectangle's parent item
+    * name       
+        str
+        The group name.
+
+    * parent
+        QGraphicsItem (or derived object)
+        default: None
+        The group's parent. If None, the position (x, y) is in absolute scene
+        coordinates. Otherwise, the position is relative to the parent's 
+        reference point.
 
     ─── position & transformations ──────────────
 
-    * x           (float)           x-position of the reference point. Default: 0
-    * y           (float)           y-position of the reference point. Default: 0
-    * position    ([float, float])  Position of the reference point. Default: [0,0]
-                                      The user can define either x, y or the position.
-                                      In case of conflict, the position attribute  wins.
+    * x           
+        float
+        default: 0
+        x-position of the reference point.
 
-    * orientation (float)           Orientation of the item (rad). Default: 0
-    * scale       (float)           Scaling factor. Default: None
-    * transformPt ([float, float])  Origin of the transformation
-    * draggable   (bool)            Boolean specifying if the item can be 
-                                      dragged. If True, the dragging callback
-                                      is defined in the ... method. 
-                                      Default: False.
+    * y
+        float
+        default: 0
+        y-position of the reference point.
+
+    * position
+        (float, float), [float, float], complex
+        default: [0,0]
+        Position of the reference point. The user can define either x, y or
+        the position. In case of conflict, the position attribute wins.
+
+    * orientation
+        float
+        default: 0, unit: radians
+        Orientation of the item, with respect to the positive part of the 
+        x-axis.
+
+    * center_of_rotation
+        None, (float, float), [float, float], complex
+        default: None
+        Center point for the rotation. If None, it is set to the current [x,y].
+
+    * scale
+        float
+        default: 1
+        Scaling factor.
+
+    * draggable
+        bool
+        default: False
+        Boolean specifying if the item can be dragged. If True, the dragging
+        callback is defined in the 'itemChange' method, which is transfered
+        to the canva's 'change' method (recommended).
 
     ─── stack ───────────────────────────────────
 
-    * zvalue      (float)           Z-value (stack order) of the item. Default: 1
-    * behindParent (bool)           Boolean specifying if the item is behind
-                                      its parent or not. Default: None    
+    * zvalue
+        float
+        default: 0
+        Z-value (stack order) of the item.
+
+    * behindParent
+        bool
+        Default: False
+        Boolean specifying if the item is behind its parent or not.
+
+  Methods
+  ═══════
+  
+    * Lx(): return the group's total width
+    * Ly(): return the group's total height
   '''
 
   # ────────────────────────────────────────────────────────────────────────
@@ -49,7 +94,7 @@ class group(item, QGraphicsItemGroup):
                x = 0,
                y = 0,
                position = None,
-               transformPt = [0,0],
+               center_of_rotation = [0,0],
                orientation = 0,
                scale = 1,
                zvalue = 0,
@@ -68,7 +113,7 @@ class group(item, QGraphicsItemGroup):
                   x = x,
                   y = y,
                   position = position,
-                  transformPt = transformPt,
+                  center_of_rotation = center_of_rotation,
                   orientation = orientation,
                   scale = scale,
                   zvalue = zvalue,

@@ -77,25 +77,7 @@ class canva(QObject):
 
     self.scene.addItem(bounds)
 
-    # # Create a red square
-    # f = 0.5
-    # rect = QGraphicsRectItem(QRectF(0,0,f,f))
     
-    # # pen = QPen(Qt.GlobalColor.yellow)
-    # # pen.setWidth(0)
-    # # pen.setCosmetic(True)
-
-    # rect.setPen(QPen(Qt.PenStyle.NoPen))
-    # rect.setBrush(QBrush(Qt.GlobalColor.red))
-
-    # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
-    # # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, True)
-
-    # # rect.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
-    # # rect.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
-
-    # # Display
-    # self.scene.addItem(rect)
 
   # # ────────────────────────────────────────────────────────────────────────
   # def add(self, type, name, **kwargs):

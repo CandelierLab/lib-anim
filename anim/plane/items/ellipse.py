@@ -1,112 +1,57 @@
 import numpy as np
 
 from PyQt6.QtCore import QRectF
-from PyQt6.QtWidgets import QGraphicsItem, QGraphicsRectItem
+from PyQt6.QtWidgets import QGraphicsEllipseItem
 
 from .item import item, hasColor, hasStroke
 
 # ══════════════════════════════════════════════════════════════════════════
-#                                 RECTANGLE
+#                                 ELLIPSE
 # ══════════════════════════════════════════════════════════════════════════
 
-class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
+class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
   '''
-  A rectangle item is defined by its:
+  An ellipse item is defined by its:
 
-  - dimensions (width and height)
+  - dimensions (major and minor axis length, named here a and b respectively)
   - position of the point of reference
-  - horizontal and vertical centering, with respect to the point of
-      reference. The defaut centering is (True,True), while (False,False)
-      defines the reference as the top-left corner. One can also use a single
-      value to set both at the same time.
+  - orientation of the major axis
   
   Parameters
   ══════════
 
-    * name       
-        str
-        The rectangle's name
-
-    * parent
-        default: None    
-        QGraphicsItem (or derived object)
-        The rectangle's parent item
+    * name        (str)             The rectangle's name
+    * parent      (*QGraphicsItem*) The rectangle's parent item
 
     ─── dimensions ──────────────────────────────
 
-    * Lx          
-      float
-      The rectangle's width, i.e. length along the x axis. 
-
-    * Ly
-        float
-        The rectangle's height, i.e.length along the y axis.
-
-    * dimension
-       (float, float), [float, float], complex
-       default: [0,0]
-       Dimensions along the x and y axes. The user must define either Lx, Ly
-       or the dimension array. In case of conflicting definitions, the 
-       dimension attribute wins.
+    * a          (float)            The ellipse's major axis length
+    * b          (float)            The ellipse's minor axis length
+    * dimension   ([float, float])  Array of axes lengths. Default: [0,0]
+                                      The user must define either a, b or the dimension array.
+                                      In case of conflicting definitions, the dimension attribute wins.
 
     ─── position & transformations ──────────────
 
-    * x           
-      float
-      default: 0
-      x-position of the reference point.
+    * x           (float)           x-position of the center point. Default: 0
+    * y           (float)           y-position of the center point. Default: 0
+    * position    ([float, float])  Position of the center point. Default: [0,0]
+                                      The user can define either x, y or the position.
+                                      In case of conflict, the position attribute  wins.
 
-    * y
-        float
-        default: 0
-        y-position of the reference point.
-
-    * position
-        (float, float), [float, float], complex
-        default: [0,0]
-        Position of the reference point. The user can define either x, y or
-        the position. In case of conflict, the position attribute wins.
-
-    * center
-        (bool, bool), [bool, bool], bool
-        default: [True,True]
-        Boolean Defining the centering around the reference point. For tuple
-        and list the first element is for the x-axis and the second is for 
-        the y-axis.
-
-    * orientation
-        float
-        default: 0, unit: radians
-        Orientation of the item, with respect to the positive part of the 
-        x-axis.
-
-    * scale
-        float
-        default: 1
-        Scaling factor.
-
-    * center_of_rotation
-        (float, float), [float, float], complex
-        default: None
-        Center point for the rotation. If None, it is set to the current [x,y].
-
-    * draggable
-        bool
-        default: False
-        Boolean specifying if the item can be dragged. If True, the dragging
-        callback is defined in the ... method.
+    * orientation (float)           Orientation of the major axis (rad). Default: 0
+    * scale       (float)           Scaling factor. Default: None
+    * transformPt ([float, float])  Origin of the transformation
+    * draggable   (bool)            Boolean specifying if the item can be 
+                                      dragged. If True, the dragging callback
+                                      is defined in the ... method. 
+                                      Default: False.
 
     ─── stack ───────────────────────────────────
 
-    * zvalue
-        float
-        default: 1
-        Z-value (stack order) of the item.
-
-    * behindParent
-        bool
-        Default: False
-        Boolean specifying if the item is behind its parent or not.
+    * zvalue      (float)           Z-value (stack order) of the item. Default: 1
+    * behindParent (bool)           Boolean specifying if the item is behind
+                                      its parent or not. Default: None
     
     ─── style ────────────────────────────────
 
@@ -132,7 +77,7 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
                x = 0,
                y = 0,
                position = None,
-               center_of_rotation = None,
+               transformPt = [0,0],
                orientation = 0,
                scale = 1,
                zvalue = 0,
@@ -148,7 +93,7 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
                   x = x,
                   y = y,
                   position = position,
-                  center_of_rotation = center_of_rotation,
+                  transformPt = transformPt,
                   orientation = orientation,
                   scale = scale,
                   zvalue = zvalue,

@@ -17,19 +17,84 @@ from ..canva import canva
 
 class item:
   '''
-  Item of the canva (generic class)
+  Item of the canva (generic class), i.e. elements displayed in the Qscene.
 
-  Items are the elements displayed in the Qscene. 
-  This class provides a common constructor, positioning scheme
-  and styling of ``QAbstractGraphicsShapeItem`` children.
+  This is an abstract class providing a common constructor, positioning
+  scheme and styling of ``QAbstractGraphicsShapeItem`` children. It is not
+  intented to be instantiated directly.
 
-  Methods:
+  Parameters
+  ══════════
 
-    width():  return the item width
-    height(): return the item height
+    * name       
+        str
+        The item name.
 
-  Position of the item, in parent coordinates. For items with no parent, it is in scene coordinates.
+    * parent
+        QGraphicsItem (or derived object)
+        default: None
+        The item's parent. If None, the position (x, y) is in absolute scene
+        coordinates. Otherwise, the position is relative to the parent's 
+        reference point.
 
+    ─── position & transformations ──────────────
+
+    * x           
+        float
+        default: 0
+        x-position of the reference point.
+
+    * y
+        float
+        default: 0
+        y-position of the reference point.
+
+    * position
+        (float, float), [float, float], complex
+        default: [0,0]
+        Position of the reference point. The user can define either x, y or
+        the position. In case of conflict, the position attribute wins.
+
+    * orientation
+        float
+        default: 0, unit: radians
+        Orientation of the item, with respect to the positive part of the 
+        x-axis.
+
+    * center_of_rotation
+        None, (float, float), [float, float], complex
+        default: None
+        Center point for the rotation. If None, it is set to the current [x,y].
+
+    * scale
+        float
+        default: 1
+        Scaling factor.
+
+    * draggable
+        bool
+        default: False
+        Boolean specifying if the item can be dragged. If True, the dragging
+        callback is defined in the 'itemChange' method, which is transfered
+        to the canva's 'change' method (recommended).
+
+    ─── stack ───────────────────────────────────
+
+    * zvalue
+        float
+        default: 0
+        Z-value (stack order) of the item.
+
+    * behindParent
+        bool
+        Default: False
+        Boolean specifying if the item is behind its parent or not.
+    
+  Methods
+  ═══════
+  
+    * Lx(): return the item width
+    * Ly(): return the item height
   '''
 
   # ────────────────────────────────────────────────────────────────────────
@@ -39,7 +104,7 @@ class item:
                x = 0,
                y = 0,
                position = None,
-               transformPt = [0,0],
+               center_of_rotation = None,
                orientation = 0,
                scale = 1,
                zvalue = 0,
@@ -79,7 +144,7 @@ class item:
       self.x = x
       self.y = y
 
-    self.transformPt = transformPt
+    self.center_of_rotation = center_of_rotation
     self.orientation = orientation
     self.scale = scale
     self.zvalue = zvalue
@@ -381,12 +446,17 @@ class item:
   ''' The position of the item's transformation point (origin) '''
 
   @property
-  def transformPt(self): return self._transformPt
+  def center_of_rotation(self): return self._center_of_rotation
 
-  @transformPt.setter
-  def transformPt(self, pt):
+  @center_of_rotation.setter
+  def center_of_rotation(self, pt):
     
-    if isinstance(pt, complex):
+    # Default center of rotation
+    if pt is None: 
+      x = self._x
+      y = self._y
+
+    elif isinstance(pt, complex):
 
       # Convert from complex coordinates
       x = np.real(pt)
@@ -399,7 +469,7 @@ class item:
       y = pt[1]      
 
     # Store transform point
-    self._transformPt = [x,y]
+    self._center_of_rotation = [x,y]
 
     # Set transform point
     self.setTransformOriginPoint(x, -y)
