@@ -3,13 +3,15 @@ Generic item
 '''
 
 import numbers
+from copy import deepcopy
 import numpy as np
 
-from PyQt6.QtCore import Qt, QPointF, QRectF, QSize
-from PyQt6.QtGui import QColor, QPen, QBrush, QPolygonF, QFont, QPainterPath, QTransform, QPixmap, QImage, qRgb
-from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsItemGroup, QGraphicsTextItem, QGraphicsLineItem, QGraphicsEllipseItem, QGraphicsPolygonItem, QGraphicsRectItem, QGraphicsPathItem, QGraphicsPixmapItem
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QPen, QBrush, QTransform
+from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsLineItem
 
 from ..canva import canva
+from ..point import point
 
 # ══════════════════════════════════════════════════════════════════════════
 #                               GENERIC ITEM
@@ -33,9 +35,9 @@ class item:
     * parent
         QGraphicsItem (or derived object)
         default: None
-        The item's parent. If None, the position (x, y) is in absolute scene
-        coordinates. Otherwise, the position is relative to the parent's 
-        reference point.
+        The item's parent. If None, the position (x, y) is in absolute
+        scene coordinates. Otherwise, the position is relative to the
+        parent's reference point.
 
     ─── position & transformations ──────────────
 
@@ -130,25 +132,44 @@ class item:
     # Internal properties
     self._parent = parent
     self.behindParent = behindParent
-
-    self._x = x
-    self._y = y
     
+    # Item position
     if position is not None and isinstance(position, (tuple, list, complex)):
-      self.position = position
+      self.position = self.point(position)
 
     elif x is None or y is None:
       raise AttributeError("Item position must be specified, either with 'position' or with 'x' and 'y'.")
       
     else:
-      self.x = x
-      self.y = y
+      self.position = self.point(x,y)
 
     self.center_of_rotation = center_of_rotation
     self.orientation = orientation
     self.scale = scale
     self.zvalue = zvalue
     self.draggable = draggable
+
+# ────────────────────────────────────────────────────────────────────────
+  def point(self, x, y=None):
+    ''' 
+    Scene point
+    '''
+
+    if y is None:
+
+      if isinstance(x, complex):
+
+        # Convert from complex coordinates
+        y = np.imag(x)
+        x = np.real(x)
+
+      else:
+
+        # Doublet input
+        y = x[1]
+        x = x[0]  
+
+    return point(x, y)
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -166,9 +187,15 @@ class item:
       # Assign parent
       self.parent = self._parent
 
+    # ─── Center of rotation
+
+    # self.setTransformOriginPoint(self.center_of_rotation[0], -self.center_of_rotation[1])
+
     # ─── Style
 
     self.setStyle()
+
+    self.put()
 
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS
@@ -185,21 +212,20 @@ class item:
   # ────────────────────────────────────────────────────────────────────────
   def absoluteCoordinates(self):
 
-    x = self._x
-    y = self._y
+    p = deepcopy(self._position)
 
     # Check parenthood
     parent = self._parent
     while parent is not None:
 
       # Shift position
-      x += parent._x
-      y += parent._y
+      p.x += parent._position.x
+      p.y += parent._position.y
 
       # Update parent
       parent = parent._parent
 
-    return (x, y)
+    return p
 
   # ════════════════════════════════════════════════════════════════════════
   #                              SETTERS
@@ -209,7 +235,10 @@ class item:
   def put(self):
     '''
     Place the item in the scene
+
+    TO BE OVERLOADED for each item
     '''
+    pass
 
     # Wait for initialization
     if not self.is_initialized: return
@@ -219,6 +248,9 @@ class item:
 
     # Place on the canva
     self.setPos(x, self.canva.boundaries.y1 - y)
+
+    print(self._orientation)
+    self.setRotation(self._orientation)
 
   # ────────────────────────────────────────────────────────────────────────
   def move(self, dx=0, dy=0, z=None):
@@ -405,43 +437,30 @@ class item:
   ''' The position of the item's reference point '''
 
   @property
-  def x(self): return self._x
+  def x(self): return self._position.x
 
   @x.setter
-  def x(self, f):
-    self._x = f
+  def x(self, v):
+    self._position.x = v
     self.put()
 
   @property
-  def y(self): return self._y
+  def y(self): return self._position.y
 
   @x.setter
-  def y(self, f):
-    self._y = f
+  def y(self, v):
+    self._position.y = v
     self.put()
 
   @property
-  def position(self): return [self._x, self._y]
+  def position(self): return self._position
 
   @position.setter
-  def position(self, pos):
-    
-    if isinstance(pos, complex):
-
-      # Convert from complex coordinates
-      self._x = np.real(pos)
-      self._y = np.imag(pos)
-
-    else:
-
-      # Doublet input
-      self._x = pos[0]  
-      self._y = pos[1]      
-
-    # Set position
+  def position(self, pos):    
+    self._position = pos
     self.put()
 
-  # ─── Transform point ────────────────────────────────────────────────────
+  # ─── Center of rotation ─────────────────────────────────────────────────
   
   ''' The position of the item's transformation point (origin) '''
 
@@ -453,8 +472,8 @@ class item:
     
     # Default center of rotation
     if pt is None: 
-      x = self._x
-      y = self._y
+      x = self._position.x
+      y = self._position.y
 
     elif isinstance(pt, complex):
 
@@ -471,20 +490,23 @@ class item:
     # Store transform point
     self._center_of_rotation = [x,y]
 
-    # Set transform point
-    self.setTransformOriginPoint(x, -y)
+    # Update positionning
+    self.put()
 
     # ─── Orientation ──────────────────────────────────────────────────────
   
   ''' The item's orientation '''
 
   @property
-  def orientation(self): return self._orientation
+  def orientation(self): return -self._orientation*np.pi/180
 
   @orientation.setter
   def orientation(self, angle):
-    self._orientation = angle
-    self.setRotation(rad2deg(angle))
+    self._orientation = -angle*180/np.pi
+
+    # Update orientation
+    if self.is_initialized:
+      self.setRotation(self._orientation)
 
   # ─── Scale ──────────────────────────────────────────────────────────────
   
@@ -541,12 +563,9 @@ class item:
 class hasColor:
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, color='grey'):
+  def __init__(self, color=None):
 
     super().__init__()
-
-    # Default color
-    if color is None: color = 'grey'
 
     # Assign color
     self._color = color
@@ -606,11 +625,4 @@ class hasStroke:
   @linestyle.setter
   def linestyle(self, s):
     self._linestyle = s
-    self.setStyle()      
-
-# ──────────────────────────────────────────────────────────────────────────
-def rad2deg(a):
-  ''' Convert an angle in scene coordinates (radian to degrees) '''
-
-  return -a*180/np.pi
-  
+    self.setStyle()  

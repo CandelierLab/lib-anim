@@ -20,46 +20,112 @@ class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
   Parameters
   ══════════
 
-    * name        (str)             The rectangle's name
-    * parent      (*QGraphicsItem*) The rectangle's parent item
+    * name       
+        str
+        The ellipse's name
+
+    * parent
+        QGraphicsItem (or derived object)
+        default: None
+        The ellipse's parent. If None, the position (x, y) is in absolute
+        scene coordinates. Otherwise, the position is relative to the 
+        parent's reference point.
 
     ─── dimensions ──────────────────────────────
 
-    * a          (float)            The ellipse's major axis length
-    * b          (float)            The ellipse's minor axis length
-    * dimension   ([float, float])  Array of axes lengths. Default: [0,0]
-                                      The user must define either a, b or the dimension array.
-                                      In case of conflicting definitions, the dimension attribute wins.
+    * Lx          
+        float
+        The ellipse's width, i.e. length along the x axis when orientation
+        is 0. 
+
+    * Ly
+        float
+        The ellipse's height, i.e.length along the y axis when orientation
+        is 0.
+
+    * dimension
+        (float, float), [float, float], complex
+        default: [0,0]
+        Dimensions along the x and y axes when orientation is 0. The user
+        must define either Lx, Ly or the dimension array. In case of
+        conflicting definitions, the dimension attribute wins.
 
     ─── position & transformations ──────────────
 
-    * x           (float)           x-position of the center point. Default: 0
-    * y           (float)           y-position of the center point. Default: 0
-    * position    ([float, float])  Position of the center point. Default: [0,0]
-                                      The user can define either x, y or the position.
-                                      In case of conflict, the position attribute  wins.
+    * x           
+        float
+        default: 0
+        x-position of the reference point.
 
-    * orientation (float)           Orientation of the major axis (rad). Default: 0
-    * scale       (float)           Scaling factor. Default: None
-    * transformPt ([float, float])  Origin of the transformation
-    * draggable   (bool)            Boolean specifying if the item can be 
-                                      dragged. If True, the dragging callback
-                                      is defined in the ... method. 
-                                      Default: False.
+    * y
+        float
+        default: 0
+        y-position of the reference point.
+
+    * position
+        (float, float), [float, float], complex
+        default: [0,0]
+        Position of the reference point. The user can define either x, y or
+        the position. In case of conflict, the position attribute wins.
+
+    * orientation
+        float
+        default: 0, unit: radians
+        Orientation of the ellipse, with respect to the positive part of the 
+        x-axis.
+
+    * center_of_rotation
+        (float, float), [float, float], complex
+        default: None
+        Center point for the rotation. If None, it is set to the current [x,y].
+
+    * scale
+        float
+        default: 1
+        Scaling factor.
+
+    * draggable
+        bool
+        default: False
+        Boolean specifying if the ellipse can be dragged. If True, the
+        dragging callback is defined in the 'itemChange' method, which is
+        transfered to the canva's 'change' method (recommended).
+
 
     ─── stack ───────────────────────────────────
 
-    * zvalue      (float)           Z-value (stack order) of the item. Default: 1
-    * behindParent (bool)           Boolean specifying if the item is behind
-                                      its parent or not. Default: None
+    * zvalue
+        float
+        default: 0
+        Z-value (stack order) of the ellipse.
+
+    * behindParent
+        bool
+        Default: False
+        Boolean specifying if the ellipse is behind its parent or not.
     
     ─── style ────────────────────────────────
 
-    * fill        (str / QColor)    Fill color. None stands for transparency. Default: None
-    * stroke      (str / QColor)    Stroke color. None stands for transparency. Default: 'gray'
-    * thickness   (float)           Stroke thickness, in scene units. Default: 0.001.
-    * linestyle   (str)             Stroke style. Can have any value among 'solid' (default),
-                                      'dash' (or '--'), 'dot' (or '..' or ':'), dashdot' (or '-.').
+    * fill
+        None, str, QColor
+        default: 'grey'
+        Fill color. None stands for transparency.
+
+    * stroke
+        None, str, QColor
+        default: None
+        Stroke color. None stands for transparency.
+
+    * thickness
+        float
+        default: 0
+        Stroke thickness, in scene units. When it is equal to 0, the stroke
+        has the minimal thickness of 1 pixel.
+
+    * linestyle
+        'solid'/'-', 'dash'/'--', 'dot'/'..'/':', 'dashdot'/'-.'
+        default: '-'
+        Stroke style.
   '''
 
   # ────────────────────────────────────────────────────────────────────────
@@ -67,8 +133,7 @@ class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
                Lx = None,
                Ly = None,
                dimension = None,
-               center = (True, True),
-               color = None,
+               color = 'grey',
                stroke = None,
                thickness = 0,
                linestyle = '-',
@@ -77,13 +142,13 @@ class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
                x = 0,
                y = 0,
                position = None,
-               transformPt = [0,0],
+               center_of_rotation = None,
                orientation = 0,
                scale = 1,
                zvalue = 0,
                draggable = False):
     '''
-    Rectangle item constructor
+    Ellipse item constructor
     '''  
 
     # Parent constructors
@@ -93,15 +158,15 @@ class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
                   x = x,
                   y = y,
                   position = position,
-                  transformPt = transformPt,
+                  center_of_rotation = center_of_rotation,
                   orientation = orientation,
                   scale = scale,
                   zvalue = zvalue,
                   draggable = draggable)
     
-    hasColor.__init__(self, color)
-    hasStroke.__init__(self, 
-                       stroke = stroke, 
+    hasColor.__init__(self, color = color)
+    hasStroke.__init__(self,
+                       stroke = stroke,
                        thickness = thickness,
                        linestyle = linestyle)
 
@@ -109,21 +174,18 @@ class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
 
     self._Lx = None 
     self._Ly = None 
-    self._center = None 
 
-    # ─── Rectangle attributes
+    # ─── Ellipse attributes
 
     if dimension is not None and isinstance(dimension, (tuple, list, complex)):
       self.dimension = dimension
 
     elif Lx is None or Ly is None:
-      raise AttributeError("Rectangle dimensions must be specified for rectangle items, either with 'dimension' or with 'Lx' and 'Ly'.")
+      raise AttributeError("Ellipse dimensions must be specified, either with 'dimension' or with 'Lx' and 'Ly'.")
       
     else:
       self.Lx = Lx
       self.Ly = Ly
-
-    self.center = center
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -143,19 +205,17 @@ class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
     # Wait for initialization
     if not self.is_initialized: return
 
+    # Check for Nones
+    if self._Lx is None or self._Ly is None: return
+
     # Get absolute coordinates
     x, y = self.absoluteCoordinates()
 
-    # Rectangle bottom-left corner
-    x0 = x
-    y0 = self.canva.boundaries.y1 - y - self._Ly
-
-    # Centering
-    if self._center[0]: x0 -= self._Lx/2      
-    if self._center[1]: y0 += self._Ly/2
+    # Bounding box bottom-left corner
+    x0 = x - self._Lx/2
+    y0 = self.canva.boundaries.y1 - y - self._Ly/2
 
     # Set geometry
-    print('Final rect', x0, y0, self._Lx, self._Ly)
     self.setRect(QRectF(x0, y0, self._Lx, self._Ly))
 
   # ─── width ──────────────────────────────────────────────────────────────
@@ -167,7 +227,7 @@ class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
   def Lx(self, w):
 
     self._Lx = w
-    if self._Ly is not None: self.put()
+    self.put()
   
   # ─── height ─────────────────────────────────────────────────────────────
 
@@ -202,21 +262,3 @@ class ellipse(item, hasColor, hasStroke, QGraphicsEllipseItem):
 
     # Set position
     self.put()
-
-
-  # ─── center ─────────────────────────────────────────────────────────────
-
-  @property
-  def center(self): return self._center
-
-  @center.setter
-  def center(self, C):
-
-    if isinstance(C, bool):
-      self._center = (C,C)
-    else:
-      self._center = C
-
-    self.put()
-
- 

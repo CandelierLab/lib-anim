@@ -23,9 +23,9 @@ class group(item, QGraphicsItemGroup):
     * parent
         QGraphicsItem (or derived object)
         default: None
-        The group's parent. If None, the position (x, y) is in absolute scene
-        coordinates. Otherwise, the position is relative to the parent's 
-        reference point.
+        The group's parent. If None, the position (x, y) is in absolute
+        scene coordinates. Otherwise, the position is relative to the 
+        parent's reference point.
 
     ─── position & transformations ──────────────
 
@@ -118,7 +118,25 @@ class group(item, QGraphicsItemGroup):
                   scale = scale,
                   zvalue = zvalue,
                   draggable = draggable)
-   
+  
+  # ────────────────────────────────────────────────────────────────────────
+  def put(self):
+    '''
+    Place the group in the scene
+    '''
+  
+    # Wait for initialization
+    if not self.is_initialized: return
+
+    # Get absolute coordinates
+    x, y = self.absoluteCoordinates()
+
+    # Place on the canva
+    self.setPos(x, self.canva.boundaries.y1 - y)
+
+    # print(self._orientation)
+    # self.setRotation(rad2deg(self._orientation))
+
   # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
     return self.childrenBoundingRect().width()
