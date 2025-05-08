@@ -143,7 +143,7 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
                Ly = None,
                dimension = None,
                center = (True, True),
-               color = 'grey',
+               fill = 'grey',
                stroke = None,
                thickness = 0,
                linestyle = '-',
@@ -152,7 +152,7 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
                x = 0,
                y = 0,
                position = None,
-               center_of_rotation = None,
+               center_of_rotation = [0,0],
                orientation = 0,
                scale = 1,
                zvalue = 0,
@@ -160,8 +160,9 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     '''
     Rectangle item constructor
     '''  
-
+   
     # Parent constructors
+    QGraphicsRectItem.__init__(self)
     item.__init__(self, 
                   parent = parent,
                   behindParent = behindParent,
@@ -173,12 +174,12 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
                   scale = scale,
                   zvalue = zvalue,
                   draggable = draggable)
-    
-    hasColor.__init__(self, color = color)
+    hasColor.__init__(self, color = fill)
     hasStroke.__init__(self,
                        stroke = stroke,
                        thickness = thickness,
                        linestyle = linestyle)
+    
 
     # ─── Internal properties
 
@@ -202,32 +203,36 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
 
   # ────────────────────────────────────────────────────────────────────────
   def put(self):
+    pass
+    # print('Called for put() !')
 
-    # print(self.is_initialized)
+  # ────────────────────────────────────────────────────────────────────────
+  def initialize(self):
+    '''
+    Initialize the display
+    '''
 
-    # Wait for initialization
-    if not self.is_initialized: return
+    # Generic item initialization
+    item.initialize(self)
 
-    # Check for Nones
-    if self._Lx is None or self._Ly is None: return
+    # # Wait for initialization
+    # if not self.is_initialized: return
 
-    # Get absolute coordinates
-    position = self.absoluteCoordinates()
+    # # Check for Nones
+    # if self._Lx is None or self._Ly is None: return
 
     # Rectangle bottom-left corner
-    x0 = position.x
-    y0 = self.canva.boundaries.y1 - y - self._Ly
-
-    # Centering
-    if self._center[0]: x0 -= self._Lx/2      
-    if self._center[1]: y0 += self._Ly/2
+    x0 = self.position.X - (self._Lx/2 if self._center[0] else 0)
+    y0 = self.position.Y - (self._Ly/2 if self._center[1] else 0)
 
     # Set geometry
     self.setRect(QRectF(x0, y0, self._Lx, self._Ly))
 
     # Set orientation
-    self.setTransformOriginPoint(self.center_of_rotation[0], -self.center_of_rotation[1])
-    self.setRotation(self._orientation)
+    # self.setTransformOriginPoint(self.center_of_rotation[0], -self.center_of_rotation[1])
+    # self.setRotation(self._orientation)
+
+    print(QRectF(x0, y0, self._Lx, self._Ly))
 
   # ─── width ──────────────────────────────────────────────────────────────
   

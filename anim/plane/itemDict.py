@@ -2,6 +2,8 @@
 Dictionnary of items
 '''
 
+from PyQt6.QtWidgets import QGraphicsItem
+
 class itemDict(dict):
 
   # ────────────────────────────────────────────────────────────────────────
@@ -45,7 +47,7 @@ class itemDict(dict):
     
 
   # ────────────────────────────────────────────────────────────────────────
-  def __setitem__(self, key, item):
+  def __setitem__(self, key, item:QGraphicsItem):
 
     # Add the canva attribute to the item
     item.canva = self._canva
@@ -56,7 +58,7 @@ class itemDict(dict):
     # Add the item to the scene
     ''' Items with a parent sare automatically added to the scene. '''
     
-    if item.parent is None:
+    if item.parentItem() is None:
       self._canva.scene.addItem(item)
 
     # Initialize item

@@ -35,9 +35,9 @@ class item:
     * parent
         QGraphicsItem (or derived object)
         default: None
-        The item's parent. If None, the position (x, y) is in absolute
-        scene coordinates. Otherwise, the position is relative to the
-        parent's reference point.
+        The item's parent. If None, the position of the reference point and
+        center of rotation are in absolute coordinates. Otherwise, the
+        position is relative to the parent's reference point.
 
     ─── position & transformations ──────────────
 
@@ -106,7 +106,7 @@ class item:
                x = 0,
                y = 0,
                position = None,
-               center_of_rotation = None,
+               center_of_rotation = [0,0],
                orientation = 0,
                scale = 1,
                zvalue = 0,
@@ -114,9 +114,6 @@ class item:
     '''
     Constructor
     '''
-
-    # Parent constructor
-    super().__init__()
 
     # Initialization attribute
     self.is_initialized = False
@@ -130,20 +127,20 @@ class item:
     self.name = None
 
     # Internal properties
-    self._parent = parent
+    self.parent = parent
     self.behindParent = behindParent
     
     # Item position
     if position is not None and isinstance(position, (tuple, list, complex)):
-      self.position = self.point(position)
+      self.position:point = self.point(position)
 
     elif x is None or y is None:
       raise AttributeError("Item position must be specified, either with 'position' or with 'x' and 'y'.")
       
     else:
-      self.position = self.point(x,y)
+      self.position:point = self.point(x,y)
 
-    self.center_of_rotation = center_of_rotation
+    self.center_of_rotation:point = self.point(center_of_rotation)
     self.orientation = orientation
     self.scale = scale
     self.zvalue = zvalue
@@ -152,8 +149,10 @@ class item:
 # ────────────────────────────────────────────────────────────────────────
   def point(self, x, y=None):
     ''' 
-    Scene point
+    Point in absolute coordinates
     '''
+
+    # ─── Input heterogeneity
 
     if y is None:
 
@@ -169,33 +168,34 @@ class item:
         y = x[1]
         x = x[0]  
 
+    # ─── Check parenthood, i.e. convert realtive positions to absolute
+
+    if self.parent is not None:
+
+      x += self.parent.position.x
+      y += self.parent.position.y
+
     return point(x, y)
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
-    Initialize the display
+    Initialize the item
     '''
 
-    # Set as initialized
+    # ─── Set boundaries for all points
+
+    self.position.boundaries = self.canva.boundaries
+    self.center_of_rotation.boundaries = self.canva.boundaries
+
+    # ─── Styling
+
+    if isinstance(self, hasColor): self.setColor()
+    if isinstance(self, hasStroke): self.setStroke()
+
+    # ─── Set as initialized
+
     self.is_initialized = True
-
-    # ─── Parent
-
-    if self._parent is not None:
-
-      # Assign parent
-      self.parent = self._parent
-
-    # ─── Center of rotation
-
-    # self.setTransformOriginPoint(self.center_of_rotation[0], -self.center_of_rotation[1])
-
-    # ─── Style
-
-    self.setStyle()
-
-    self.put()
 
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS
@@ -209,48 +209,30 @@ class item:
   def Ly(self):
     return self.boundingRect().height()
 
-  # ────────────────────────────────────────────────────────────────────────
-  def absoluteCoordinates(self):
-
-    p = deepcopy(self._position)
-
-    # Check parenthood
-    parent = self._parent
-    while parent is not None:
-
-      # Shift position
-      p.x += parent._position.x
-      p.y += parent._position.y
-
-      # Update parent
-      parent = parent._parent
-
-    return p
-
   # ════════════════════════════════════════════════════════════════════════
   #                              SETTERS
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
-  def put(self):
-    '''
-    Place the item in the scene
+  # def put(self):
+  #   '''
+  #   Place the item in the scene
 
-    TO BE OVERLOADED for each item
-    '''
-    pass
+  #   TO BE OVERLOADED for each item
+  #   '''
+  #   pass
 
-    # Wait for initialization
-    if not self.is_initialized: return
+  #   # # Wait for initialization
+  #   # if not self.is_initialized: return
 
-    # Get absolute coordinates
-    x, y = self.absoluteCoordinates()
+  #   # # Get absolute coordinates
+  #   # x, y = self.absoluteCoordinates()
 
-    # Place on the canva
-    self.setPos(x, self.canva.boundaries.y1 - y)
+  #   # # Place on the canva
+  #   # self.setPos(x, self.canva.boundaries.y1 - y)
 
-    print(self._orientation)
-    self.setRotation(self._orientation)
+  #   # print(self._orientation)
+  #   # self.setRotation(self._orientation)
 
   # ────────────────────────────────────────────────────────────────────────
   def move(self, dx=0, dy=0, z=None):
@@ -293,47 +275,6 @@ class item:
     '''
 
     self.orientation += angle
-
-  # ────────────────────────────────────────────────────────────────────────
-  def setStyle(self):
-    '''
-    Item styling
-
-    This function does not take any argument, instead it applies the changes
-    defined by each item's styling attributes (*e.g.* color, stroke thickness).
-    '''
-
-    # Wait for initialization
-    if not self.is_initialized: return
-
-    # ─── Fill
-
-    if isinstance(self, QAbstractGraphicsShapeItem):
-
-      if self._color is not None:
-        self.setBrush(QBrush(QColor(self._color)))
-
-    # ─── Stroke
-
-    if isinstance(self, (QAbstractGraphicsShapeItem, QGraphicsLineItem)):
-
-      Pen = QPen()
-
-      #  Color
-      if self._stroke is not None:
-        Pen.setColor(QColor(self._stroke))
-
-      # Thickness
-      if self._thickness is not None:
-        Pen.setWidthF(self._thickness)
-
-      # Style
-      match self._linestyle:
-        case 'dash' | '--': Pen.setDashPattern([3,6])
-        case 'dot' | ':' | '..': Pen.setStyle(Qt.PenStyle.DotLine)
-        case 'dashdot' | '-.': Pen.setDashPattern([3,3,1,3])
-      
-      self.setPen(Pen)
 
   # ════════════════════════════════════════════════════════════════════════
   #                              EVENTS
@@ -408,17 +349,27 @@ class item:
   ''' The parent item '''
 
   @property
-  def parent(self): return self._parent
+  def parent(self): return self.parentItem()
 
   @parent.setter
   def parent(self, parent):
 
-    if isinstance(self._parent, str):
-      self._parent = self.canva.item[self._parent]
-    else:
-      self._parent = parent
+    # #  _parent attribute
 
-    self.setParentItem(self._parent)
+    # if isinstance(parent, str):
+
+    #   if not self.is_initialized:
+    #     self._parent = parent
+    #     return
+      
+    #   self._parent = self.canva.item[parent]
+
+    # else:
+    #   self._parent = parent
+
+    # if self.is_initialized:
+
+    self.setParentItem(parent)
 
   # ─── behindParent ───────────────────────────────────────────────────────
     
@@ -442,7 +393,7 @@ class item:
   @x.setter
   def x(self, v):
     self._position.x = v
-    self.put()
+    # self.put()
 
   @property
   def y(self): return self._position.y
@@ -450,7 +401,7 @@ class item:
   @x.setter
   def y(self, v):
     self._position.y = v
-    self.put()
+    # self.put()
 
   @property
   def position(self): return self._position
@@ -458,7 +409,7 @@ class item:
   @position.setter
   def position(self, pos):    
     self._position = pos
-    self.put()
+    # self.put()
 
   # ─── Center of rotation ─────────────────────────────────────────────────
   
@@ -470,30 +421,10 @@ class item:
   @center_of_rotation.setter
   def center_of_rotation(self, pt):
     
-    # Default center of rotation
-    if pt is None: 
-      x = self._position.x
-      y = self._position.y
-
-    elif isinstance(pt, complex):
-
-      # Convert from complex coordinates
-      x = np.real(pt)
-      y = np.imag(pt)
-
-    else:
-
-      # Doublet input
-      x = pt[0]  
-      y = pt[1]      
-
     # Store transform point
-    self._center_of_rotation = [x,y]
+    self._center_of_rotation = pt
 
-    # Update positionning
-    self.put()
-
-    # ─── Orientation ──────────────────────────────────────────────────────
+  # ─── Orientation ────────────────────────────────────────────────────────
   
   ''' The item's orientation '''
 
@@ -570,6 +501,18 @@ class hasColor:
     # Assign color
     self._color = color
 
+  # ────────────────────────────────────────────────────────────────────────
+  def setColor(self):
+    '''
+    Color styling
+
+    This function does not take any argument, instead it applies the color
+    styling defined by the color attribute.
+    '''
+
+    if isinstance(self, QAbstractGraphicsShapeItem) and self._color is not None:
+      self.setBrush(QBrush(QColor(self._color)))
+
   # ─── color ──────────────────────────────────────────────────────────────
 
   @property
@@ -578,7 +521,7 @@ class hasColor:
   @color.setter
   def color(self, C):
     self._color = C
-    self.setStyle()
+    self.setColor()
 
 # ══════════════════════════════════════════════════════════════════════════
 class hasStroke:
@@ -597,6 +540,35 @@ class hasStroke:
     # Linestyle
     self._linestyle = linestyle
 
+  # ────────────────────────────────────────────────────────────────────────
+  def setStroke(self):
+    '''
+    Stroke styling
+
+    This function does not take any argument, instead it applies the stroke
+    style defined by the attributes.
+    '''
+
+    if isinstance(self, (QAbstractGraphicsShapeItem, QGraphicsLineItem)):
+
+      Pen = QPen()
+
+      #  Color
+      if self._stroke is not None:
+        Pen.setColor(QColor(self._stroke))
+
+      # Thickness
+      if self._thickness is not None:
+        Pen.setWidthF(self._thickness)
+
+      # Style
+      match self._linestyle:
+        case 'dash' | '--': Pen.setDashPattern([3,6])
+        case 'dot' | ':' | '..': Pen.setStyle(Qt.PenStyle.DotLine)
+        case 'dashdot' | '-.': Pen.setDashPattern([3,3,1,3])
+      
+      self.setPen(Pen)
+
   # ─── stroke ─────────────────────────────────────────────────────────────
 
   @property
@@ -605,7 +577,7 @@ class hasStroke:
   @stroke.setter
   def stroke(self, s):
     self._stroke = s
-    self.setStyle()
+    self.setStroke()
 
   # ─── thickness ──────────────────────────────────────────────────────────
 
@@ -615,7 +587,7 @@ class hasStroke:
   @thickness.setter
   def thickness(self, t):
     self._thickness = t
-    self.setStyle()
+    self.setStroke()
 
   # ─── linestyle ──────────────────────────────────────────────────────────
 
@@ -625,4 +597,4 @@ class hasStroke:
   @linestyle.setter
   def linestyle(self, s):
     self._linestyle = s
-    self.setStyle()  
+    self.setStroke()

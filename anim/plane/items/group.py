@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphics
 
 from .item import item
 
-class group(item, QGraphicsItemGroup):
+class group(QGraphicsItemGroup):
   '''
   Group item
 
@@ -106,36 +106,31 @@ class group(item, QGraphicsItemGroup):
     :class:`item`.
     '''  
 
-    # Parent constructors    
-    item.__init__(self, 
-                  parent = parent,
-                  behindParent = behindParent,
-                  x = x,
-                  y = y,
-                  position = position,
-                  center_of_rotation = center_of_rotation,
-                  orientation = orientation,
-                  scale = scale,
-                  zvalue = zvalue,
-                  draggable = draggable)
+    # Parent constructors
+    QGraphicsItemGroup.__init__(self)
+    # item.__init__(self, 
+    #               parent = parent,
+    #               behindParent = behindParent,
+    #               x = x,
+    #               y = y,
+    #               position = position,
+    #               center_of_rotation = center_of_rotation,
+    #               orientation = orientation,
+    #               scale = scale,
+    #               zvalue = zvalue,
+    #               draggable = draggable)
   
   # ────────────────────────────────────────────────────────────────────────
-  def put(self):
+  def initialize(self):
     '''
-    Place the group in the scene
+    Initialize the display
     '''
-  
-    # Wait for initialization
-    if not self.is_initialized: return
 
-    # Get absolute coordinates
-    x, y = self.absoluteCoordinates()
+    # Generic item initialization
+    item.initialize(self)
 
     # Place on the canva
-    self.setPos(x, self.canva.boundaries.y1 - y)
-
-    # print(self._orientation)
-    # self.setRotation(rad2deg(self._orientation))
+    self.setPos(self.position.X, self.position.Y)
 
   # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
