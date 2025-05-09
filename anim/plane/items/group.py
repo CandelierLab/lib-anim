@@ -6,12 +6,15 @@ from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphics
 
 from .item import item
 
-class group(QGraphicsItemGroup):
+class group(item):
   '''
   Group item
 
   A group item has no representation upon display but serves as a parent for
   multiple other items in order to create and manipulate compositions.
+
+  Note on rotation: 
+    Be carefull to rotate the group AFTER having added the items.
 
   Parameters
   ══════════
@@ -75,11 +78,6 @@ class group(QGraphicsItemGroup):
         default: 0
         Z-value (stack order) of the item.
 
-    * behindParent
-        bool
-        Default: False
-        Boolean specifying if the item is behind its parent or not.
-
   Methods
   ═══════
   
@@ -89,8 +87,7 @@ class group(QGraphicsItemGroup):
 
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self,
-               parent = None,
-               behindParent = False,
+               group = None,
                x = 0,
                y = 0,
                position = None,
@@ -106,36 +103,37 @@ class group(QGraphicsItemGroup):
     :class:`item`.
     '''  
 
-    # Parent constructors
-    QGraphicsItemGroup.__init__(self)
-    # item.__init__(self, 
-    #               parent = parent,
-    #               behindParent = behindParent,
-    #               x = x,
-    #               y = y,
-    #               position = position,
-    #               center_of_rotation = center_of_rotation,
-    #               orientation = orientation,
-    #               scale = scale,
-    #               zvalue = zvalue,
-    #               draggable = draggable)
+    # ─── Parent constructor
+    
+    item.__init__(self, 
+                  group = group,
+                  x = x,
+                  y = y,
+                  position = position,
+                  center_of_rotation = center_of_rotation,
+                  orientation = orientation,
+                  scale = scale,
+                  zvalue = zvalue,
+                  draggable = draggable)
+
+    # ─── QGraphicsItem
+    
+    self.qitem = QGraphicsItemGroup()
   
   # ────────────────────────────────────────────────────────────────────────
-  def initialize(self):
+  def setGeometry(self):
     '''
-    Initialize the display
+    Sets the group's position at the reference point.
     '''
-
-    # Generic item initialization
-    item.initialize(self)
 
     # Place on the canva
-    self.setPos(self.position.X, self.position.Y)
+    if self.qitem is not None:
+      self.qitem.setPos(self.position.X, self.position.Y)
 
   # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
-    return self.childrenBoundingRect().width()
+    return self.qitem.childrenBoundingRect().width()
 
   # ────────────────────────────────────────────────────────────────────────
   def Ly(self):
-    return self.childrenBoundingRect().height()
+    return self.qitem.childrenBoundingRect().height()

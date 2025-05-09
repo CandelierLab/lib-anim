@@ -47,7 +47,7 @@ class itemDict(dict):
     
 
   # ────────────────────────────────────────────────────────────────────────
-  def __setitem__(self, key, item:QGraphicsItem):
+  def __setitem__(self, key, item):
 
     # Add the canva attribute to the item
     item.canva = self._canva
@@ -56,10 +56,7 @@ class itemDict(dict):
     item.name = key
 
     # Add the item to the scene
-    ''' Items with a parent sare automatically added to the scene. '''
-    
-    if item.parentItem() is None:
-      self._canva.scene.addItem(item)
+    self._canva.scene.addItem(item.qitem)
 
     # Initialize item
     item.initialize()

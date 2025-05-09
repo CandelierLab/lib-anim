@@ -13,6 +13,13 @@ from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphics
 from ..canva import canva
 from ..point import point
 
+'''
+May be useful sometimes:
+
+- Stack the item behing its parent:
+  self.qitem.setFlag(QGraphicsItem.GraphicsItemFlag.ItemStacksBehindParent, b)
+'''
+
 # ══════════════════════════════════════════════════════════════════════════
 #                               GENERIC ITEM
 # ══════════════════════════════════════════════════════════════════════════
@@ -32,12 +39,12 @@ class item:
         str
         The item name.
 
-    * parent
-        QGraphicsItem (or derived object)
+    * group
+        anim.plane.group
         default: None
-        The item's parent. If None, the position of the reference point and
+        The item's group. If None, the position of the reference point and
         center of rotation are in absolute coordinates. Otherwise, the
-        position is relative to the parent's reference point.
+        position is relative to the group's reference point.
 
     ─── position & transformations ──────────────
 
@@ -69,8 +76,8 @@ class item:
         Center point for the rotation. If None, it is set to the current [x,y].
 
     * scale
-        float
-        default: 1
+        float, (float, float), [float, float], complex
+        default: [1,1]
         Scaling factor.
 
     * draggable
@@ -86,11 +93,6 @@ class item:
         float
         default: 0
         Z-value (stack order) of the item.
-
-    * behindParent
-        bool
-        Default: False
-        Boolean specifying if the item is behind its parent or not.
     
   Methods
   ═══════
@@ -101,52 +103,51 @@ class item:
 
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, 
-               parent = None,
-               behindParent = False,
+               group = None,
                x = 0,
                y = 0,
                position = None,
                center_of_rotation = [0,0],
                orientation = 0,
-               scale = 1,
+               scale = [1,1],
                zvalue = 0,
                draggable = False):
     '''
     Constructor
     '''
 
-    # Initialization attribute
-    self.is_initialized = False
-
     # ─── Definitions
 
     # Reference canva
     self.canva:canva = None
 
+    # QGraphicsItem
+    self.qitem:QGraphicsItem = None
+
     # Assign name
     self.name = None
 
-    # Internal properties
-    self.parent = parent
-    self.behindParent = behindParent
+    # ─── Internal properties
+
+    self._group = group
     
     # Item position
     if position is not None and isinstance(position, (tuple, list, complex)):
-      self.position:point = self.point(position)
+      self._position:point = self.point(position)
 
     elif x is None or y is None:
       raise AttributeError("Item position must be specified, either with 'position' or with 'x' and 'y'.")
       
     else:
-      self.position:point = self.point(x,y)
+      self._position:point = self.point(x,y)
 
-    self.center_of_rotation:point = self.point(center_of_rotation)
-    self.orientation = orientation
-    self.scale = scale
-    self.zvalue = zvalue
-    self.draggable = draggable
+    self._center_of_rotation:point = self.point(center_of_rotation)
+    self._orientation = orientation
+    self._scale = scale
+    self._zvalue = zvalue
+    self._draggable = draggable
 
-# ────────────────────────────────────────────────────────────────────────
+  # ────────────────────────────────────────────────────────────────────────
   def point(self, x, y=None):
     ''' 
     Point in absolute coordinates
@@ -168,19 +169,17 @@ class item:
         y = x[1]
         x = x[0]  
 
-    # ─── Check parenthood, i.e. convert realtive positions to absolute
-
-    if self.parent is not None:
-
-      x += self.parent.position.x
-      y += self.parent.position.y
-
     return point(x, y)
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
     Initialize the item
+
+    This method is meant to be overloaded and called.
+    At this point:
+    - the canva should be defined (automatically managed by itemDict)
+    - the qitem should be defined (managed by the children class)
     '''
 
     # ─── Set boundaries for all points
@@ -188,14 +187,23 @@ class item:
     self.position.boundaries = self.canva.boundaries
     self.center_of_rotation.boundaries = self.canva.boundaries
 
+    # ─── Group
+
+    self.group = self._group
+
+    # ─── Geometry and orientation
+
+    self.setGeometry()
+    self.setOrientation()
+
     # ─── Styling
 
     if isinstance(self, hasColor): self.setColor()
     if isinstance(self, hasStroke): self.setStroke()
 
-    # ─── Set as initialized
+    # ─── Draggability
 
-    self.is_initialized = True
+    self.draggable = self._draggable
 
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS
@@ -203,41 +211,50 @@ class item:
 
   # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
-    return self.boundingRect().width()
+    return self.qitem.boundingRect().width()
 
   # ────────────────────────────────────────────────────────────────────────
   def Ly(self):
-    return self.boundingRect().height()
+    return self.qitem.boundingRect().height()
 
   # ════════════════════════════════════════════════════════════════════════
   #                              SETTERS
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
-  # def put(self):
-  #   '''
-  #   Place the item in the scene
+  def setGeometry(self):
+    '''
+    Sets the qitem's geometry
 
-  #   TO BE OVERLOADED for each item
-  #   '''
-  #   pass
+    TO BE OVERLOADED
+    '''
+    
+  # ────────────────────────────────────────────────────────────────────────
+  def setOrientation(self):
+    '''
+    Sets the item's orientation
+    '''
 
-  #   # # Wait for initialization
-  #   # if not self.is_initialized: return
+    # Check qitem
+    if self.qitem is None: return
 
-  #   # # Get absolute coordinates
-  #   # x, y = self.absoluteCoordinates()
-
-  #   # # Place on the canva
-  #   # self.setPos(x, self.canva.boundaries.y1 - y)
-
-  #   # print(self._orientation)
-  #   # self.setRotation(self._orientation)
+    # Set orientation
+    # self.qitem.setTransformOriginPoint(self.center_of_rotation.X + self.position.X,
+    #                                    self.center_of_rotation.Y - self.position.Y)
+    
+    self.qitem.setTransformOriginPoint(self.center_of_rotation.X,
+                                       self.center_of_rotation.Y)
+      
+    self.qitem.setRotation(-self._orientation*180/np.pi)
+    
+  # ════════════════════════════════════════════════════════════════════════
+  #                               MOTION
+  # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
-  def move(self, dx=0, dy=0, z=None):
+  def translate(self, dx=0, dy=0, z=None):
     '''
-    Relative displacement
+    Relative translation
 
     Displaces the item of relative amounts.
     
@@ -249,15 +266,17 @@ class item:
         overrides the ``x`` and ``y`` arguments.
     '''
 
-    # Doublet input
-    if isinstance(dx, (tuple, list)):
-      dy = dx[1]
-      dx = dx[0]  
-
-    # Convert from complex coordinates
     if z is not None:
+
+      # Convert from complex coordinates
       dx = np.real(z)
       dy = np.imag(z)
+
+    elif isinstance(dx, (tuple, list)):
+
+      # Doublet input
+      dy = dx[1]
+      dx = dx[0]  
 
     # Update position
     self.x += dx
@@ -344,44 +363,30 @@ class item:
   #                             PROPERTIES
   # ════════════════════════════════════════════════════════════════════════
 
-  # ─── Parent ─────────────────────────────────────────────────────────────
+  # ─── Group ──────────────────────────────────────────────────────────────
   
-  ''' The parent item '''
+  ''' The item's group '''
 
   @property
-  def parent(self): return self.parentItem()
+  def group(self): return self._group
 
-  @parent.setter
-  def parent(self, parent):
+  @group.setter
+  def group(self, group):
 
-    # #  _parent attribute
+    self._group = group
 
-    # if isinstance(parent, str):
+    if self.qitem is not None and \
+       group is not None and \
+       group.qitem is not None:
 
-    #   if not self.is_initialized:
-    #     self._parent = parent
-    #     return
-      
-    #   self._parent = self.canva.item[parent]
+      # Add to group
+      group.qitem.addToGroup(self.qitem)
 
-    # else:
-    #   self._parent = parent
-
-    # if self.is_initialized:
-
-    self.setParentItem(parent)
-
-  # ─── behindParent ───────────────────────────────────────────────────────
-    
-  ''' A boolean specifying the stack order '''
-
-  @property
-  def behindParent(self): return self._behindParent
-
-  @behindParent.setter
-  def behindParent(self, b):
-    self._behindParent = b
-    self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemStacksBehindParent, b)
+      # Switch to relative coordinates
+      self.position.shift[0] = group.position.x
+      self.position.shift[1] = group.position.y
+      self.center_of_rotation.shift[0] = group.position.x
+      self.center_of_rotation.shift[1] = group.position.y
 
   # ─── Position ───────────────────────────────────────────────────────────
   
@@ -393,7 +398,7 @@ class item:
   @x.setter
   def x(self, v):
     self._position.x = v
-    # self.put()
+    self.setGeometry()
 
   @property
   def y(self): return self._position.y
@@ -401,43 +406,53 @@ class item:
   @x.setter
   def y(self, v):
     self._position.y = v
-    # self.put()
+    self.setGeometry()
 
   @property
   def position(self): return self._position
 
   @position.setter
-  def position(self, pos):    
-    self._position = pos
-    # self.put()
+  def position(self, pt):
+
+    # Set point
+    self._position = self.point(pt)
+    if self.canva is not None:
+      self._position.boundaries = self.canva.boundaries
+
+    # Update geometry
+    self.setGeometry()
 
   # ─── Center of rotation ─────────────────────────────────────────────────
   
-  ''' The position of the item's transformation point (origin) '''
+  ''' The item's center of rotation '''
 
   @property
   def center_of_rotation(self): return self._center_of_rotation
 
   @center_of_rotation.setter
   def center_of_rotation(self, pt):
-    
-    # Store transform point
-    self._center_of_rotation = pt
+
+    # Set point
+    self._center_of_rotation = self.point(pt)
+    if self.canva is not None: 
+      self._center_of_rotation.boundaries = self.canva.boundaries
+
+    # Update orientation
+    self.setOrientation()  
 
   # ─── Orientation ────────────────────────────────────────────────────────
   
   ''' The item's orientation '''
 
   @property
-  def orientation(self): return -self._orientation*np.pi/180
+  def orientation(self): return self._orientation
 
   @orientation.setter
   def orientation(self, angle):
-    self._orientation = -angle*180/np.pi
+    self._orientation = angle
 
     # Update orientation
-    if self.is_initialized:
-      self.setRotation(self._orientation)
+    self.setOrientation()      
 
   # ─── Scale ──────────────────────────────────────────────────────────────
   
@@ -450,11 +465,12 @@ class item:
   def scale(self, scale):
 
     if isinstance(scale, numbers.Number):
-      scale = (scale, scale)
+      scale = [scale, scale]
 
-    self._scale = scale    
+    self._scale = list(scale)
 
-    self.setTransform(QTransform.fromScale(scale[0], scale[1]), True)
+    if self.qitem is not None:
+      self.qitem.setTransform(QTransform.fromScale(scale[0], scale[1]), True)
 
   # ─── z-value ────────────────────────────────────────────────────────────
 
@@ -465,8 +481,11 @@ class item:
 
   @zvalue.setter
   def zvalue(self, z):
+
     self._zvalue = z
-    self.setZValue(self._zvalue)
+
+    if self.qitem is not None:
+      self.qitem.setZValue(self._zvalue)
 
   # ─── Draggability ───────────────────────────────────────────────────────
   
@@ -479,12 +498,13 @@ class item:
   def draggable(self, bdrag):
     
     self._draggable = bdrag
-    
-    self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, self._draggable)
-    self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, self._draggable)
 
-    if self._draggable:
-      self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+    if self.qitem is not None:
+      self.qitem.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, self._draggable)
+      self.qitem.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, self._draggable)
+
+      if self._draggable:
+        self.qitem.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
       
 # ══════════════════════════════════════════════════════════════════════════
 #                        ITEMS WITH SPECIFIC PROPERTIES
@@ -496,7 +516,10 @@ class hasColor:
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, color=None):
 
-    super().__init__()
+    # super().__init__()
+
+    # Hints
+    self.qitem:QAbstractGraphicsShapeItem
 
     # Assign color
     self._color = color
@@ -510,8 +533,8 @@ class hasColor:
     styling defined by the color attribute.
     '''
 
-    if isinstance(self, QAbstractGraphicsShapeItem) and self._color is not None:
-      self.setBrush(QBrush(QColor(self._color)))
+    if isinstance(self.qitem, QAbstractGraphicsShapeItem) and self._color is not None:
+      self.qitem.setBrush(QBrush(QColor(self._color)))
 
   # ─── color ──────────────────────────────────────────────────────────────
 
@@ -529,7 +552,10 @@ class hasStroke:
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, stroke=None, thickness=0, linestyle='-'):
 
-    super().__init__()
+    # super().__init__()
+
+    # Hints
+    self.qitem:QAbstractGraphicsShapeItem|QGraphicsLineItem
 
     # Stroke color
     self._stroke = stroke
@@ -549,7 +575,7 @@ class hasStroke:
     style defined by the attributes.
     '''
 
-    if isinstance(self, (QAbstractGraphicsShapeItem, QGraphicsLineItem)):
+    if isinstance(self.qitem, (QAbstractGraphicsShapeItem, QGraphicsLineItem)):
 
       Pen = QPen()
 
@@ -567,7 +593,7 @@ class hasStroke:
         case 'dot' | ':' | '..': Pen.setStyle(Qt.PenStyle.DotLine)
         case 'dashdot' | '-.': Pen.setDashPattern([3,3,1,3])
       
-      self.setPen(Pen)
+      self.qitem.setPen(Pen)
 
   # ─── stroke ─────────────────────────────────────────────────────────────
 

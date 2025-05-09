@@ -17,9 +17,9 @@ class Canva(anim.plane.canva):
                      display_boundaries = True,    
                      **kwargs)
 
-    from PyQt6.QtCore import Qt
-    from PyQt6.QtWidgets import QGraphicsItemGroup, QGraphicsRectItem
-    from PyQt6.QtGui import QColor, QPen, QBrush
+    # from PyQt6.QtCore import Qt
+    # from PyQt6.QtWidgets import QGraphicsItemGroup, QGraphicsRectItem
+    # from PyQt6.QtGui import QColor, QPen, QBrush
 
     # G = QGraphicsItemGroup()
     # print(G.__dict__)
@@ -27,27 +27,37 @@ class Canva(anim.plane.canva):
     # self.scene.addItem(G)
 
     self.item.G = anim.plane.group(
-      x = 0,
-      y = 0,
-      draggable = False,
+      x = 0.5,
+      y = 0.5,
+      # center_of_rotation = [0, 0.5]
     )
 
     self.item.rect = anim.plane.rectangle(
-      parent = self.item.G,
-      position = [0, 0],
-      Lx = 0.5,
-      Ly = 0.5,
-      fill = 'red'
+      group = self.item.G,
+      x = 0.2,
+      y = 0.2,
+      Lx = 0.2, 
+      Ly = 0.2,
+      fill = 'red',
+      orientation = 0.5
     )
 
-    R = QGraphicsRectItem()
-    R.setBrush(QBrush(QColor('cyan')))
-    R.setPen(QPen(Qt.PenStyle.NoPen))
-    R.setRect(0.1, 0.1, 0.2, 0.2)
+    self.item.rect2 = anim.plane.rectangle(
+      group = self.item.G,
+      x = 0.2,
+      y = 0.2,
+      Lx = 0.3, 
+      Ly = 0.1
+    )
 
-    # self.scene.addItem(R)
-    R.setParentItem(self.item.G)
+    self.item.rect.orientation = 0.1
+    # self.item.G.orientation = 0.1
 
+    # print(self.item.rect.position)
+
+    # self.item.rect.x = 0.5
+    # self.item.rect.y = 0.5
+    # self.item.rect.position = [0.5, 0.5]
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):

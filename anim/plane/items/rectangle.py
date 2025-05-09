@@ -9,7 +9,7 @@ from .item import item, hasColor, hasStroke
 #                                 RECTANGLE
 # ══════════════════════════════════════════════════════════════════════════
 
-class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
+class rectangle(item, hasColor, hasStroke):
   '''
   A rectangle item is defined by its:
 
@@ -107,11 +107,6 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
         float
         default: 0
         Z-value (stack order) of the rectangle.
-
-    * behindParent
-        bool
-        Default: False
-        Boolean specifying if the rectangle is behind its parent or not.
     
     ─── style ────────────────────────────────
 
@@ -147,8 +142,7 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
                stroke = None,
                thickness = 0,
                linestyle = '-',
-               parent = None,
-               behindParent = False,
+               group = None,
                x = 0,
                y = 0,
                position = None,
@@ -160,12 +154,11 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     '''
     Rectangle item constructor
     '''  
-   
-    # Parent constructors
-    QGraphicsRectItem.__init__(self)
+
+    # ─── Parent constructors
+
     item.__init__(self, 
-                  parent = parent,
-                  behindParent = behindParent,
+                  group = group,
                   x = x,
                   y = y,
                   position = position,
@@ -174,13 +167,14 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
                   scale = scale,
                   zvalue = zvalue,
                   draggable = draggable)
+    
     hasColor.__init__(self, color = fill)
+
     hasStroke.__init__(self,
                        stroke = stroke,
                        thickness = thickness,
                        linestyle = linestyle)
     
-
     # ─── Internal properties
 
     self._Lx = None 
@@ -201,38 +195,27 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
 
     self.center = center
 
-  # ────────────────────────────────────────────────────────────────────────
-  def put(self):
-    pass
-    # print('Called for put() !')
+    # ─── QGraphicsItem
+
+    self.qitem = QGraphicsRectItem()
 
   # ────────────────────────────────────────────────────────────────────────
-  def initialize(self):
+  def setGeometry(self):
     '''
-    Initialize the display
+    Set the rectangle's geometry
     '''
 
-    # Generic item initialization
-    item.initialize(self)
-
-    # # Wait for initialization
-    # if not self.is_initialized: return
-
-    # # Check for Nones
-    # if self._Lx is None or self._Ly is None: return
+    # Check qitem
+    if self.qitem is None: return
 
     # Rectangle bottom-left corner
-    x0 = self.position.X - (self._Lx/2 if self._center[0] else 0)
-    y0 = self.position.Y - (self._Ly/2 if self._center[1] else 0)
+    x0 = self.position.X - (self.Lx/2 if self._center[0] else 0)
+    y0 = self.position.Y - (self.Ly/2 if self._center[1] else 0)
+
+    # print('Geometry', QRectF(x0, y0, self.Lx, self.Ly))
 
     # Set geometry
-    self.setRect(QRectF(x0, y0, self._Lx, self._Ly))
-
-    # Set orientation
-    # self.setTransformOriginPoint(self.center_of_rotation[0], -self.center_of_rotation[1])
-    # self.setRotation(self._orientation)
-
-    print(QRectF(x0, y0, self._Lx, self._Ly))
+    self.qitem.setRect(QRectF(x0, y0, self.Lx, self.Ly))
 
   # ─── width ──────────────────────────────────────────────────────────────
   
@@ -243,7 +226,9 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
   def Lx(self, w):
 
     self._Lx = w
-    self.put()
+    
+    # Set geometry
+    self.setGeometry()
   
   # ─── height ─────────────────────────────────────────────────────────────
 
@@ -254,7 +239,9 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
   def Ly(self, h):
 
     self._Ly = h
-    self.put()    
+    
+    # Set geometry
+    self.setGeometry()   
 
   # ─── dimensions ─────────────────────────────────────────────────────────
   
@@ -276,8 +263,9 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
       self._Lx = D[0]
       self._Ly = D[1]
 
-    # Set position
-    self.put()
+    # Set geometry
+    self.setGeometry()
+
 
 
   # ─── center ─────────────────────────────────────────────────────────────
@@ -293,4 +281,5 @@ class rectangle(item, hasColor, hasStroke, QGraphicsRectItem):
     else:
       self._center = C
 
-    self.put()
+    # Set geometry
+    self.setGeometry()

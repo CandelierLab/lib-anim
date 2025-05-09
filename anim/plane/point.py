@@ -21,6 +21,7 @@ class point:
     self.x = x
     self.y = y
 
+    self.shift = [0, 0]
     self.boundaries = boundaries
 
   # ────────────────────────────────────────────────────────────────────────
@@ -33,7 +34,7 @@ class point:
   ''' Position of the point in the QGraphicsScene '''
 
   @property
-  def X(self): return self.x if self.boundaries is not None else None
+  def X(self): return self.x + self.shift[0] if self.boundaries is not None else None
    
   @property
-  def Y(self): return self.boundaries.y1 - self.y if self.boundaries is not None else None
+  def Y(self): return self.boundaries.y1 - self.y - self.shift[1] if self.boundaries is not None else None
