@@ -182,28 +182,30 @@ class item:
     - the qitem should be defined (managed by the children class)
     '''
 
-    # ─── Set boundaries for all points
+    pass
 
-    self.position.boundaries = self.canva.boundaries
-    self.center_of_rotation.boundaries = self.canva.boundaries
+    # # ─── Set boundaries for all points
 
-    # ─── Group
+    # self.position.boundaries = self.canva.boundaries
+    # self.center_of_rotation.boundaries = self.canva.boundaries
 
-    self.group = self._group
+    # # ─── Group
 
-    # ─── Geometry and orientation
+    # self.group = self._group
 
-    self.setGeometry()
-    self.setOrientation()
+    # # ─── Geometry and orientation
 
-    # ─── Styling
+    # self.setGeometry()
+    # self.setOrientation()
 
-    if isinstance(self, hasColor): self.setColor()
-    if isinstance(self, hasStroke): self.setStroke()
+    # # ─── Styling
 
-    # ─── Draggability
+    # if isinstance(self, hasColor): self.setColor()
+    # if isinstance(self, hasStroke): self.setStroke()
 
-    self.draggable = self._draggable
+    # # ─── Draggability
+
+    # self.draggable = self._draggable
 
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS
@@ -224,31 +226,44 @@ class item:
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''
-    Sets the qitem's geometry
+    Sets the qitem geometry
 
     TO BE OVERLOADED
     '''
+    pass
     
   # ────────────────────────────────────────────────────────────────────────
   def setOrientation(self):
     '''
-    Sets the item's orientation
+    Set the qitem orientation
     '''
 
     # Check qitem
     if self.qitem is None: return
 
     # Set orientation
-    # self.qitem.setTransformOriginPoint(self.center_of_rotation.X + self.position.X,
-    #                                    self.center_of_rotation.Y - self.position.Y)
-    
     self.qitem.setTransformOriginPoint(self.center_of_rotation.X,
                                        self.center_of_rotation.Y)
       
-    self.qitem.setRotation(-self._orientation*180/np.pi)
+    self.qitem.setRotation(self._orientation*180/np.pi)
+
+  # ────────────────────────────────────────────────────────────────────────
+  def setScale(self):
+    '''
+    Set the qitem scale
+    '''
+
+    # Check qitem
+    if self.qitem is None: return
+
+    # Set scale
+    self.qitem.setTransformOriginPoint(self.center_of_rotation.X,
+                                       self.center_of_rotation.Y)
+      
+    self.qitem.setTransform(QTransform.fromScale(self._scale[0], self._scale[1]), True)
     
   # ════════════════════════════════════════════════════════════════════════
-  #                               MOTION
+  #                             TRANSFORMATIONS
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
@@ -266,7 +281,7 @@ class item:
         overrides the ``x`` and ``y`` arguments.
     '''
 
-    if z is not None:
+    if isinstance(z, complex):
 
       # Convert from complex coordinates
       dx = np.real(z)
@@ -294,6 +309,17 @@ class item:
     '''
 
     self.orientation += angle
+
+  # ────────────────────────────────────────────────────────────────────────
+  def scale(self, scale):
+    '''
+    Scale the qitem
+    
+    Attributes:
+      scale (mixed): Scale factor
+    '''
+
+    self.scale = scale
 
   # ════════════════════════════════════════════════════════════════════════
   #                              EVENTS
@@ -383,10 +409,8 @@ class item:
       group.qitem.addToGroup(self.qitem)
 
       # Switch to relative coordinates
-      self.position.shift[0] = group.position.x
-      self.position.shift[1] = group.position.y
-      self.center_of_rotation.shift[0] = group.position.x
-      self.center_of_rotation.shift[1] = group.position.y
+      self.position.shift = [group.position.x, group.position.y]
+      self.center_of_rotation.shift = [group.position.x, group.position.y]
 
   # ─── Position ───────────────────────────────────────────────────────────
   
@@ -416,8 +440,6 @@ class item:
 
     # Set point
     self._position = self.point(pt)
-    if self.canva is not None:
-      self._position.boundaries = self.canva.boundaries
 
     # Update geometry
     self.setGeometry()
@@ -434,8 +456,6 @@ class item:
 
     # Set point
     self._center_of_rotation = self.point(pt)
-    if self.canva is not None: 
-      self._center_of_rotation.boundaries = self.canva.boundaries
 
     # Update orientation
     self.setOrientation()  
@@ -464,13 +484,11 @@ class item:
   @scale.setter
   def scale(self, scale):
 
-    if isinstance(scale, numbers.Number):
-      scale = [scale, scale]
-
+    if isinstance(scale, numbers.Number): scale = [scale, scale]
     self._scale = list(scale)
 
-    if self.qitem is not None:
-      self.qitem.setTransform(QTransform.fromScale(scale[0], scale[1]), True)
+    # Update scale
+    self.setScale()
 
   # ─── z-value ────────────────────────────────────────────────────────────
 

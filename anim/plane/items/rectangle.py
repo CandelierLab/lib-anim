@@ -199,6 +199,14 @@ class rectangle(item, hasColor, hasStroke):
 
     self.qitem = QGraphicsRectItem()
 
+    # Initialization
+
+    self.setOrientation()
+    self.setGeometry()
+
+    if isinstance(self, hasColor): self.setColor()
+    if isinstance(self, hasStroke): self.setStroke()
+
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''

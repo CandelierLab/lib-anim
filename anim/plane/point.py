@@ -7,22 +7,19 @@ uppercase letters: absolute position, in QGraphicsScene coordinates
 
 from copy import deepcopy
 
-from .boundingBox import boundingBox
-
 class point:
   '''
   Point in the plane
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, x, y, boundaries:boundingBox=None):
+  def __init__(self, x, y):
 
     # Relative position
     self.x = x
     self.y = y
 
     self.shift = [0, 0]
-    self.boundaries = boundaries
 
   # ────────────────────────────────────────────────────────────────────────
   def __str__(self):
@@ -34,7 +31,7 @@ class point:
   ''' Position of the point in the QGraphicsScene '''
 
   @property
-  def X(self): return self.x + self.shift[0] if self.boundaries is not None else None
+  def X(self): return self.x + self.shift[0]
    
   @property
-  def Y(self): return self.boundaries.y1 - self.y - self.shift[1] if self.boundaries is not None else None
+  def Y(self): return self.y + self.shift[1]

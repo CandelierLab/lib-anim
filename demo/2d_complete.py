@@ -26,31 +26,30 @@ class Canva(anim.plane.canva):
     # G.setPos(0.5, 0.5)
     # self.scene.addItem(G)
 
-    self.item.G = anim.plane.group(
-      x = 0.5,
-      y = 0.5,
-      # center_of_rotation = [0, 0.5]
-    )
+    # self.item.G = anim.plane.group(
+    #   x = 0.5,
+    #   y = 0.5,
+    #   # center_of_rotation = [0, 0.5]
+    # )
 
     self.item.rect = anim.plane.rectangle(
-      group = self.item.G,
       x = 0.2,
       y = 0.2,
       Lx = 0.2, 
       Ly = 0.2,
       fill = 'red',
-      orientation = 0.5
+      orientation = 0.05
     )
 
-    self.item.rect2 = anim.plane.rectangle(
-      group = self.item.G,
-      x = 0.2,
-      y = 0.2,
-      Lx = 0.3, 
-      Ly = 0.1
-    )
+    # self.item.rect2 = anim.plane.rectangle(
+    #   group = self.item.G,
+    #   x = 0.2,
+    #   y = 0.2,
+    #   Lx = 0.3, 
+    #   Ly = 0.1
+    # )
 
-    self.item.rect.orientation = 0.1
+    # self.item.rect.orientation = 0.1
     # self.item.G.orientation = 0.1
 
     # print(self.item.rect.position)

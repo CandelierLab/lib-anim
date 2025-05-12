@@ -20,7 +20,8 @@ class canva(QObject):
                boundaries_color = None,
                boundaries_thickness = None,
                padding = 0,
-               background_color = None):
+               background_color = None,
+               coordinates = 'xy'):
     '''
     Canva constructor
     '''
@@ -42,6 +43,10 @@ class canva(QObject):
 
     # View
     self.view = graphicsView(self.scene, self.boundaries, padding=padding)
+
+    # Coordinates
+    self.coordinates = coordinates
+    if self.coordinates=='xy': self.view.scale(1,-1)
     
     # ─── Background color
 
