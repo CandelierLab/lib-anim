@@ -59,11 +59,6 @@ class group(item):
         default: None
         Center point for the rotation. If None, it is set to the current [x,y].
 
-    * scale
-        float
-        default: 1
-        Scaling factor.
-
     * draggable
         bool
         default: False
@@ -93,7 +88,6 @@ class group(item):
                position = None,
                center_of_rotation = [0,0],
                orientation = 0,
-               scale = 1,
                zvalue = 0,
                draggable = False):
     '''
@@ -112,7 +106,6 @@ class group(item):
                   position = position,
                   center_of_rotation = center_of_rotation,
                   orientation = orientation,
-                  scale = scale,
                   zvalue = zvalue,
                   draggable = draggable)
 

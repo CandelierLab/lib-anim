@@ -89,11 +89,6 @@ class rectangle(item, hasColor, hasStroke):
         default: None
         Center point for the rotation. If None, it is set to the current [x,y].
 
-    * scale
-        float
-        default: 1
-        Scaling factor.
-
     * draggable
         bool
         default: False
@@ -148,7 +143,6 @@ class rectangle(item, hasColor, hasStroke):
                position = None,
                center_of_rotation = [0,0],
                orientation = 0,
-               scale = 1,
                zvalue = 0,
                draggable = False):
     '''
@@ -164,7 +158,6 @@ class rectangle(item, hasColor, hasStroke):
                   position = position,
                   center_of_rotation = center_of_rotation,
                   orientation = orientation,
-                  scale = scale,
                   zvalue = zvalue,
                   draggable = draggable)
     
@@ -232,8 +225,6 @@ class rectangle(item, hasColor, hasStroke):
     # Rectangle bottom-left corner
     x0 = self.position.X - (self.Lx/2 if self._center[0] else 0)
     y0 = self.position.Y - (self.Ly/2 if self._center[1] else 0)
-
-    # print('Geometry', QRectF(x0, y0, self.Lx, self.Ly))
 
     # Set geometry
     self.qitem.setRect(QRectF(x0, y0, self.Lx, self.Ly))

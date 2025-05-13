@@ -33,28 +33,27 @@ class Canva(anim.plane.canva):
     # )
 
     self.item.rect = anim.plane.rectangle(
-      x = 0.2,
-      y = 0.2,
-      Lx = 0.2,
-      Ly = 0.2,
+      x = 0.5,
+      y = 0.5,
+      Lx = 0.1,
+      Ly = 0.3,
       fill = 'red',
-      orientation = 0.5,
-      center_of_rotation = [0,1]
+      orientation = 0.05,
+      zvalue = 1
     )
 
     # TO CHECK
-    # scale
     # zvalue
 
-    # self.item.rect2 = anim.plane.rectangle(
-    #   group = self.item.G,
-    #   x = 0.2,
-    #   y = 0.2,
-    #   Lx = 0.3, 
-    #   Ly = 0.1
-    # )
+    self.item.rect2 = anim.plane.rectangle(
+      x = 0.5,
+      y = 0.5,
+      Lx = 0.3, 
+      Ly = 0.1,
+      zvalue = -1
+    )
 
-    # self.item.rect.rotate(-0.05)
+    self.item.rect.orientation = -0.05
     # self.item.G.orientation = 0.1
 
     # print(self.item.rect.position)

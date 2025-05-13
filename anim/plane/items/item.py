@@ -75,11 +75,6 @@ class item:
         default: None
         Center point for the rotation. If None, it is set to the current [x,y].
 
-    * scale
-        float, (float, float), [float, float], complex
-        default: [1,1]
-        Scaling factor.
-
     * draggable
         bool
         default: False
@@ -109,7 +104,6 @@ class item:
                position = None,
                center_of_rotation = [0,0],
                orientation = 0,
-               scale = [1,1],
                zvalue = 0,
                draggable = False):
     '''
@@ -142,11 +136,9 @@ class item:
       self._position:point = point(x,y)
 
     # Center of rotation
-    self._center_of_rotation = point(center_of_rotation)
-    self._center_of_rotation.shift['position'] = self._position
+    self._center_of_rotation = vector(center_of_rotation)
 
     self._orientation = orientation
-    self._scale = scale
     self._zvalue = zvalue
     self._draggable = draggable
 
@@ -161,8 +153,7 @@ class item:
     - the qitem should be defined (managed by the children class)
     '''
 
-    # Scale & orientation
-    self.scale = self._scale
+    # Orientation
     self.setOrientation()
 
     # Style
@@ -211,28 +202,14 @@ class item:
     # Check qitem
     if self.qitem is None: return
 
-    print(self._center_of_rotation)
+    # print(self._center_of_rotation)
 
     # Set orientation
-    self.qitem.setTransformOriginPoint(self.center_of_rotation.X,
-                                       self.center_of_rotation.Y)
+    self.qitem.setTransformOriginPoint(
+      self.position.X + self.center_of_rotation.x,
+      self.position.Y + self.center_of_rotation.y)
       
     self.qitem.setRotation(self._orientation*180/np.pi)
-
-  # ────────────────────────────────────────────────────────────────────────
-  def setScale(self):
-    '''
-    Set the qitem scale
-    '''
-
-    # Check qitem
-    if self.qitem is None: return
-
-    # Set scale
-    self.qitem.setTransformOriginPoint(self.center_of_rotation.X,
-                                       self.center_of_rotation.Y)
-      
-    self.qitem.setTransform(QTransform.fromScale(self._scale[0], self._scale[1]), True)
     
   # ════════════════════════════════════════════════════════════════════════
   #                             TRANSFORMATIONS
@@ -281,17 +258,6 @@ class item:
     '''
 
     self.orientation += angle
-
-  # ────────────────────────────────────────────────────────────────────────
-  def scaling(self, scale):
-    '''
-    Scale the qitem
-    
-    Attributes:
-      scale (mixed): Scale factor
-    '''
-
-    self.scale = scale
 
   # ════════════════════════════════════════════════════════════════════════
   #                              EVENTS
@@ -394,7 +360,6 @@ class item:
   @x.setter
   def x(self, v):
     self._position.x = v
-    self._center_of_rotation.shift['position'].x = v
     self.setGeometry()
 
   @property
@@ -403,7 +368,6 @@ class item:
   @x.setter
   def y(self, v):
     self._position.y = v
-    self._center_of_rotation.shift['position'].y = v
     self.setGeometry()
 
   @property
@@ -413,8 +377,7 @@ class item:
   def position(self, pt):
 
     # Set point
-    self._position = self.point(pt)
-    self._center_of_rotation.shift['position'] = self._position
+    self._position = point(pt)
 
     # Update geometry
     self.setGeometry()
@@ -430,10 +393,8 @@ class item:
   def center_of_rotation(self, pt):
 
     # Set point
-    print(pt)
-    V = vector(pt)
-    self._center_of_rotation.x = V.x
-    self._center_of_rotation.y = V.y
+    
+    self._center_of_rotation = vector(pt)
 
     # Update orientation
     self.setOrientation()  
@@ -451,22 +412,6 @@ class item:
 
     # Update orientation
     self.setOrientation()      
-
-  # ─── Scale ──────────────────────────────────────────────────────────────
-  
-  ''' The item's scale '''
-
-  @property
-  def scale(self): return self._scale
-
-  @scale.setter
-  def scale(self, scale):
-
-    if isinstance(scale, numbers.Number): scale = [scale, scale]
-    self._scale = list(scale)
-
-    # Update scale
-    self.setScale()
 
   # ─── z-value ────────────────────────────────────────────────────────────
 
