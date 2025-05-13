@@ -199,14 +199,27 @@ class rectangle(item, hasColor, hasStroke):
 
     self.qitem = QGraphicsRectItem()
 
-    # Initialization
+    # ─── Initialization
 
-    self.setOrientation()
+    self.initialize()
+
+  # ────────────────────────────────────────────────────────────────────────
+  def initialize(self):
+    '''
+    Initialize the item
+
+    This method is meant to be overloaded and called.
+    At this point:
+    - the canva should be defined (automatically managed by itemDict)
+    - the qitem should be defined (managed by the children class)
+    '''
+
+    # Parent initialization
+    item.initialize(self)
+
+    # Initialization specifics
     self.setGeometry()
-
-    if isinstance(self, hasColor): self.setColor()
-    if isinstance(self, hasStroke): self.setStroke()
-
+    
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''

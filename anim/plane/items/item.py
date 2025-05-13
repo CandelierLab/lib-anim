@@ -11,7 +11,7 @@ from PyQt6.QtGui import QColor, QPen, QBrush, QTransform
 from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsLineItem
 
 from ..canva import canva
-from ..point import point
+from ..geometry import vector, point
 
 '''
 May be useful sometimes:
@@ -127,49 +127,28 @@ class item:
     # Assign name
     self.name = None
 
-    # ─── Internal properties
+    # ─── Default internal properties
 
     self._group = group
     
     # Item position
     if position is not None and isinstance(position, (tuple, list, complex)):
-      self._position:point = self.point(position)
+      self._position:point = point(position)
 
     elif x is None or y is None:
       raise AttributeError("Item position must be specified, either with 'position' or with 'x' and 'y'.")
       
     else:
-      self._position:point = self.point(x,y)
+      self._position:point = point(x,y)
 
-    self._center_of_rotation:point = self.point(center_of_rotation)
+    # Center of rotation
+    self._center_of_rotation = point(center_of_rotation)
+    self._center_of_rotation.shift['position'] = self._position
+
     self._orientation = orientation
     self._scale = scale
     self._zvalue = zvalue
     self._draggable = draggable
-
-  # ────────────────────────────────────────────────────────────────────────
-  def point(self, x, y=None):
-    ''' 
-    Point in absolute coordinates
-    '''
-
-    # ─── Input heterogeneity
-
-    if y is None:
-
-      if isinstance(x, complex):
-
-        # Convert from complex coordinates
-        y = np.imag(x)
-        x = np.real(x)
-
-      else:
-
-        # Doublet input
-        y = x[1]
-        x = x[0]  
-
-    return point(x, y)
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -182,30 +161,21 @@ class item:
     - the qitem should be defined (managed by the children class)
     '''
 
-    pass
+    # Scale & orientation
+    self.scale = self._scale
+    self.setOrientation()
 
-    # # ─── Set boundaries for all points
+    # Style
+    if isinstance(self, hasColor): self.setColor()
+    if isinstance(self, hasStroke): self.setStroke()
 
-    # self.position.boundaries = self.canva.boundaries
-    # self.center_of_rotation.boundaries = self.canva.boundaries
-
-    # # ─── Group
+    #  ─── Group
 
     # self.group = self._group
 
-    # # ─── Geometry and orientation
+    # ─── Draggability
 
-    # self.setGeometry()
-    # self.setOrientation()
-
-    # # ─── Styling
-
-    # if isinstance(self, hasColor): self.setColor()
-    # if isinstance(self, hasStroke): self.setStroke()
-
-    # # ─── Draggability
-
-    # self.draggable = self._draggable
+    self.draggable = self._draggable
 
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS
@@ -240,6 +210,8 @@ class item:
 
     # Check qitem
     if self.qitem is None: return
+
+    print(self._center_of_rotation)
 
     # Set orientation
     self.qitem.setTransformOriginPoint(self.center_of_rotation.X,
@@ -311,7 +283,7 @@ class item:
     self.orientation += angle
 
   # ────────────────────────────────────────────────────────────────────────
-  def scale(self, scale):
+  def scaling(self, scale):
     '''
     Scale the qitem
     
@@ -422,6 +394,7 @@ class item:
   @x.setter
   def x(self, v):
     self._position.x = v
+    self._center_of_rotation.shift['position'].x = v
     self.setGeometry()
 
   @property
@@ -430,6 +403,7 @@ class item:
   @x.setter
   def y(self, v):
     self._position.y = v
+    self._center_of_rotation.shift['position'].y = v
     self.setGeometry()
 
   @property
@@ -440,6 +414,7 @@ class item:
 
     # Set point
     self._position = self.point(pt)
+    self._center_of_rotation.shift['position'] = self._position
 
     # Update geometry
     self.setGeometry()
@@ -455,7 +430,10 @@ class item:
   def center_of_rotation(self, pt):
 
     # Set point
-    self._center_of_rotation = self.point(pt)
+    print(pt)
+    V = vector(pt)
+    self._center_of_rotation.x = V.x
+    self._center_of_rotation.y = V.y
 
     # Update orientation
     self.setOrientation()  
