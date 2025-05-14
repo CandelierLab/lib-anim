@@ -13,48 +13,57 @@ class Canva(anim.plane.canva):
   def __init__(self, window, **kwargs):
 
     super().__init__(window, 
-                     boundaries = [[0,1],[0,1]],
+                     boundaries = [[0, 1],[0,1]],
                      display_boundaries = True,    
                      **kwargs)
 
     self.item.G = anim.plane.group(
-      x = 0.2,
-      y = 0.2,
+      x = 0.5,
+      y = 0.5,
       draggable = True,
       center_of_rotation = [0, 0]
     )
 
+    sz = 0.1
+
     self.item.rect = anim.plane.rectangle(
       group = self.item.G,
-      Lx = 0.1,
-      Ly = 0.3,
-      fill = 'red',
+      x = 0,
+      y = 0,
+      Lx = 0.5,
+      Ly = sz,
+      center = True
     )
-
-    # TO CHECK
-    # zvalue
 
     self.item.rect2 = anim.plane.rectangle(
       group = self.item.G,
-      Lx = 0.3, 
-      Ly = 0.1,
+      x = 0,
+      y = 0,
+      Lx = 0.01,
+      Ly = sz,
+      fill = 'yellow',
       zvalue = 1
     )
 
-    # self.item.rect.orientation = -0.05
-    self.item.G.orientation = 0.1
-
-    # print(self.item.rect.position)
-
-    # self.item.rect.x = 0.5
-    # self.item.rect.y = 0.5
-    # self.item.rect.position = [0.5, 0.5]
+    self.item.text = anim.plane.text(
+      x = 0.5,
+      y = 0.5,
+      fontsize = sz,
+      string = 'RRR',
+      color = 'red',
+      style = 'html { background-color: yellow; }',
+      zvalue = 10,
+      center = False
+    )
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
     # Update timer display
     super().update(t)
+
+    print(self.item.text.qitem.boundingRect())
+
 
     # self.item['rect'].draggable = True
 

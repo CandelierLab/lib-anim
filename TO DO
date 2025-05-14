@@ -1,11 +1,11 @@
 Items
-- Grouping
-- Text
 - Callbacks
 - Ellipses
 - Circles
 - Path, polygons & lines
 - Composites
+  + scale bar
+- grid (+shift)
 - Panels
   - Generic
   - Information

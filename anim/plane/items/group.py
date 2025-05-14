@@ -119,16 +119,6 @@ class group(item):
     self.initialize()
   
   # ────────────────────────────────────────────────────────────────────────
-  def setGeometry(self):
-    '''
-    Sets the group's position at the reference point.
-    '''
-
-    # Place on the canva
-    if self.qitem is not None:
-      self.qitem.setPos(self.position.X, self.position.Y)
-
-  # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
     return self.qitem.childrenBoundingRect().width()
 

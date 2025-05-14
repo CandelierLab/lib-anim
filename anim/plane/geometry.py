@@ -62,14 +62,15 @@ class point(vector):
     super().__init__(x, y)
 
     # Shifts
-    self.shift = vector(0,0)
+    self.shift = {}
 
   # ────────────────────────────────────────────────────────────────────────
   def __str__(self):
 
     s = '═══ Point\n'
     s += f'initial: ({self.x},{self.y})\n'
-    s += f'shift: ({self.shift.x},{self.shift.y})\n'
+    for k, v in self.shift.items():
+      s += f'shift {k}: ({v.x},{v.y})\n'
     s += f'scene position: ({self.X},{self.Y})'
 
     return s
@@ -79,46 +80,7 @@ class point(vector):
   ''' Position of the point in the QGraphicsScene '''
 
   @property
-  def X(self): return self.x + self.shift.x
+  def X(self): return sum([v.x for v in self.shift.values()], self.x)
    
   @property
-  def Y(self): return self.y + self.shift.y
-
-# # ══════════════════════════════════════════════════════════════════════════
-# #                                   POINT
-# # ══════════════════════════════════════════════════════════════════════════
-
-# class point(vector):
-#   '''
-#   Point in the plane
-#   '''
-
-#   # ────────────────────────────────────────────────────────────────────────
-#   def __init__(self, x, y=None):
-
-#     # Parent constructor
-#     super().__init__(x, y)
-
-#     # Shifts
-#     self.shift = {}
-
-#   # ────────────────────────────────────────────────────────────────────────
-#   def __str__(self):
-
-#     s = '═══ Point\n'
-#     s += f'initial: ({self.x},{self.y})\n'
-#     for k, v in self.shift.items():
-#       s += f'shift {k}: ({v.x},{v.y})\n'
-#     s += f'scene position: ({self.X},{self.Y})'
-
-#     return s
-
-#   # ─── Scene position ─────────────────────────────────────────────────────
-  
-#   ''' Position of the point in the QGraphicsScene '''
-
-#   @property
-#   def X(self): return sum([v.X for v in self.shift.values()], self.x)
-   
-#   @property
-#   def Y(self): return sum([v.Y for v in self.shift.values()], self.y)
+  def Y(self): return sum([v.y for v in self.shift.values()], self.y)

@@ -9,6 +9,8 @@ from .canva import canva
 from .items.group import group
 from .items.rectangle import rectangle
 from .items.ellipse import ellipse
+from .items.text import text
+
 
 # ─── Composites
 

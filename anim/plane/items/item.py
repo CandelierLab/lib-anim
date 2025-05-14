@@ -6,7 +6,7 @@ import numpy as np
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QPen, QBrush
-from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsLineItem
+from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsLineItem, QGraphicsTextItem
 
 from ..canva import canva
 from ..geometry import vector, point
@@ -186,12 +186,13 @@ class item:
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''
-    Sets the qitem geometry
-
-    TO BE OVERLOADED
+    Sets the qitem's position at the reference point.
     '''
-    pass
-    
+
+    # Place on the canva
+    if self.qitem is not None:
+      self.qitem.setPos(self.position.X, self.position.Y)
+
   # ────────────────────────────────────────────────────────────────────────
   def setOrientation(self):
     '''
@@ -334,7 +335,7 @@ class item:
       group.qitem.addToGroup(self.qitem)
 
       # Switch to relative coordinates
-      self.position.shift = vector(group.position.X, group.position.Y)
+      self.position.shift['group'] = vector(group.position.X, group.position.Y)
 
   # ─── Position ───────────────────────────────────────────────────────────
   
@@ -459,8 +460,13 @@ class hasColor:
     styling defined by the color attribute.
     '''
 
-    if isinstance(self.qitem, QAbstractGraphicsShapeItem) and self._color is not None:
-      self.qitem.setBrush(QBrush(QColor(self._color)))
+    if self._color is not None:
+
+      if isinstance(self.qitem, QAbstractGraphicsShapeItem):
+        self.qitem.setBrush(QBrush(QColor(self._color)))
+
+      if isinstance(self.qitem, QGraphicsTextItem):
+        self.qitem.setDefaultTextColor(QColor(self._color))
 
   # ─── color ──────────────────────────────────────────────────────────────
 

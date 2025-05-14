@@ -17,8 +17,9 @@ class rectangle(item, hasColor, hasStroke):
   - position of the point of reference
   - horizontal and vertical centering, with respect to the point of
       reference. The defaut centering is (True,True), while (False,False)
-      defines the reference as the top-left corner. One can also use a single
+      defines the reference as the bottom-left corner. One can also use a single
       value to set both at the same time.
+  - styling
   
   Parameters
   ══════════
