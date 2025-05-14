@@ -49,11 +49,11 @@ class Canva(anim.plane.canva):
       x = 0.5,
       y = 0.5,
       fontsize = sz,
-      string = 'RRR',
+      string = 'RRR<br>WWW',
       color = 'red',
       style = 'html { background-color: yellow; }',
       zvalue = 10,
-      center = False
+      center = True
     )
 
   # ────────────────────────────────────────────────────────────────────────
