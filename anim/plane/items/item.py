@@ -160,12 +160,13 @@ class item:
     if isinstance(self, hasColor): self.setColor()
     if isinstance(self, hasStroke): self.setStroke()
 
-    #  ─── Group
+    #  Group
+    self.group = self._group
 
-    # self.group = self._group
+    # Z-value
+    self.zvalue = self._zvalue
 
-    # ─── Draggability
-
+    # Draggability
     self.draggable = self._draggable
 
   # ════════════════════════════════════════════════════════════════════════

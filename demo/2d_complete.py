@@ -39,7 +39,6 @@ class Canva(anim.plane.canva):
       Ly = 0.3,
       fill = 'red',
       orientation = 0.05,
-      zvalue = 1
     )
 
     # TO CHECK
@@ -50,7 +49,7 @@ class Canva(anim.plane.canva):
       y = 0.5,
       Lx = 0.3, 
       Ly = 0.1,
-      zvalue = -1
+      zvalue = 1
     )
 
     self.item.rect.orientation = -0.05
