@@ -27,12 +27,12 @@ class rectangle(item, hasColor, hasStroke):
         str
         The rectangle's name
 
-    * parent
-        QGraphicsItem (or derived object)
+    * group
+        anim.plane.group
         default: None
-        The rectangle's parent. If None, the position (x, y) is in absolute
-        scene coordinates. Otherwise, the position is relative to the 
-        parent's reference point.
+        The rectangle's group. If None, the position of the reference point and
+        center of rotation are in absolute coordinates. Otherwise, the
+        position is relative to the group's reference point.
 
     ─── dimensions ──────────────────────────────
 
@@ -277,8 +277,6 @@ class rectangle(item, hasColor, hasStroke):
 
     # Set geometry
     self.setGeometry()
-
-
 
   # ─── center ─────────────────────────────────────────────────────────────
 

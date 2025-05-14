@@ -17,43 +17,32 @@ class Canva(anim.plane.canva):
                      display_boundaries = True,    
                      **kwargs)
 
-    # from PyQt6.QtCore import Qt
-    # from PyQt6.QtWidgets import QGraphicsItemGroup, QGraphicsRectItem
-    # from PyQt6.QtGui import QColor, QPen, QBrush
-
-    # G = QGraphicsItemGroup()
-    # print(G.__dict__)
-    # G.setPos(0.5, 0.5)
-    # self.scene.addItem(G)
-
-    # self.item.G = anim.plane.group(
-    #   x = 0.5,
-    #   y = 0.5,
-    #   # center_of_rotation = [0, 0.5]
-    # )
+    self.item.G = anim.plane.group(
+      x = 0.2,
+      y = 0.2,
+      draggable = True,
+      center_of_rotation = [0, 0]
+    )
 
     self.item.rect = anim.plane.rectangle(
-      x = 0.5,
-      y = 0.5,
+      group = self.item.G,
       Lx = 0.1,
       Ly = 0.3,
       fill = 'red',
-      orientation = 0.05,
     )
 
     # TO CHECK
     # zvalue
 
     self.item.rect2 = anim.plane.rectangle(
-      x = 0.5,
-      y = 0.5,
+      group = self.item.G,
       Lx = 0.3, 
       Ly = 0.1,
       zvalue = 1
     )
 
-    self.item.rect.orientation = -0.05
-    # self.item.G.orientation = 0.1
+    # self.item.rect.orientation = -0.05
+    self.item.G.orientation = 0.1
 
     # print(self.item.rect.position)
 

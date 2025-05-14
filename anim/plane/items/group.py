@@ -23,12 +23,13 @@ class group(item):
         str
         The group name.
 
-    * parent
-        QGraphicsItem (or derived object)
+    * group
+        anim.plane.group
         default: None
-        The group's parent. If None, the position (x, y) is in absolute
-        scene coordinates. Otherwise, the position is relative to the 
-        parent's reference point.
+        The group's group. If None, the position of the reference point and
+        center of rotation are in absolute coordinates. Otherwise, the
+        position is relative to the parent group's reference point.
+
 
     ─── position & transformations ──────────────
 
@@ -112,6 +113,10 @@ class group(item):
     # ─── QGraphicsItem
     
     self.qitem = QGraphicsItemGroup()
+
+    # ─── Initialization
+
+    self.initialize()
   
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):

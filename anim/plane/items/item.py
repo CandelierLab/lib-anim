@@ -2,12 +2,10 @@
 Generic item
 '''
 
-import numbers
-from copy import deepcopy
 import numpy as np
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QPen, QBrush, QTransform
+from PyQt6.QtGui import QColor, QPen, QBrush
 from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsLineItem
 
 from ..canva import canva
@@ -136,7 +134,7 @@ class item:
       self._position:point = point(x,y)
 
     # Center of rotation
-    self._center_of_rotation = vector(center_of_rotation)
+    self.center_of_rotation = center_of_rotation
 
     self._orientation = orientation
     self._zvalue = zvalue
@@ -153,15 +151,15 @@ class item:
     - the qitem should be defined (managed by the children class)
     '''
 
+    #  Group
+    self.group = self._group
+
     # Orientation
     self.setOrientation()
 
     # Style
     if isinstance(self, hasColor): self.setColor()
     if isinstance(self, hasStroke): self.setStroke()
-
-    #  Group
-    self.group = self._group
 
     # Z-value
     self.zvalue = self._zvalue
@@ -203,8 +201,6 @@ class item:
     # Check qitem
     if self.qitem is None: return
 
-    # print(self._center_of_rotation)
-
     # Set orientation
     self.qitem.setTransformOriginPoint(
       self.position.X + self.center_of_rotation.x,
@@ -217,7 +213,7 @@ class item:
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
-  def translate(self, dx=0, dy=0, z=None):
+  def translate(self, dx, dy=None):
     '''
     Relative translation
 
@@ -225,27 +221,17 @@ class item:
     
     Attributes:
       dx (float): :math:`x`-coordinate of the displacement. It can also be a 
-        doublet [`dx`,`dy`], in this case the *dy* argument is overridden.
+        doublet [`dx`,`dy`], or a complex number. In this case the *dy* 
+        argument is overridden.
       dy (float): :math:`y`-coordinate of the displacement.
-      z (float): A complex number :math:`z = dx+jdy`. Specifying ``z``
-        overrides the ``x`` and ``y`` arguments.
     '''
 
-    if isinstance(z, complex):
-
-      # Convert from complex coordinates
-      dx = np.real(z)
-      dy = np.imag(z)
-
-    elif isinstance(dx, (tuple, list)):
-
-      # Doublet input
-      dy = dx[1]
-      dx = dx[0]  
+    # Translation vector
+    v = vector(dx, dy)
 
     # Update position
-    self.x += dx
-    self.y += dy
+    self.x += v.x
+    self.y += v.y
 
   # ────────────────────────────────────────────────────────────────────────
   def rotate(self, angle):
@@ -348,8 +334,7 @@ class item:
       group.qitem.addToGroup(self.qitem)
 
       # Switch to relative coordinates
-      self.position.shift = [group.position.x, group.position.y]
-      self.center_of_rotation.shift = [group.position.x, group.position.y]
+      self.position.shift = vector(group.position.X, group.position.Y)
 
   # ─── Position ───────────────────────────────────────────────────────────
   
@@ -393,8 +378,7 @@ class item:
   @center_of_rotation.setter
   def center_of_rotation(self, pt):
 
-    # Set point
-    
+    # Set point    
     self._center_of_rotation = vector(pt)
 
     # Update orientation

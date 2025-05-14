@@ -1,5 +1,16 @@
 Items
-- Change parents dynamically: update absolute positions of the children
+- Grouping
+- Text
+- Callbacks
+- Ellipses
+- Circles
+- Path, polygons & lines
+- Composites
+- Panels
+  - Generic
+  - Information
+  - Timebar
+  - Parameters
 
 
 REACHING DECENCY
