@@ -462,11 +462,18 @@ class hasColor:
 
     if self._color is not None:
 
+      if isinstance(self._color, (tuple, list)):
+        qcolor = QColor(int(self._color[0]*255),
+                        int(self._color[1]*255),
+                        int(self._color[2]*255))
+      else:
+        qcolor = QColor(self._color)
+
       if isinstance(self.qitem, QAbstractGraphicsShapeItem):
-        self.qitem.setBrush(QBrush(QColor(self._color)))
+        self.qitem.setBrush(QBrush(qcolor))
 
       if isinstance(self.qitem, QGraphicsTextItem):
-        self.qitem.setDefaultTextColor(QColor(self._color))
+        self.qitem.setDefaultTextColor(qcolor)
 
   # ─── color ──────────────────────────────────────────────────────────────
 

@@ -180,7 +180,7 @@ class canva(QObject):
         self.stop()
 
       case _:
-        print(event)
+        # print(event)
         pass
         
   # ────────────────────────────────────────────────────────────────────────
