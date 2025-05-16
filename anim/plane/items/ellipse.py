@@ -154,6 +154,7 @@ class ellipse(item, hasColor, hasStroke):
                   draggable = draggable)
     
     hasColor.__init__(self, color = color)
+    
     hasStroke.__init__(self,
                        stroke = stroke,
                        thickness = thickness,

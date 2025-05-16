@@ -1,5 +1,5 @@
 '''
-Complete 2d demo
+2D line demo
 '''
 
 import numpy as np
@@ -12,32 +12,40 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, window, **kwargs):
 
-    super().__init__(window, 
-                     boundaries = [[0, 1],[0,1]],
-                     display_boundaries = True,    
-                     **kwargs)
+    super().__init__(window)
 
-    # self.item.G = anim.plane.group(
-    #   x = 0.5,
-    #   y = 0.5,
-    #   draggable = True,
-    #   center_of_rotation = [0, 0]
-    # )
+    # ─── Definitions
 
-    self.item.L = anim.plane.line(
-      points = [[0.1,0.9], [0.5,0.5]],
-      color = 'red',
-      thickness = 0.01,
-      linestyle = ':'  
-    )
-    
-    # print(self.item.rect.qitem.__class__)
+    # Number of lines
+    self.N = 20
+
+    # x-positions
+    self.X = np.linspace(0.1, 0.9, self.N)
+
+    # ─── Items
+
+    Y = self.generate(0)
+
+    for i in range(self.N):
+      self.item[f'line_{i}'] = anim.plane.line(
+        points = [[self.X[i], 0.5-Y[i]/4], [self.X[i], 0.5+Y[i]]],
+        color = 'white'
+      )
+
+  # ────────────────────────────────────────────────────────────────────────
+  def generate(self, t):
+
+    return np.sin(self.X*10+ t/10)/4
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
     # Update timer display
     super().update(t)
+
+    Y = self.generate(t.step)
+    for i in range(self.N):
+      self.item[f'line_{i}'].points = [[self.X[i], 0.5-Y[i]/4], [self.X[i], 0.5+Y[i]]]
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
@@ -51,8 +59,6 @@ W.add(Canva)
 
 # Allow backward animation
 W.allow_backward = True
-W.allow_negative_time = False
-
-W.autoplay = False
+W.allow_negative_time = True
 
 W.show()
