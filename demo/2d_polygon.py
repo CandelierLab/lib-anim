@@ -1,5 +1,5 @@
 '''
-Complete 2d demo
+2D path demo
 '''
 
 import numpy as np
@@ -10,32 +10,40 @@ import anim
 class Canva(anim.plane.canva):
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, window, **kwargs):
+  def __init__(self, window):
 
-    super().__init__(window, 
-                     boundaries = [[0, 1],[0,1]],
-                     display_boundaries = True,    
-                     **kwargs)
+    super().__init__(window, boundaries = [[-1, 1], [-1, 1]])
 
-    # self.item.G = anim.plane.group(
-    #   x = 0.5,
-    #   y = 0.5,
-    #   draggable = True,
-    #   center_of_rotation = [0, 0]
-    # )
+    # ─── Items
 
-    self.item.poly = anim.plane.polygon(
-      points = [[0.1,0.9], [0.5,0.5], [0.9,0.9]],
-      stroke = 'pink'
+    self.item.P = anim.plane.polygon(
+      points = self.generate(0),
+      color = None,
+      stroke = 'pink',
+      thickness = 0.02
     )
-    
-    # print(self.item.rect.qitem.__class__)
+
+  # ────────────────────────────────────────────────────────────────────────
+  def generate(self, t):
+
+    # Number of points
+    Z = 2 + t/20
+    N = int(Z)
+
+    P = []
+    for i in range(N):
+      P.append([np.cos(i*2*np.pi/Z)*0.8,
+                np.sin(i*2*np.pi/Z)*0.8])
+
+    return P
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
     # Update timer display
     super().update(t)
+
+    self.item.P.points = self.generate(t.step)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
@@ -50,7 +58,5 @@ W.add(Canva)
 # Allow backward animation
 W.allow_backward = True
 W.allow_negative_time = False
-
-W.autoplay = False
 
 W.show()
