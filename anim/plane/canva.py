@@ -82,8 +82,6 @@ class canva(QObject):
 
     self.scene.addItem(bounds)
 
-    
-
   # # ────────────────────────────────────────────────────────────────────────
   # def add(self, type, name, **kwargs):
   #   '''
@@ -184,19 +182,15 @@ class canva(QObject):
         pass
         
   # ────────────────────────────────────────────────────────────────────────
-  def change(self, type, item):
+  def event(self, item, desc):
     '''
-    Change notification
+    Event notification
 
-    This method is triggered whenever an item is changed.
-    It does nothing and has to be reimplemented in subclasses.
-
-    .. Note::
-      To catch motion an item has to be declared as ``movable``,
-      which is not the default.
+    This method is triggered whenever an event occurs.
+    It has to be reimplemented in subclasses.
 
     args:
-      type (str): Type of change (``move``).
+      type (str): Event type (``move``).
       item (:class:`item` *subclass*): The changed item.
     '''
     pass

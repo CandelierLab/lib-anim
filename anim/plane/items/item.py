@@ -151,6 +151,15 @@ class item:
     - the qitem should be defined (managed by the children class)
     '''
 
+    from ..events import event
+
+    # Add item
+    self.qitem.item = self
+
+    # Add events
+    C = self.qitem.__class__
+    self.qitem.__class__ = C.__class__(C.__name__ + '_event', (C, event), {})
+
     #  Group
     self.group = self._group
 
@@ -246,70 +255,6 @@ class item:
     '''
 
     self.orientation += angle
-
-  # ════════════════════════════════════════════════════════════════════════
-  #                              EVENTS
-  # ════════════════════════════════════════════════════════════════════════
-
-  # ────────────────────────────────────────────────────────────────────────
-  def mousePressEvent(self, event):
-    '''
-    Simple click event
-
-    For internal use only.
-
-    args:
-      event (QGraphicsSceneMouseEvent): The click event.
-    '''
-
-    self.canva.change(event.button(), self)
-    super().mousePressEvent(event)
-
-  # ────────────────────────────────────────────────────────────────────────
-  def mouseDoubleClickEvent(self, event):
-    '''
-    Double click event
-
-    For internal use only.
-
-    args:
-      event (QGraphicsSceneMouseEvent): The double click event.
-    '''
-
-    self.canva.change(event.button().__str__() + '.double', self)
-    super().mousePressEvent(event)
-
-  # ────────────────────────────────────────────────────────────────────────
-  def itemChange(self, change, value):
-    '''
-    Item change notification
-
-    This method is triggered upon item change. The item's transformation
-    matrix has changed either because setTransform is called, or one of the
-    transformation properties is changed. This notification is sent if the 
-    ``ItemSendsGeometryChanges`` flag is enabled (e.g. when an item is 
-    :py:attr:`item.movable`), and after the item's local transformation 
-    matrix has changed.
-
-    args:
-
-      change (QGraphicsItem constant): 
-    '''
-
-    # ─── Define type
-
-    type = None
-
-    match change:
-      case QGraphicsItem.GraphicsItemChange.ItemPositionHasChanged:
-        type = 'move'
-
-    # Report to canva
-    if type is not None:
-      self.canva.change(type, self)
-
-    # Propagate change
-    return super().itemChange(change, value)
 
   # ════════════════════════════════════════════════════════════════════════
   #                             PROPERTIES

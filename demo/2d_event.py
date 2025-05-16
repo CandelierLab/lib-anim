@@ -36,25 +36,14 @@ class Canva(anim.plane.canva):
     # print(self.item.rect.qitem.__class__)
 
   # ────────────────────────────────────────────────────────────────────────
-  def update(self, t):
+  def event(self, item, desc):
 
-    # Update timer display
-    super().update(t)
-
-    print(self.item.text.qitem.boundingRect())
-
-
-    # self.item['rect'].draggable = True
-
-    # self.item['rect'].update()
+    p = self.item.rect.qitem.pos()
+    
+    print(self.item.rect.x + p.x(), self.item.rect.y + p.y())
+    
 
 
-    # Update position
-    # self.item['rect'].height = self.h + t.step/100
-    # self.item['rect'].position = [0, t.step/100]
-    # self.item['rect'].position = [self.x0, self.y0 + t.step/10]
-
-    # self.scene.setSceneRect(QRectF(0, 0, 10, 10))
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
@@ -66,10 +55,5 @@ W = anim.window('Simple animation', display_information=False)
 # Add animation
 W.add(Canva)
 
-# Allow backward animation
-W.allow_backward = True
-W.allow_negative_time = False
-
 W.autoplay = False
-
 W.show()
