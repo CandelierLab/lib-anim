@@ -59,7 +59,7 @@ class group(item):
     * center_of_rotation
         None, (float, float), [float, float], complex
         default: None
-        Center point for the rotation. If None, it is set to the current [x,y].
+        Center point for the rotation.
 
     * draggable
         bool

@@ -461,23 +461,29 @@ class hasStroke:
 
     if isinstance(self.qitem, (QAbstractGraphicsShapeItem, QGraphicsLineItem)):
 
-      Pen = QPen()
+      if self._stroke is None:
 
-      #  Color
-      if self._stroke is not None:
+        # Transparent stroke
+        self.qitem.setPen(QPen(Qt.PenStyle.NoPen))
+
+      else:
+
+        Pen = QPen()
+
+        #  Color
         Pen.setColor(QColor(self._stroke))
 
-      # Thickness
-      if self._thickness is not None:
-        Pen.setWidthF(self._thickness)
+        # Thickness
+        if self._thickness is not None:
+          Pen.setWidthF(self._thickness)
 
-      # Style
-      match self._linestyle:
-        case 'dash' | '--': Pen.setDashPattern([3,6])
-        case 'dot' | ':' | '..': Pen.setStyle(Qt.PenStyle.DotLine)
-        case 'dashdot' | '-.': Pen.setDashPattern([3,3,1,3])
+        # Style
+        match self._linestyle:
+          case 'dash' | '--': Pen.setDashPattern([3,6])
+          case 'dot' | ':' | '..': Pen.setStyle(Qt.PenStyle.DotLine)
+          case 'dashdot' | '-.': Pen.setDashPattern([3,3,1,3])
       
-      self.qitem.setPen(Pen)
+        self.qitem.setPen(Pen)
 
   # ─── stroke ─────────────────────────────────────────────────────────────
 

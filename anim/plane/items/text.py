@@ -68,27 +68,27 @@ class text(item, hasColor):
     * orientation
         float
         default: 0, unit: radians
-        Orientation of the rectangle, with respect to the positive part of the 
+        Orientation of the text box, with respect to the positive part of the 
         x-axis.
 
     * center_of_rotation
         (float, float), [float, float], complex
         default: None
-        Center point for the rotation. If None, it is set to the current [x,y].
+        Center point for the rotation.
 
     * draggable
         bool
         default: False
-        Boolean specifying if the rectangle can be dragged. If True, the
-        dragging callback is defined in the 'itemChange' method, which is
-        transfered to the canva's 'change' method (recommended).
+        Boolean specifying if the item can be dragged. If True, the dragging
+        callback is defined in the 'itemChange' method of the event class,
+        which is transfered to the canva's 'event' method (recommended).
 
     ─── stack ───────────────────────────────────
 
     * zvalue
         float
         default: 0
-        Z-value (stack order) of the rectangle.
+        Z-value (stack order) of the text box.
     
     ─── style ────────────────────────────────
 
@@ -104,8 +104,8 @@ class text(item, hasColor):
 
     * fontsize
         float
-        default: 12
-        Font size, in ... units.
+        default: 0.05
+        Font size, in scene units.
 
     * style
         str
@@ -121,7 +121,7 @@ class text(item, hasColor):
                center = (True, True),
                color = 'grey',
                fontname = 'Helvetica',
-               fontsize = 12,
+               fontsize = 0.05,
                style = '',
                group = None,
                x = 0,

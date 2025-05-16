@@ -24,13 +24,8 @@ class Canva(anim.plane.canva):
     #   center_of_rotation = [0, 0]
     # )
 
-    self.item.circle = anim.plane.circle(
-      x = 0.5,
-      y = 0.5,
-      radius = 0.25,
-      color = 'red',
-      stroke = 'yellow',
-      thickness = 0.01
+    self.item.pth = anim.plane.path(
+      points = [[0.1,0.9], [0.5,0.5], [0.9,0.9]]
     )
     
     # print(self.item.rect.qitem.__class__)
@@ -49,7 +44,7 @@ os.system('clear')
 W = anim.window('Simple animation', display_information=False)
 
 # Add animation
-W.add(Canva)
+W.add(Canva, background_color='yellow')
 
 # Allow backward animation
 W.allow_backward = True
