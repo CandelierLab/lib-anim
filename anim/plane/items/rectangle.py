@@ -54,7 +54,7 @@ class rectangle(item, hasColor, hasStroke):
         must define either Lx, Ly or the dimension array. In case of
         conflicting definitions, the dimension attribute wins.
 
-    ─── position & transformations ──────────────
+    ─── position ────────────────────────────────
 
     * x           
         float
@@ -78,6 +78,8 @@ class rectangle(item, hasColor, hasStroke):
         Boolean Defining the centering around the reference point. For tuple
         and list the first element is for the x-axis and the second is for 
         the y-axis.
+
+    ─── transformations ─────────────────────────
 
     * orientation
         float
@@ -106,7 +108,7 @@ class rectangle(item, hasColor, hasStroke):
     
     ─── style ────────────────────────────────
 
-    * fill
+    * color
         None, str, QColor
         default: 'grey'
         Fill color. None stands for transparency.
@@ -134,7 +136,7 @@ class rectangle(item, hasColor, hasStroke):
                Ly = None,
                dimension = None,
                center = (True, True),
-               fill = 'grey',
+               color = 'grey',
                stroke = None,
                thickness = 0,
                linestyle = '-',
@@ -162,7 +164,7 @@ class rectangle(item, hasColor, hasStroke):
                   zvalue = zvalue,
                   draggable = draggable)
     
-    hasColor.__init__(self, color = fill)
+    hasColor.__init__(self, color = color)
 
     hasStroke.__init__(self,
                        stroke = stroke,
@@ -200,9 +202,8 @@ class rectangle(item, hasColor, hasStroke):
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
-    Initialize the item
+    Initialize the rectangle
 
-    This method is meant to be overloaded and called.
     At this point:
     - the canva should be defined (automatically managed by itemDict)
     - the qitem should be defined (managed by the children class)

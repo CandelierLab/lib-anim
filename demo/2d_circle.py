@@ -17,25 +17,20 @@ class Canva(anim.plane.canva):
                      display_boundaries = True,    
                      **kwargs)
 
-    # self.item.G = anim.plane.group(
-    #   x = 0.5,
-    #   y = 0.5,
-    #   draggable = True,
-    #   center_of_rotation = [0, 0]
-    # )
+    # Number of ellipse per axis
+    self.a = 4
 
-    self.item.ellipse = anim.plane.ellipse(
-      x = 0.5,
-      y = 0.5,
-      Lx = 0.5,
-      Ly = 0.2,
-      color = 'red',
-      stroke = 'yellow',
-      thickness = 0.01,
-      orientation = 0.5
-    )
+    # Mesh size
+    self.b = 1/(self.a-1)
+
+    for i in range(self.a):
+      for j in range(self.a):
+        
+        self.item[f'ellipse_{i}_{j}'] = anim.plane.ellipse(
+          position = [i*self.b, j*self.b],
+          dimension = [0,0]
+        )
     
-    # print(self.item.rect.qitem.__class__)
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
@@ -43,35 +38,29 @@ class Canva(anim.plane.canva):
     # Update timer display
     super().update(t)
 
-    print(self.item.text.qitem.boundingRect())
+    for i in range(self.a):
+      for j in range(self.a):
 
+        shift = ((i + j) % 2)*np.pi/2
 
-    # self.item['rect'].draggable = True
+        self.item[f'ellipse_{i}_{j}'].dimension = [
+          self.b*(abs(np.cos(t.step/50 + shift)*np.sqrt(2))),
+          self.b*(abs(np.cos(t.step/50 + shift)*np.sqrt(2))),
+        ]
 
-    # self.item['rect'].update()
-
-
-    # Update position
-    # self.item['rect'].height = self.h + t.step/100
-    # self.item['rect'].position = [0, t.step/100]
-    # self.item['rect'].position = [self.x0, self.y0 + t.step/10]
-
-    # self.scene.setSceneRect(QRectF(0, 0, 10, 10))
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
 import os
 os.system('clear')
 
-W = anim.window('Simple animation', display_information=False)
+W = anim.window('Ellispe animation', display_information=False)
 
 # Add animation
 W.add(Canva)
 
 # Allow backward animation
 W.allow_backward = True
-W.allow_negative_time = False
-
-W.autoplay = False
+W.allow_negative_time = True
 
 W.show()

@@ -30,8 +30,7 @@ class group(item):
         center of rotation are in absolute coordinates. Otherwise, the
         position is relative to the parent group's reference point.
 
-
-    ─── position & transformations ──────────────
+    ─── position ────────────────────────────────
 
     * x           
         float
@@ -48,6 +47,8 @@ class group(item):
         default: [0,0]
         Position of the reference point. The user can define either x, y or
         the position. In case of conflict, the position attribute wins.
+
+    ─── transformations ─────────────────────────
 
     * orientation
         float
