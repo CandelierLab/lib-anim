@@ -24,15 +24,13 @@ class Canva(anim.plane.canva):
     #   center_of_rotation = [0, 0]
     # )
 
-    self.item.ellipse = anim.plane.ellipse(
+    self.item.circle = anim.plane.circle(
       x = 0.5,
       y = 0.5,
-      Lx = 0.5,
-      Ly = 0.2,
+      radius = 0.25,
       color = 'red',
       stroke = 'yellow',
-      thickness = 0.01,
-      orientation = 0.5
+      thickness = 0.01
     )
     
     # print(self.item.rect.qitem.__class__)
@@ -42,21 +40,6 @@ class Canva(anim.plane.canva):
 
     # Update timer display
     super().update(t)
-
-    print(self.item.text.qitem.boundingRect())
-
-
-    # self.item['rect'].draggable = True
-
-    # self.item['rect'].update()
-
-
-    # Update position
-    # self.item['rect'].height = self.h + t.step/100
-    # self.item['rect'].position = [0, t.step/100]
-    # self.item['rect'].position = [self.x0, self.y0 + t.step/10]
-
-    # self.scene.setSceneRect(QRectF(0, 0, 10, 10))
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 

@@ -65,8 +65,8 @@ class group(item):
         bool
         default: False
         Boolean specifying if the item can be dragged. If True, the dragging
-        callback is defined in the 'itemChange' method, which is transfered
-        to the canva's 'change' method (recommended).
+        callback is defined in the 'itemChange' method of the event class,
+        which is transfered to the canva's 'event' method (recommended).
 
     ─── stack ───────────────────────────────────
 

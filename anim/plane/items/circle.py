@@ -9,13 +9,12 @@ from .item import item, hasColor, hasStroke
 #                                 ELLIPSE
 # ══════════════════════════════════════════════════════════════════════════
 
-class ellipse(item, hasColor, hasStroke):
+class circle(item, hasColor, hasStroke):
   '''
-  An ellipse item is defined by its:
+  A circle item is defined by its:
 
-  - dimensions (major and minor axis length, named here a and b respectively)
+  - radius
   - position of the point of reference
-  - orientation of the major axis
   - styling
   
   Parameters
@@ -23,64 +22,40 @@ class ellipse(item, hasColor, hasStroke):
 
     * name       
         str
-        The ellipse's name
+        The circle's name
 
     * group
         anim.plane.group
         default: None
-        The ellipse's group. If None, the position of the reference point and
+        The circle's group. If None, the position of the reference point and
         center of rotation are in absolute coordinates. Otherwise, the
         position is relative to the group's reference point.
 
-    ─── dimensions ──────────────────────────────
+    ─── size ────────────────────────────────────
 
-    * Lx          
+    * radius
         float
-        The ellipse's width, i.e. length along the x axis when orientation
-        is 0. 
-
-    * Ly
-        float
-        The ellipse's height, i.e.length along the y axis when orientation
-        is 0.
-
-    * dimension
-        (float, float), [float, float], complex
-        default: [0,0]
-        Dimensions along the x and y axes when orientation is 0. The user
-        must define either Lx, Ly or the dimension array. In case of
-        conflicting definitions, the dimension attribute wins.
+        The circle's radius.
 
     ─── position ────────────────────────────────
 
     * x           
         float
         default: 0
-        x-position of the reference point.
+        x-position of the center point.
 
     * y
         float
         default: 0
-        y-position of the reference point.
+        y-position of the center point.
 
     * position
         (float, float), [float, float], complex
         default: [0,0]
-        Position of the reference point. The user can define either x, y or
+        Position of the center point. The user can define either x, y or
         the position. In case of conflict, the position attribute wins.
 
     ─── transformations ─────────────────────────
-
-    * orientation
-        float
-        default: 0, unit: radians
-        Orientation of the ellipse, with respect to the positive part of the 
-        x-axis.
-
-    * center_of_rotation
-        (float, float), [float, float], complex
-        default: None
-        Center point for the rotation. If None, it is set to the current [x,y].
 
     * draggable
         bool
@@ -88,7 +63,6 @@ class ellipse(item, hasColor, hasStroke):
         Boolean specifying if the item can be dragged. If True, the dragging
         callback is defined in the 'itemChange' method of the event class,
         which is transfered to the canva's 'event' method (recommended).
-
 
     ─── stack ───────────────────────────────────
 
@@ -123,9 +97,7 @@ class ellipse(item, hasColor, hasStroke):
 
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, 
-               Lx = None,
-               Ly = None,
-               dimension = None,
+               radius,
                color = 'grey',
                stroke = None,
                thickness = 0,
@@ -134,8 +106,6 @@ class ellipse(item, hasColor, hasStroke):
                x = 0,
                y = 0,
                position = None,
-               center_of_rotation = [0,0],
-               orientation = 0,
                zvalue = 0,
                draggable = False):
     '''
@@ -148,8 +118,6 @@ class ellipse(item, hasColor, hasStroke):
                   x = x,
                   y = y,
                   position = position,
-                  center_of_rotation = center_of_rotation,
-                  orientation = orientation,
                   zvalue = zvalue,
                   draggable = draggable)
     
@@ -161,20 +129,7 @@ class ellipse(item, hasColor, hasStroke):
 
     # ─── Internal properties
 
-    self._Lx = None 
-    self._Ly = None 
-
-    # ─── Ellipse attributes
-
-    if dimension is not None and isinstance(dimension, (tuple, list, complex)):
-      self.dimension = dimension
-
-    elif Lx is None or Ly is None:
-      raise AttributeError("Ellipse dimensions must be specified, either with 'dimension' or with 'Lx' and 'Ly'.")
-      
-    else:
-      self.Lx = Lx
-      self.Ly = Ly
+    self.radius = radius
 
     # ─── QGraphicsItem
 
@@ -187,7 +142,7 @@ class ellipse(item, hasColor, hasStroke):
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
-    Initialize the ellipse
+    Initialize the circle
 
     At this point:
     - the canva should be defined (automatically managed by itemDict)
@@ -203,64 +158,28 @@ class ellipse(item, hasColor, hasStroke):
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''
-    Set the ellipse's geometry
+    Set the circle's geometry
     '''
 
     # Check qitem
     if self.qitem is None: return
 
     # Rectangle bottom-left corner
-    x0 = self.position.X - self.Lx/2
-    y0 = self.position.Y - self.Ly/2
+    x0 = self.position.X - self.radius
+    y0 = self.position.Y - self.radius
 
     # Set geometry
-    self.qitem.setRect(QRectF(x0, y0, self.Lx, self.Ly))
+    self.qitem.setRect(QRectF(x0, y0, 2*self.radius, 2*self.radius))
 
-  # ─── width ──────────────────────────────────────────────────────────────
+  # ─── radius ─────────────────────────────────────────────────────────────
   
   @property
-  def Lx(self): return self._Lx
+  def radius(self): return self._radius
 
-  @Lx.setter
-  def Lx(self, w):
+  @radius.setter
+  def radius(self, r):
 
-    self._Lx = abs(w)
+    self._radius = abs(r)
     
-    # Set geometry
-    self.setGeometry()
-  
-  # ─── height ─────────────────────────────────────────────────────────────
-
-  @property
-  def Ly(self): return self._Ly
-
-  @Ly.setter
-  def Ly(self, h):
-
-    self._Ly = abs(h)
-
-    # Set geometry
-    self.setGeometry() 
-
-  # ─── dimensions ─────────────────────────────────────────────────────────
-  
-  @property
-  def dimension(self): return [self._Lx, self._Ly]
-
-  @dimension.setter
-  def dimension(self, D):
-    
-    if isinstance(D, complex):
-
-      # Convert from complex coordinates
-      self._Lx = abs(np.real(D))
-      self._Ly = abs(np.imag(D))
-
-    else:
-
-      # Doublet input
-      self._Lx = abs(D[0])
-      self._Ly = abs(D[1])
-
     # Set geometry
     self.setGeometry()

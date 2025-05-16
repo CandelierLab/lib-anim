@@ -18,7 +18,7 @@ class Canva(anim.plane.canva):
                      **kwargs)
 
     # Number of ellipse per axis
-    self.a = 4
+    self.a = 10
 
     # Mesh size
     self.b = 1/(self.a-1)
@@ -26,9 +26,10 @@ class Canva(anim.plane.canva):
     for i in range(self.a):
       for j in range(self.a):
         
-        self.item[f'ellipse_{i}_{j}'] = anim.plane.ellipse(
+        self.item[f'circle_{i}_{j}'] = anim.plane.circle(
           position = [i*self.b, j*self.b],
-          dimension = [0,0]
+          radius = 0,
+          color = 'cyan' if (i+j)%2 else 'blue'
         )
     
 
@@ -42,12 +43,7 @@ class Canva(anim.plane.canva):
       for j in range(self.a):
 
         shift = ((i + j) % 2)*np.pi/2
-
-        self.item[f'ellipse_{i}_{j}'].dimension = [
-          self.b*(abs(np.cos(t.step/50 + shift)*np.sqrt(2))),
-          self.b*(abs(np.cos(t.step/50 + shift)*np.sqrt(2))),
-        ]
-
+        self.item[f'circle_{i}_{j}'].radius = self.b*(np.cos(t.step/30 + shift)*np.sqrt(2))/2
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
