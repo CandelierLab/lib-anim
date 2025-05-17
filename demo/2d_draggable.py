@@ -1,63 +1,62 @@
-import numpy as np
+'''
+2D draggable demo
+'''
+
 import anim
 
 # === 2D Animation =========================================================
 
 class myAnimation(anim.plane.canva):
 
+  # ────────────────────────────────────────────────────────────────────────
   def __init__(self, window):
     '''
     Items definitions
     '''
 
-    super().__init__(window, boundaries=[[0,1],[0,1]])
+    super().__init__(window, boundaries=[[-1,1], [-1,1]])
 
-    self.x0 = 0.5
-    self.y0 = 0.5
-    self.R = 0.25
-    self.r = 0.05
+    self.R = 0.75
 
-    self.add(anim.plane.ellipse, 'E0',
-      position = [self.x0, self.y0],
-      major = 0.005,
-      minor = 0.005,
-      colors = ('white', None),
-    )
+    # ─── Zone
 
-    self.add(anim.plane.circle, 'C0',
-      position = [self.x0, self.y0],
+    self.item.zone = anim.plane.circle(
       radius = self.R,
-      colors = (None, 'grey'),
-      thickness = 2,
-      linestyle = '--',
-      zvalue = 2
+      color = None,
+      stroke = 'white',
+      linestyle = '--'
     )
 
-    self.add(anim.plane.circle, 'C',
-      position = [self.x0 + self.R, self.y0 + self.R],
-      radius = self.r,
-      colors = ('red', None),
-      draggable = True,
+    # ─── Disk
+
+    self.item.disk = anim.plane.circle(
+      radius = 0.1,
+      color = 'green',
+      draggable = True
     )
 
-  def change(self, type, item):
+  # ────────────────────────────────────────────────────────────────────────
+  def event(self, qitem, desc):
     '''
     Track changes
     '''
     
-    if type=='move':
+    if desc=='motion':
 
-      pos = item.pos()
-      x = item.scene2x(pos.x())
-      y = item.scene2y(pos.y())
-      if ((x-self.x0)**2 + (y-self.y0)**2) <= self.R**2:
-        item.colors = ('green', None)
+      pos = qitem.pos()
+      x = pos.x()
+      y = pos.y()
+
+      # print(x, y)
+
+      if (x**2 + y**2) <= self.R**2:
+        qitem.item.color = 'green'
       else:
-        item.colors = ('red', None)
+        qitem.item.color = 'red'
 
 # === Main =================================================================
 
-W = anim.window('Simple draggable animation', display_information=False)
+W = anim.window('Draggable animation', display_information=False)
 
 # Add animation
 W.add(myAnimation)

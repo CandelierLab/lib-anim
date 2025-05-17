@@ -1,5 +1,5 @@
 '''
-Complete 2d demo
+2D circle demo
 '''
 
 import numpy as np

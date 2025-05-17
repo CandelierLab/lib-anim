@@ -1,5 +1,5 @@
 '''
-2D line demo
+2D image array demo
 '''
 
 import numpy as np
@@ -14,28 +14,26 @@ class Canva(anim.plane.canva):
 
     super().__init__(window)
 
-    # ─── Definitions
+    self.npix = 500
 
-    # Number of lines
-    self.N = 20
-
-    # x-positions
-    self.X = np.linspace(0.1, 0.9, self.N)
-
-    # ─── Items
-
-    Y = self.generate(0)
-
-    for i in range(self.N):
-      self.item[f'line_{i}'] = anim.plane.line(
-        points = [[self.X[i], 0.5-Y[i]/4], [self.X[i], 0.5+Y[i]]],
-        color = 'white'
-      )
+    self.item.img = anim.plane.image(
+      position = [0.5, 0.5],
+      dimension = [1, 1],
+      array = self.ripple(0),
+      colormap = anim.colormap('gnuplot', range=[-1, 1])
+    )
 
   # ────────────────────────────────────────────────────────────────────────
-  def generate(self, t):
+  def ripple(self, t):
 
-    return np.sin(self.X*10+ t/10)/4
+    x = np.linspace(-1, 1, self.npix)
+    X, Y = np.meshgrid(x, x)
+
+    R = (np.sin((20 * X ** 2) + (20 * Y ** 2) - t/2/np.pi)+1)/2
+    G = (np.sin((20 * X ** 2) + (20 * Y ** 2) - t/2/np.pi+np.pi/2)+1)/2
+    B = (np.sin((20 * X ** 2) + (20 * Y ** 2) - t/2/np.pi+np.pi)+1)/2
+    
+    return np.concatenate((R[:,:,None], G[:,:,None], B[:,:,None]), axis=2)
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
@@ -43,16 +41,14 @@ class Canva(anim.plane.canva):
     # Update timer display
     super().update(t)
 
-    Y = self.generate(t.step)
-    for i in range(self.N):
-      self.item[f'line_{i}'].points = [[self.X[i], 0.5-Y[i]/4], [self.X[i], 0.5+Y[i]]]
+    self.item.img.array = self.ripple(t.step)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
 import os
 os.system('clear')
 
-W = anim.window('Line animation', display_information=False)
+W = anim.window('Image animation', display_information=False)
 
 # Add animation
 W.add(Canva)

@@ -5,7 +5,7 @@ Events
 from PyQt6.QtWidgets import QGraphicsItem
 
 class event:
-
+  
   # ────────────────────────────────────────────────────────────────────────
   def mousePressEvent(self, event):
     '''

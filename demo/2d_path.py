@@ -17,7 +17,7 @@ class Canva(anim.plane.canva):
     # ─── Definitions
 
     # Number of points
-    self.N = 50
+    self.N = 30
 
     # ─── Items
 

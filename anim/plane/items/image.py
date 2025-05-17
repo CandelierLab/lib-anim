@@ -1,51 +1,72 @@
-import numpy as np
+from PyQt6.QtCore import QSize
+from PyQt6.QtWidgets import QGraphicsPixmapItem
 
-from PyQt6.QtCore import QRectF
-from PyQt6.QtWidgets import QGraphicsRectItem
+from ..geometry import point
 
-from .item import item, hasColor, hasStroke
+from .item import item
 
 # ══════════════════════════════════════════════════════════════════════════
-#                                 RECTANGLE
+#                                IMAGE
 # ══════════════════════════════════════════════════════════════════════════
 
-class rectangle(item, hasColor, hasStroke):
+class image(item):
   '''
-  A rectangle item is defined by its:
+  An image item is defined by its:
 
+  - source image (numpy array or file)
+  - colormap
   - dimensions (width and height)
   - position of the point of reference
   - horizontal and vertical centering, with respect to the point of
       reference. The defaut centering is (True,True), while (False,False)
       defines the reference as the bottom-left corner. One can also use a single
       value to set both at the same time.
-  - styling
+  - flipping (vertical and horizontal)
   
   Parameters
   ══════════
 
     * name       
         str
-        The rectangle's name
+        The image item's name
 
     * group
         anim.plane.group
         default: None
-        The rectangle's group. If None, the position of the reference point and
+        The image's group. If None, the position of the reference point and
         center of rotation are in absolute coordinates. Otherwise, the
         position is relative to the group's reference point.
+
+    ─── image ───────────────────────────────────
+
+    * file
+        path
+        The image file. The user should define either a file or an array.
+
+    * array
+        numpy array
+        The image array. If 2D then it is assumed to be greyscale. If 3D,
+        the 3 channels are RGB.
+
+    * flip
+        [boolean, boolean], (boolean, boolean)
+        default: [False, True]
+        Horizontal and vertical flipping of the image.
+
+    * colormap
+        Colormap object
+        default: Colormap('grey', ncolors=256) / RGB
+        Image colormap.
 
     ─── dimensions ──────────────────────────────
 
     * Lx          
         float
-        The rectangle's width, i.e. length along the x axis when orientation
-        is 0. 
+        The image width, i.e. length along the x axis when orientation is 0. 
 
     * Ly
         float
-        The rectangle's height, i.e.length along the y axis when orientation
-        is 0.
+        The image height, i.e.length along the y axis when orientation is 0.
 
     * dimension
         (float, float), [float, float], complex
@@ -84,7 +105,7 @@ class rectangle(item, hasColor, hasStroke):
     * orientation
         float
         default: 0, unit: radians
-        Orientation of the rectangle, with respect to the positive part of the 
+        Orientation of the image, with respect to the positive part of the 
         x-axis.
 
     * center_of_rotation
@@ -104,42 +125,23 @@ class rectangle(item, hasColor, hasStroke):
     * zvalue
         float
         default: 0
-        Z-value (stack order) of the rectangle.
-    
-    ─── style ────────────────────────────────
-
-    * color
-        None, str, QColor
-        default: 'grey'
-        Fill color. None stands for transparency.
-
-    * stroke
-        None, str, QColor
-        default: None
-        Stroke color. None stands for transparency.
-
-    * thickness
-        float
-        default: 0
-        Stroke thickness, in scene units. When it is equal to 0, the stroke
-        has the minimal thickness of 1 pixel.
-
-    * linestyle
-        'solid'/'-', 'dash'/'--', 'dot'/'..'/':', 'dashdot'/'-.'
-        default: '-'
-        Stroke style.
+        Z-value (stack order) of the image.
   '''
 
+  # ════════════════════════════════════════════════════════════════════════
+  #                              INITIALIZATION
+  # ════════════════════════════════════════════════════════════════════════
+
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, 
+  def __init__(self,
+               file = None,
+               array = None,
+               flip = [False, True],
+               colormap = None,
                Lx = None,
                Ly = None,
                dimension = None,
                center = [True, True],
-               color = 'grey',
-               stroke = None,
-               thickness = 0,
-               linestyle = '-',
                group = None,
                x = 0,
                y = 0,
@@ -149,8 +151,13 @@ class rectangle(item, hasColor, hasStroke):
                zvalue = 0,
                draggable = False):
     '''
-    Rectangle item constructor
+    Image constructor
     '''  
+
+    # ─── Checks
+
+    if file is None and array is None:
+      raise ValueError("Either the 'file' or 'array' parameter should be defined.")
 
     # ─── Parent constructors
 
@@ -164,26 +171,26 @@ class rectangle(item, hasColor, hasStroke):
                   zvalue = zvalue,
                   draggable = draggable)
     
-    hasColor.__init__(self, color = color)
-
-    hasStroke.__init__(self,
-                       stroke = stroke,
-                       thickness = thickness,
-                       linestyle = linestyle)
-    
     # ─── Internal properties
+
+    self._file = file
+    self._array = array
+    self._flip = flip
+    self._colormap = colormap
+
+    self._pixmap = None
+
+    # ─── geometrical properties
 
     self._Lx = None 
     self._Ly = None 
-    self._center = None 
-
-    # ─── Rectangle attributes
+    self._center = None
 
     if dimension is not None and isinstance(dimension, (tuple, list, complex)):
       self.dimension = dimension
 
     elif Lx is None or Ly is None:
-      raise AttributeError("Rectangle dimensions must be specified, either with 'dimension' or with 'Lx' and 'Ly'.")
+      raise AttributeError("Image dimensions must be specified, either with 'dimension' or with 'Lx' and 'Ly'.")
       
     else:
       self.Lx = Lx
@@ -193,7 +200,7 @@ class rectangle(item, hasColor, hasStroke):
 
     # ─── QGraphicsItem
 
-    self.qitem = QGraphicsRectItem()
+    self.qitem = QGraphicsPixmapItem()
 
     # ─── Initialization
 
@@ -202,7 +209,7 @@ class rectangle(item, hasColor, hasStroke):
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
-    Initialize the rectangle
+    Initialize the image
 
     At this point:
     - the canva should be defined (automatically managed by itemDict)
@@ -215,10 +222,14 @@ class rectangle(item, hasColor, hasStroke):
     # Initialization specifics
     self.setGeometry()
     
+  # ════════════════════════════════════════════════════════════════════════
+  #                                   SETTERS
+  # ════════════════════════════════════════════════════════════════════════
+
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''
-    Set the rectangle's geometry
+    Set the image geometry
     '''
 
     # Check qitem
@@ -228,8 +239,80 @@ class rectangle(item, hasColor, hasStroke):
     x0 = self.position.X - (self.Lx/2 if self._center[0] else 0)
     y0 = self.position.Y - (self.Ly/2 if self._center[1] else 0)
 
-    # Set geometry
-    self.qitem.setRect(QRectF(x0, y0, self.Lx, self.Ly))
+    if self._pixmap is not None:
+      
+      self.setPixmap()
+
+  # ────────────────────────────────────────────────────────────────────────
+  def setPixmap(self):
+    '''
+    Set the pixmap
+    '''
+
+    # Check pixmap
+    if self._pixmap is None: return
+
+    # Set size
+    self.pixmap = self._pixmap.scaled(QSize(self.Lx, self.Ly))
+
+    #  Set the pixmap
+    self.qitem.setPixmap(self._pixmap)
+
+  # ════════════════════════════════════════════════════════════════════════
+  #                            DYNAMIC PROPERTIES
+  # ════════════════════════════════════════════════════════════════════════
+
+  # ─── file ───────────────────────────────────────────────────────────────
+
+  @property
+  def file(self): return self._file
+
+  @file.setter
+  def file(self, path):
+
+    self._file = path
+    
+    # Set image
+    self.setPixmap()
+
+  # ─── array ──────────────────────────────────────────────────────────────
+
+  @property
+  def array(self): return self._array
+
+  @array.setter
+  def array(self, A):
+
+    self._array = A
+    
+    # Set image
+    self.setPixmap()
+
+  # ─── flip ───────────────────────────────────────────────────────────────
+
+  @property
+  def flip(self): return self._flip
+
+  @flip.setter
+  def flip(self, f):
+
+    self._flip = list(f)
+    
+    # Set image
+    self.setPixmap()
+
+  # ─── colormap ───────────────────────────────────────────────────────────
+  
+  @property
+  def colormap(self): return self._colormap
+
+  @colormap.setter
+  def colormap(self, cmap):
+
+    self._colormap = list(cmap)
+    
+    # Set image
+    self.setPixmap()
 
   # ─── width ──────────────────────────────────────────────────────────────
   

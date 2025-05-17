@@ -13,6 +13,7 @@ from .items.circle import circle
 from .items.line import line
 from .items.path import path
 from .items.polygon import polygon
+from .items.image import image
 from .items.text import text
 
 

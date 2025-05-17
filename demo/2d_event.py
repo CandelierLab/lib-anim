@@ -1,5 +1,5 @@
 '''
-Complete 2d demo
+2D event demo
 '''
 
 import numpy as np
@@ -17,30 +17,77 @@ class Canva(anim.plane.canva):
                      display_boundaries = True,    
                      **kwargs)
 
-    # self.item.G = anim.plane.group(
-    #   x = 0.5,
-    #   y = 0.5,
-    #   draggable = True,
-    #   center_of_rotation = [0, 0]
-    # )
+    # ─── Click
 
-    self.item.rect = anim.plane.rectangle(
-      x = 0.5,
-      y = 0.5,
-      Lx = 0.5,
-      Ly = 0.5,
-      center = True,
-      draggable = True
+    self.item.group_click = anim.plane.group(
+      position = [0.5, 0.7]
+    )
+
+    self.item.rect_click = anim.plane.rectangle(
+      group = self.item.group_click,
+      position = [0, 0],
+      dimension = [0.25, 0.1]
     )
     
-    # print(self.item.rect.qitem.__class__)
+    self.item.text_click = anim.plane.text(
+      group = self.item.group_click,
+      position = [0, 0],
+      string = 'Click me',
+      color = 'black'
+    )
+
+    # ─── Drag
+
+    self.item.group_drag = anim.plane.group(
+      position = [0.5, 0.3],
+      draggable = True
+    )
+
+    self.item.rect_click = anim.plane.rectangle(
+      group = self.item.group_drag,
+      position = [0, 0],
+      dimension = [0.25, 0.1]
+    )
+    
+    self.item.text_click = anim.plane.text(
+      group = self.item.group_drag,
+      position = [0, 0],
+      string = 'Drag me',
+      color = 'black'
+    )
+
+    # ─── Result
+
+    self.item.group_result = anim.plane.group(
+      position = [0.5, 0.5]
+    )
+
+    self.item.rect_result = anim.plane.rectangle(
+      group = self.item.group_result,
+      position = [0, 0],
+      dimension = [0.5, 0.1],
+      color = 'white'
+    )
+    
+    self.item.text_result = anim.plane.text(
+      group = self.item.group_result,
+      position = [0, 0],
+      string = '',
+      fontsize = 0.04,
+      color = 'black'
+    )
 
   # ────────────────────────────────────────────────────────────────────────
   def event(self, item, desc):
 
-    p = self.item.rect.qitem.pos()
+    print(desc)
+
+    if item == self.item.group_click.qitem:
+      self.item.text_result.string = str(desc)
+
+    # p = self.item.rect.qitem.pos()
     
-    print(self.item.rect.x + p.x(), self.item.rect.y + p.y())
+    # print(self.item.rect.x + p.x(), self.item.rect.y + p.y())
     
 
 
@@ -50,7 +97,7 @@ class Canva(anim.plane.canva):
 import os
 os.system('clear')
 
-W = anim.window('Simple animation', display_information=False)
+W = anim.window('Event animation', display_information=False)
 
 # Add animation
 W.add(Canva)
