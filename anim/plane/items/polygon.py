@@ -129,10 +129,6 @@ class polygon(item, hasColor, hasStroke):
 
     self.qitem = QGraphicsPolygonItem()
 
-    # ─── Initialization
-
-    self.initialize()
-
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
@@ -158,7 +154,7 @@ class polygon(item, hasColor, hasStroke):
     # Check qitem
     if self.qitem is None: return
 
-    self.qitem.setPolygon(QPolygonF([QPointF(p.x, p.y) for p in self.points]))
+    self.qitem.setPolygon(QPolygonF([QPointF(p.x*self.ppu, p.y*self.ppu) for p in self.points]))
 
   # ─── points ─────────────────────────────────────────────────────────────
   

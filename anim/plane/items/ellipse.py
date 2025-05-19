@@ -181,10 +181,6 @@ class ellipse(item, hasColor, hasStroke):
 
     self.qitem = QGraphicsEllipseItem()
 
-    # ─── Initialization
-
-    self.initialize()
-
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
@@ -215,7 +211,10 @@ class ellipse(item, hasColor, hasStroke):
     y0 = self.position.Y - self.Ly/2
 
     # Set geometry
-    self.qitem.setRect(QRectF(x0, y0, self.Lx, self.Ly))
+    self.qitem.setRect(QRectF(x0*self.ppu,
+                              y0*self.ppu,
+                              self.Lx*self.ppu,
+                              self.Ly*self.ppu))
 
   # ─── width ──────────────────────────────────────────────────────────────
   

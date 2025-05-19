@@ -166,10 +166,6 @@ class text(item, hasColor):
     self._document.setDocumentMargin(0)
     self.qitem.setDocument(self._document)
 
-    # ─── Initialization
-
-    self.initialize()
-
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
@@ -220,7 +216,7 @@ class text(item, hasColor):
     y0 = self.position.Y + (self.Ly()/2 if self._center[1] else 0)
 
     # Set position
-    self.qitem.setPos(x0, y0)
+    self.qitem.setPos(x0*self.ppu, y0*self.ppu)
 
   # ────────────────────────────────────────────────────────────────────────
   def setOrientation(self):
@@ -256,7 +252,7 @@ class text(item, hasColor):
     f = self.fontsize/self.qitem.boundingRect().height()
 
     # Item scale
-    self.qitem.setTransform(QTransform.fromScale(f, -f), True)
+    self.qitem.setTransform(QTransform.fromScale(f*self.ppu, -f*self.ppu), True)
 
   # ─── string ─────────────────────────────────────────────────────────────
   

@@ -128,10 +128,6 @@ class path(item, hasColor, hasStroke):
 
     self.qitem = QGraphicsPathItem()
 
-    # ─── Initialization
-
-    self.initialize()
-
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
@@ -160,9 +156,9 @@ class path(item, hasColor, hasStroke):
     P = QPainterPath()
     for k, p in enumerate(self.points):
       if k:
-        P.lineTo(p.x, p.y)
+        P.lineTo(p.x*self.ppu, p.y*self.ppu)
       else:
-        P.moveTo(p.x, p.y)
+        P.moveTo(p.x*self.ppu, p.y*self.ppu)
 
     self.qitem.setPath(P)
 

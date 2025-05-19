@@ -1,5 +1,6 @@
-from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QGraphicsPixmapItem
+from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QImage, QPixmap, QTransform
+from PyQt6.QtWidgets import QGraphicsItem, QGraphicsPixmapItem
 
 from ..geometry import point
 
@@ -50,7 +51,7 @@ class image(item):
 
     * flip
         [boolean, boolean], (boolean, boolean)
-        default: [False, True]
+        default: [False, False]
         Horizontal and vertical flipping of the image.
 
     * colormap
@@ -136,7 +137,7 @@ class image(item):
   def __init__(self,
                file = None,
                array = None,
-               flip = [False, True],
+               flip = [False, False],
                colormap = None,
                Lx = None,
                Ly = None,
@@ -202,9 +203,9 @@ class image(item):
 
     self.qitem = QGraphicsPixmapItem()
 
-    # ─── Initialization
-
-    self.initialize()
+    # Smooth display
+    # self.qitem.setTransformationMode(Qt.TransformationMode.SmoothTransformation)
+    self.qitem.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -218,6 +219,10 @@ class image(item):
 
     # Parent initialization
     item.initialize(self)
+
+    # Data
+    if self.file is not None: self.file = self._file
+    elif self.aray is not None: self.array = self._array
 
     # Initialization specifics
     self.setGeometry()
@@ -239,8 +244,7 @@ class image(item):
     x0 = self.position.X - (self.Lx/2 if self._center[0] else 0)
     y0 = self.position.Y - (self.Ly/2 if self._center[1] else 0)
 
-    if self._pixmap is not None:
-      
+    if self._pixmap is not None:      
       self.setPixmap()
 
   # ────────────────────────────────────────────────────────────────────────
@@ -253,10 +257,14 @@ class image(item):
     if self._pixmap is None: return
 
     # Set size
-    self.pixmap = self._pixmap.scaled(QSize(self.Lx, self.Ly))
+    self._pixmap = self._pixmap.scaled(QSize(self.Lx, self.Ly))
+    # self._pixmap = self._pixmap
+
+    # Flipping
+    T = QTransform().scale(1-self.flip[0]*2, self.flip[1]*2-1)
 
     #  Set the pixmap
-    self.qitem.setPixmap(self._pixmap)
+    self.qitem.setPixmap(self._pixmap.transformed(T))
 
   # ════════════════════════════════════════════════════════════════════════
   #                            DYNAMIC PROPERTIES
@@ -271,6 +279,9 @@ class image(item):
   def file(self, path):
 
     self._file = path
+
+    # Define pixmap
+    self._pixmap = QPixmap.fromImage(QImage(self._file))
     
     # Set image
     self.setPixmap()

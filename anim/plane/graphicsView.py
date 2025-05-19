@@ -7,13 +7,14 @@ from .boundingBox import boundingBox
 class graphicsView(QGraphicsView):
     
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, scene, boundaries:boundingBox, padding=0, *args, **kwargs):
+  def __init__(self, scene, boundaries:boundingBox, pixelperunit, padding=0, *args, **kwargs):
 
     # Parent constructor
     super().__init__(*args, *kwargs)
 
     # ─── View and scene
 
+    self.ppu = float(pixelperunit)
     self.padding = padding
 
     # Disable scrollbars
@@ -36,17 +37,17 @@ class graphicsView(QGraphicsView):
   def fit(self):
 
     self.fitInView(QRectF(0, 0,
-                          self.boundaries.width + 2*self.padding,
-                          self.boundaries.height + 2*self.padding),
+                          (self.boundaries.width + 2*self.padding)*self.ppu,
+                          (self.boundaries.height + 2*self.padding)*self.ppu),
                    Qt.AspectRatioMode.KeepAspectRatio)
     
     # self.centerOn(QPointF(self.boundaries.x0 + self.boundaries.width/2,
     #                       self.boundaries.y0 + self.boundaries.height/2))
     
-    self.setSceneRect(QRectF(self.boundaries.x0 - self.padding,
-                      self.boundaries.y0 - self.padding,
-                      self.boundaries.width + 2*self.padding,
-                      self.boundaries.height + 2*self.padding))
+    self.setSceneRect(QRectF((self.boundaries.x0 - self.padding)*self.ppu,
+                             (self.boundaries.y0 - self.padding)*self.ppu,
+                             (self.boundaries.width + 2*self.padding)*self.ppu,
+                             (self.boundaries.height + 2*self.padding)*self.ppu))
     
     # self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.NoViewportUpdate)
 

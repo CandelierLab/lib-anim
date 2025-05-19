@@ -108,10 +108,6 @@ class line(item, hasStroke):
 
     self.qitem = QGraphicsLineItem()
 
-    # ─── Initialization
-
-    self.initialize()
-
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
@@ -137,8 +133,10 @@ class line(item, hasStroke):
     # Check qitem
     if self.qitem is None: return
 
-    self.qitem.setLine(self.points[0].x, self.points[0].y,
-                       self.points[1].x, self.points[1].y)
+    self.qitem.setLine(self.points[0].x*self.ppu,
+                       self.points[0].y*self.ppu,
+                       self.points[1].x*self.ppu,
+                      self.points[1].y*self.ppu)
 
   # ─── points ─────────────────────────────────────────────────────────────
   

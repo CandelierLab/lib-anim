@@ -195,10 +195,6 @@ class rectangle(item, hasColor, hasStroke):
 
     self.qitem = QGraphicsRectItem()
 
-    # ─── Initialization
-
-    self.initialize()
-
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
@@ -229,7 +225,10 @@ class rectangle(item, hasColor, hasStroke):
     y0 = self.position.Y - (self.Ly/2 if self._center[1] else 0)
 
     # Set geometry
-    self.qitem.setRect(QRectF(x0, y0, self.Lx, self.Ly))
+    self.qitem.setRect(QRectF(x0*self.ppu, 
+                              y0*self.ppu, 
+                              self.Lx*self.ppu, 
+                              self.Ly*self.ppu))
 
   # ─── width ──────────────────────────────────────────────────────────────
   

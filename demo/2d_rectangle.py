@@ -11,9 +11,9 @@ import anim
 class Canva(anim.plane.canva):
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, window, **kwargs):
+  def __init__(self, window):
 
-    super().__init__(window, **kwargs)
+    super().__init__(window)
 
     self.item.rect_0 = anim.plane.rectangle(
       position = [0.5, 0.5],

@@ -21,6 +21,7 @@ class canva(QObject):
                boundaries_thickness = None,
                padding = 0,
                background_color = None,
+               pixelperunit = 2,
                coordinates = 'xy'):
     '''
     Canva constructor
@@ -42,11 +43,14 @@ class canva(QObject):
     self.scene = QGraphicsScene()  
 
     # View
-    self.view = graphicsView(self.scene, self.boundaries, padding=padding)
+    self.view = graphicsView(self.scene, self.boundaries, pixelperunit, padding=padding)
 
     # Coordinates
     self.coordinates = coordinates
     if self.coordinates=='xy': self.view.scale(1,-1)
+
+    # Pixels per scene unit
+    self.pixelperunit = pixelperunit
     
     # ─── Background color
 
@@ -69,10 +73,11 @@ class canva(QObject):
     
     # ─── Dummy boundary rectangle ──────────────
 
-    bounds = QGraphicsRectItem(self.boundaries.x0, 
-                               self.boundaries.y0,
-                               self.boundaries.width,
-                               self.boundaries.height)
+    bounds = QGraphicsRectItem(self.boundaries.x0*self.pixelperunit, 
+                               self.boundaries.y0*self.pixelperunit,
+                               self.boundaries.width*self.pixelperunit,
+                               self.boundaries.height*self.pixelperunit)
+    
     Pen = QPen()
     if self.boundaries.display:
       Pen.setColor(QColor(self.boundaries.color))
@@ -81,6 +86,8 @@ class canva(QObject):
     bounds.setPen(Pen)
 
     self.scene.addItem(bounds)
+
+    # ─── Grid ──────────────────────────────────
 
   # # ────────────────────────────────────────────────────────────────────────
   # def add(self, type, name, **kwargs):

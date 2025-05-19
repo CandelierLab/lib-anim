@@ -114,15 +114,11 @@ class group(item):
     # ─── QGraphicsItem
     
     self.qitem = QGraphicsItemGroup()
-
-    # ─── Initialization
-
-    self.initialize()
   
   # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
-    return self.qitem.childrenBoundingRect().width()
+    return self.qitem.childrenBoundingRect().width()/self.ppu
 
   # ────────────────────────────────────────────────────────────────────────
   def Ly(self):
-    return self.qitem.childrenBoundingRect().height()
+    return self.qitem.childrenBoundingRect().height()/self.ppu

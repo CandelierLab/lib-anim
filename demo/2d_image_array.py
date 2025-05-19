@@ -12,16 +12,18 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, window):
 
-    super().__init__(window)
+    super().__init__(window, boundaries=[[0,100],[0,100]])
 
     self.npix = 500
 
     self.item.img = anim.plane.image(
       position = [0.5, 0.5],
-      dimension = [1, 1],
-      array = self.ripple(0),
-      colormap = anim.colormap('gnuplot', range=[-1, 1])
+      dimension = [100, 100],
+      file = 'demo/images/corgi.png',
+      # colormap = anim.colormap('gnuplot', range=[-1, 1])
     )
+
+    # print(self.item.img.qitem.pixmap().data)
 
   # ────────────────────────────────────────────────────────────────────────
   def ripple(self, t):
@@ -41,7 +43,7 @@ class Canva(anim.plane.canva):
     # Update timer display
     super().update(t)
 
-    self.item.img.array = self.ripple(t.step)
+    # self.item.img.array = self.ripple(t.step)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
@@ -56,5 +58,7 @@ W.add(Canva)
 # Allow backward animation
 W.allow_backward = True
 W.allow_negative_time = True
+
+W.autoplay = False
 
 W.show()

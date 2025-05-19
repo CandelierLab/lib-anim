@@ -112,6 +112,7 @@ class item:
 
     # Reference canva
     self.canva:canva = None
+    self.ppu = 1
 
     # QGraphicsItem
     self.qitem:QGraphicsItem = None
@@ -156,6 +157,9 @@ class item:
     # Add item
     self.qitem.item = self
 
+    # Pixels per unit
+    self.ppu = float(self.canva.pixelperunit)
+
     # Add events
     C = self.qitem.__class__
     if C is not QGraphicsTextItem:
@@ -187,11 +191,11 @@ class item:
 
   # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
-    return self.qitem.boundingRect().width()
+    return self.qitem.boundingRect().width()/self.ppu
 
   # ────────────────────────────────────────────────────────────────────────
   def Ly(self):
-    return self.qitem.boundingRect().height()
+    return self.qitem.boundingRect().height()/self.ppu
 
   # ════════════════════════════════════════════════════════════════════════
   #                              SETTERS
@@ -205,7 +209,8 @@ class item:
 
     # Place on the canva
     if self.qitem is not None:
-      self.qitem.setPos(self.position.X, self.position.Y)
+      self.qitem.setPos(self.position.X*self.ppu, 
+                        self.position.Y*self.ppu)
 
   # ────────────────────────────────────────────────────────────────────────
   def setOrientation(self):
@@ -218,8 +223,8 @@ class item:
 
     # Set orientation
     self.qitem.setTransformOriginPoint(
-      self.position.X + self.center_of_rotation.x,
-      self.position.Y + self.center_of_rotation.y)
+      (self.position.X + self.center_of_rotation.x)*self.ppu,
+      (self.position.Y + self.center_of_rotation.y)*self.ppu)
       
     self.qitem.setRotation(self._orientation*180/np.pi)
     
@@ -480,7 +485,7 @@ class hasStroke:
 
         # Thickness
         if self._thickness is not None:
-          Pen.setWidthF(self._thickness)
+          Pen.setWidthF(self._thickness*self.ppu)
 
         # Style
         match self._linestyle:

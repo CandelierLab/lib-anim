@@ -29,7 +29,7 @@ class boundingBox:
 
     # ─── Aspect ratio
 
-    self.aspect_ration = self.width/self.height
+    self.aspect_ratio = self.width/self.height
 
     # ─── Color
 
