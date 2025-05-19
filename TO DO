@@ -1,11 +1,12 @@
 Items
-- images
-- field
-- Composites
+- composites
   + scale bar
 - grid (+shift)
-- Fix the draggable demo
+
 - Fix the text drag issue: events.itemChange > Propagate change change QGraphicsItem with q_something_textitem
+- Fix the event + draggable demo
+
+- Multi-canva demo
 - Panels
   - Generic
   - Information
