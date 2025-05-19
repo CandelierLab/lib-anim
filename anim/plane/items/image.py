@@ -4,8 +4,7 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QImage, QPixmap, QTransform
 from PyQt6.QtWidgets import QGraphicsItem, QGraphicsPixmapItem
 
-from ..geometry import point
-
+import anim
 from .item import item
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -140,7 +139,7 @@ class image(item):
                file = None,
                array = None,
                flip = [False, False],
-               colormap = None,
+               colormap = anim.colormap('grey'),
                Lx = None,
                Ly = None,
                dimension = None,
@@ -223,7 +222,7 @@ class image(item):
 
     # Data
     if self.file is not None: self.file = self._file
-    elif self.aray is not None: self.array = self._array
+    elif self.array is not None: self.array = self._array
 
     # Initialization specifics
     self.setGeometry()
@@ -314,9 +313,40 @@ class image(item):
   @array.setter
   def array(self, A):
 
-    self._array = A
-    
-    # Set image
+    # ─── Prepare numpy array
+
+    # Rescale and clip on [0,255]
+    A = np.clip(255*(A - self.colormap.range[0])/(self.colormap.range[1] - self.colormap.range[0]), 0, 255)
+
+    # Set type
+    self._array = np.require(A, np.uint8, 'C')
+
+    # ─── QImage
+
+    if len(self._array.shape)==3 and self._array.shape[2]==3:        
+      ''' RGB image (3 channels) '''
+      
+      qImg = QImage(self._array.data,
+            self._array.shape[1],
+            self._array.shape[0],
+            self._array.strides[0],
+            QImage.Format.Format_RGB888)
+
+    else:        
+      ''' Indexed image (1 channel) '''
+      qImg = QImage(self._array.data,
+                    self._array.shape[1],
+                    self._array.shape[0],
+                    self._array.strides[0],
+                    QImage.Format.Format_Indexed8)
+
+      # Apply colormap
+      if self.colormap is not None:
+        qImg.setColorTable(self.colormap.colortable())
+
+    # ─── Pixmap
+
+    self._pixmap = QPixmap.fromImage(qImg)
     self.setPixmap()
 
   # ─── flip ───────────────────────────────────────────────────────────────
@@ -340,7 +370,7 @@ class image(item):
   @colormap.setter
   def colormap(self, cmap):
 
-    self._colormap = list(cmap)
+    self._colormap = cmap
     
     # Set image
     self.setPixmap()

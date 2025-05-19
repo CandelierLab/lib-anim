@@ -12,30 +12,44 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, window):
 
-    super().__init__(window, pixelperunit=256)
+    # Number of channels (1 or 3)
+    self.nchannel = 1
 
+    # Number of pixels in the image
     self.npix = 500
+
+    super().__init__(window, pixelperunit=self.npix)
 
     self.item.img = anim.plane.image(
       position = [0.5, 0.5],
-      dimension = [0.5, 0.5],
-      file = 'demo/images/corgi.png',
+      dimension = [1, 1],
+      array = self.ripple(0),
       # colormap = anim.colormap('gnuplot', range=[-1, 1])
     )
-
-    # print(self.item.img.qitem.pixmap().data)
 
   # ────────────────────────────────────────────────────────────────────────
   def ripple(self, t):
 
+    # Base field
     x = np.linspace(-1, 1, self.npix)
     X, Y = np.meshgrid(x, x)
+    base_field = (20 * X**2) + (20 * Y**2)
 
-    R = (np.sin((20 * X ** 2) + (20 * Y ** 2) - t/2/np.pi)+1)/2
-    G = (np.sin((20 * X ** 2) + (20 * Y ** 2) - t/2/np.pi+np.pi/2)+1)/2
-    B = (np.sin((20 * X ** 2) + (20 * Y ** 2) - t/2/np.pi+np.pi)+1)/2
-    
-    return np.concatenate((R[:,:,None], G[:,:,None], B[:,:,None]), axis=2)
+    match self.nchannel:
+
+      case 1:
+        ''' Single channel '''
+
+        return np.sin(base_field - t/2/np.pi)
+
+      case 3:
+        ''' RGB channels '''
+
+        R = np.sin(base_field - t/2/np.pi)
+        G = np.sin(base_field - t/2/np.pi+np.pi/2)
+        B = np.sin(base_field - t/2/np.pi+np.pi)
+        
+        return np.concatenate((R[:,:,None], G[:,:,None], B[:,:,None]), axis=2)
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
@@ -43,7 +57,7 @@ class Canva(anim.plane.canva):
     # Update timer display
     super().update(t)
 
-    # self.item.img.array = self.ripple(t.step)
+    self.item.img.array = self.ripple(t.step)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
@@ -58,7 +72,5 @@ W.add(Canva)
 # Allow backward animation
 W.allow_backward = True
 W.allow_negative_time = True
-
-W.autoplay = False
 
 W.show()
