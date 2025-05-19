@@ -163,7 +163,7 @@ class item:
     # Add events
     C = self.qitem.__class__
     if C is not QGraphicsTextItem:
-      self.qitem.__class__ = C.__class__(C.__name__ + '_event', (C, event), {})
+      self.qitem.__class__ = C.__class__(C.__name__, (C, event), {})
       '''
       For some reason this does not work with QGraphicsTextItem (core dump)
       Would certainly necessit more investigation.
@@ -225,7 +225,7 @@ class item:
     self.qitem.setTransformOriginPoint(
       (self.position.X + self.center_of_rotation.x)*self.ppu,
       (self.position.Y + self.center_of_rotation.y)*self.ppu)
-      
+          
     self.qitem.setRotation(self._orientation*180/np.pi)
     
   # ════════════════════════════════════════════════════════════════════════

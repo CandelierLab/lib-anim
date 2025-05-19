@@ -1,3 +1,5 @@
+import numpy as np
+
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QImage, QPixmap, QTransform
 from PyQt6.QtWidgets import QGraphicsItem, QGraphicsPixmapItem
@@ -203,9 +205,8 @@ class image(item):
 
     self.qitem = QGraphicsPixmapItem()
 
-    # Smooth display
-    # self.qitem.setTransformationMode(Qt.TransformationMode.SmoothTransformation)
-    self.qitem.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+    # Smooth scaling
+    self.qitem.setTransformationMode(Qt.TransformationMode.SmoothTransformation)
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -244,8 +245,11 @@ class image(item):
     x0 = self.position.X - (self.Lx/2 if self._center[0] else 0)
     y0 = self.position.Y - (self.Ly/2 if self._center[1] else 0)
 
-    if self._pixmap is not None:      
-      self.setPixmap()
+    # Set position
+    self.qitem.setPos(x0*self.ppu, y0*self.ppu)
+
+    # Set pixmap
+    self.setPixmap()
 
   # ────────────────────────────────────────────────────────────────────────
   def setPixmap(self):
@@ -256,15 +260,31 @@ class image(item):
     # Check pixmap
     if self._pixmap is None: return
 
-    # Set size
-    self._pixmap = self._pixmap.scaled(QSize(self.Lx, self.Ly))
-    # self._pixmap = self._pixmap
+    # Scaling
+    pixmap = self._pixmap.scaled(QSize(int(self.Lx*self.ppu),
+                                       int(self.Ly*self.ppu)))
 
     # Flipping
     T = QTransform().scale(1-self.flip[0]*2, self.flip[1]*2-1)
 
     #  Set the pixmap
-    self.qitem.setPixmap(self._pixmap.transformed(T))
+    self.qitem.setPixmap(pixmap.transformed(T))
+
+  # ────────────────────────────────────────────────────────────────────────
+  def setOrientation(self):
+    '''
+    Set the qitem orientation
+    '''
+
+    # Check qitem
+    if self.qitem is None: return
+
+    # Set orientation
+    self.qitem.setTransformOriginPoint(
+      (self._Lx/2 + self.center_of_rotation.x)*self.ppu,
+      (self._Ly/2 + self.center_of_rotation.y)*self.ppu)
+          
+    self.qitem.setRotation(self._orientation*180/np.pi)
 
   # ════════════════════════════════════════════════════════════════════════
   #                            DYNAMIC PROPERTIES

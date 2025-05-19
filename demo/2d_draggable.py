@@ -41,9 +41,12 @@ class myAnimation(anim.plane.canva):
     Track changes
     '''
     
+    print(desc)
+
     if desc=='motion':
 
       pos = qitem.pos()
+      print(pos)
       x = pos.x()
       y = pos.y()
 

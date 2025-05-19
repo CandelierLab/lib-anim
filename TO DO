@@ -4,6 +4,8 @@ Items
 - Composites
   + scale bar
 - grid (+shift)
+- Fix the draggable demo
+- Fix the text drag issue: events.itemChange > Propagate change change QGraphicsItem with q_something_textitem
 - Panels
   - Generic
   - Information
