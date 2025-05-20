@@ -1,10 +1,7 @@
-import numpy as np
-
-from PyQt6.QtCore import Qt, QPointF, QRectF, QSize
-from PyQt6.QtGui import QColor, QPen, QBrush, QPolygonF, QFont, QPainterPath, QTransform, QPixmap, QImage, qRgb
-from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsItemGroup, QGraphicsTextItem, QGraphicsLineItem, QGraphicsEllipseItem, QGraphicsPolygonItem, QGraphicsRectItem, QGraphicsPathItem, QGraphicsPixmapItem
+from PyQt6.QtWidgets import QGraphicsItemGroup
 
 from .item import item
+from ..itemDict import itemDict
 
 class group(item):
   '''
@@ -114,7 +111,7 @@ class group(item):
     # ─── QGraphicsItem
     
     self.qitem = QGraphicsItemGroup()
-  
+
   # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
     return self.qitem.childrenBoundingRect().width()/self.ppu
@@ -122,3 +119,29 @@ class group(item):
   # ────────────────────────────────────────────────────────────────────────
   def Ly(self):
     return self.qitem.childrenBoundingRect().height()/self.ppu
+
+# ══════════════════════════════════════════════════════════════════════════
+#                                COMPOSITES
+# ══════════════════════════════════════════════════════════════════════════
+
+class composite(group):
+  '''
+  Composite  item
+  '''
+
+  # ────────────────────────────────────────────────────────────────────────
+  def initialize(self):
+    '''
+    Initialize the composite
+
+    At this point:
+    - the canva should be defined (automatically managed by itemDict)
+    - the qitem should be defined (managed by the children class)
+    '''
+
+    # Parent constructor
+    super().initialize()
+
+    # ─── Child items (for composite items)
+
+    self.subitem = itemDict(self.canva)

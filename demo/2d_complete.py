@@ -24,9 +24,11 @@ class Canva(anim.plane.canva):
     #   center_of_rotation = [0, 0]
     # )
 
-    self.item.poly = anim.plane.polygon(
-      points = [[0.1,0.9], [0.5,0.5], [0.9,0.9]],
-      stroke = 'pink'
+    self.item.A = anim.plane.arrow(
+      points = [[0.1,0.9], [0.5,0.5]],
+      color = 'pink',
+      string = '0.18',
+      draggable = True
     )
     
     # print(self.item.rect.qitem.__class__)
