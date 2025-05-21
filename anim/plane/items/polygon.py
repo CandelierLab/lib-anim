@@ -14,7 +14,8 @@ class polygon(item, hasColor, hasStroke):
   '''
   A polygon item is defined by its:
 
-  - points (the point of reference is the first point)
+  - reference point
+  - polygon points (locations relative to the point of reference)
   - styling
   
   Parameters
@@ -33,9 +34,25 @@ class polygon(item, hasColor, hasStroke):
 
     ─── positions ───────────────────────────────
 
+    * x           
+        float
+        default: 0
+        x-position of the reference point.
+
+    * y
+        float
+        default: 0
+        y-position of the reference point.
+
+    * position
+        (float, float), [float, float], complex
+        default: [0,0]
+        Position of the reference point. The user can define either x, y or
+        the position. In case of conflict, the position attribute wins.
+
     * points
         [(float, float)], [[float, float]], [complex]
-        Positions of the polygon points.
+        Positions of the polygon points, with respect to the reference point
 
     ─── transformations ─────────────────────────
 
