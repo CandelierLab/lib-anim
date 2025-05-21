@@ -126,8 +126,6 @@ class arrow(composite):
 
     # ─── Child items (for composite items)
 
-    print('---')
-
     # Path
     self.subitem.path = path(
       group = self, 
@@ -135,35 +133,29 @@ class arrow(composite):
       stroke = self.color
     )
 
-    # print('---')
+    # Arrowhead
+    match self.shape:
 
-    # # Arrowhead
-    # match self.shape:
+      case 'dart':
 
-    #   case 'dart':
+        self.subitem.head = polygon(
+          group = self,
+          points = [[0,0], [0.1,0], [0,0.1]]
+        )
 
-    #     self.subitem.head = polygon(
-    #       group = self,
-    #       points = [[0,0], [0.1,0], [0,0.1]]
-    #     )
+      case 'disk':
 
-    #   case 'disk':
+        pass
+        # self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
+        #   parent = self.name,
+        #   position = [0,0],
+        #   radius = 0)
 
-    #     pass
-    #     # self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
-    #     #   parent = self.name,
-    #     #   position = [0,0],
-    #     #   radius = 0)
-
-    # # String
-    # self.subitem.string = text(
-    #   group = self,
-    #   string = self.init_string
-    # )
-
-
-    # print('---')
-
+    # String
+    self.subitem.string = text(
+      group = self,
+      string = self.init_string
+    )
 
   # ─── string ─────────────────────────────────────────────────────────────
   
@@ -173,14 +165,14 @@ class arrow(composite):
     return self.subitem.string.string
 
   @string.setter
-  def string(self, s): self.subitem.string.string = s
+  def string(self, s): 
+    self.subitem.string.string = s
 
   # ─── color ──────────────────────────────────────────────────────────────
   
   @property
   def color(self): return self._color
 
-  @string.setter
-  def color(self, c): 
-
+  @color.setter
+  def color(self, c):
     self._color = c

@@ -28,7 +28,8 @@ class Canva(anim.plane.canva):
 
     for i in range(self.N):
       self.item[f'line_{i}'] = anim.plane.line(
-        points = [[self.X[i], 0.5-Y[i]/4], [self.X[i], 0.5+Y[i]]],
+        position = [self.X[i], 0.5-Y[i]/8],
+        dimension = [0,  Y[i]],
         color = 'white'
       )
 
@@ -45,7 +46,8 @@ class Canva(anim.plane.canva):
 
     Y = self.generate(t.step)
     for i in range(self.N):
-      self.item[f'line_{i}'].points = [[self.X[i], 0.5-Y[i]/4], [self.X[i], 0.5+Y[i]]]
+      self.item[f'line_{i}'].position = [self.X[i], 0.5-Y[i]/8]
+      self.item[f'line_{i}'].dimension = [0, Y[i]]
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 

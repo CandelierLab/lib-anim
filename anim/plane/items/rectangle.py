@@ -75,7 +75,7 @@ class rectangle(item, hasColor, hasStroke):
     * center
         (bool, bool), [bool, bool], bool
         default: [True,True]
-        Boolean Defining the centering around the reference point. For tuple
+        Boolean defining the centering around the reference point. For tuple
         and list the first element is for the x-axis and the second is for 
         the y-axis.
 
@@ -175,7 +175,7 @@ class rectangle(item, hasColor, hasStroke):
 
     self._Lx = None 
     self._Ly = None 
-    self._center = None 
+    self._center = center 
 
     # ─── Rectangle attributes
 
@@ -188,8 +188,6 @@ class rectangle(item, hasColor, hasStroke):
     else:
       self.Lx = Lx
       self.Ly = Ly
-
-    self.center = center
 
     # ─── QGraphicsItem
 

@@ -1,7 +1,6 @@
-from PyQt6.QtGui import QPainterPath
-from PyQt6.QtWidgets import QGraphicsLineItem
+import numpy as np
 
-from ..geometry import point
+from PyQt6.QtWidgets import QGraphicsLineItem
 
 from .item import item, hasStroke
 
@@ -11,9 +10,10 @@ from .item import item, hasStroke
 
 class line(item, hasStroke):
   '''
-  A line item is defined by its:
+  A line item is defined by:
 
-  - points (the point of reference is the first point)
+  - position of the point of reference
+  - dimensions (Lx and Ly)
   - styling
   
   Parameters
@@ -30,13 +30,55 @@ class line(item, hasStroke):
         absolute coordinates. Otherwise, the positions are relative to the
         group's reference point.
 
-    ─── positions ───────────────────────────────
+    ─── position ────────────────────────────────
 
-    * points
-        [(float, float)], [[float, float]], [complex]
-        Positions of the line points.
+    * x           
+        float
+        default: 0
+        x-position of the reference point.
+
+    * y
+        float
+        default: 0
+        y-position of the reference point.
+
+    * position
+        (float, float), [float, float], complex
+        default: [0,0]
+        Position of the reference point. The user can define either x, y or
+        the position. In case of conflict, the position attribute wins.
+
+    * center
+        bool
+        default: False
+        Boolean defining the centering around the reference point.
+
+    ─── dimensions ──────────────────────────────
+
+    * Lx          
+        float
+        The line's width, i.e. length along the x axis when orientation
+        is 0. 
+
+    * Ly
+        float
+        The line's height, i.e.length along the y axis when orientation
+        is 0.
+
+    * dimension
+        (float, float), [float, float], complex
+        default: [0,0]
+        Dimensions along the x and y axes when orientation is 0. The user
+        must define either Lx, Ly or the dimension array. In case of
+        conflicting definitions, the dimension attribute wins.
 
     ─── transformations ─────────────────────────
+
+    * orientation
+        float
+        default: 0, unit: radians
+        Orientation of the rectangle, with respect to the positive part of the 
+        x-axis.
 
     * draggable
         bool
@@ -72,8 +114,15 @@ class line(item, hasStroke):
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, 
-               points,
+  def __init__(self,
+               x = 0,
+               y = 0,
+               position = None,
+               Lx = None,
+               Ly = None,
+               dimension = None,
+               orientation = 0,
+               center = False,
                color = 'grey',
                thickness = 0.005,
                linestyle = '-',
@@ -88,9 +137,11 @@ class line(item, hasStroke):
 
     item.__init__(self, 
                   group = group,
-                  position = points[0],
+                  x = x,
+                  y = y,
+                  position = position,
                   center_of_rotation = [0,0],
-                  orientation = 0,
+                  orientation = orientation,
                   zvalue = zvalue,
                   draggable = draggable)
     
@@ -102,7 +153,21 @@ class line(item, hasStroke):
     
     # ─── Internal properties
 
-    self.points = points
+    self._Lx = None
+    self._Ly = None 
+    self._center = center 
+
+    # ─── Line attributes
+
+    if dimension is not None and isinstance(dimension, (tuple, list, complex)):
+      self.dimension = dimension
+
+    elif Lx is None or Ly is None:
+      raise AttributeError("Line dimensions must be specified, either with 'dimension' or with 'Lx' and 'Ly'.")
+      
+    else:
+      self.Lx = Lx
+      self.Ly = Ly
 
     # ─── QGraphicsItem
 
@@ -133,21 +198,74 @@ class line(item, hasStroke):
     # Check qitem
     if self.qitem is None: return
 
-    self.qitem.setLine(self.points[0].x*self.ppu,
-                       self.points[0].y*self.ppu,
-                       self.points[1].x*self.ppu,
-                      self.points[1].y*self.ppu)
+    # Rectangle bottom-left corner
+    x0 = self.position.X - (self.Lx/2 if self._center else 0)
+    y0 = self.position.Y - (self.Ly/2 if self._center else 0)
 
-  # ─── points ─────────────────────────────────────────────────────────────
+    self.qitem.setLine(x0*self.ppu,
+                       y0*self.ppu,
+                       (x0 + self.Lx)*self.ppu,
+                       (y0 + self.Ly)*self.ppu)
+
+  # ─── width ──────────────────────────────────────────────────────────────
   
   @property
-  def points(self): return self._points
+  def Lx(self): return self._Lx
 
-  @points.setter
-  def points(self, P):
+  @Lx.setter
+  def Lx(self, w):
 
-    self._points = [point(p) for p in P]
+    self._Lx = w
     
+    # Set geometry
+    self.setGeometry()
+  
+  # ─── height ─────────────────────────────────────────────────────────────
+
+  @property
+  def Ly(self): return self._Ly
+
+  @Ly.setter
+  def Ly(self, h):
+
+    self._Ly = h
+    
+    # Set geometry
+    self.setGeometry()   
+
+  # ─── dimensions ─────────────────────────────────────────────────────────
+  
+  @property
+  def dimension(self): return [self._Lx, self._Ly]
+
+  @dimension.setter
+  def dimension(self, D):
+    
+    if isinstance(D, complex):
+
+      # Convert from complex coordinates
+      self._Lx = np.real(D)
+      self._Ly = np.imag(D)
+
+    else:
+
+      # Doublet input
+      self._Lx = D[0]
+      self._Ly = D[1]
+
+    # Set geometry
+    self.setGeometry()
+
+  # ─── center ─────────────────────────────────────────────────────────────
+
+  @property
+  def center(self): return self._center
+
+  @center.setter
+  def center(self, C):
+
+    self._center = C
+
     # Set geometry
     self.setGeometry()
 
