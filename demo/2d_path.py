@@ -22,6 +22,7 @@ class Canva(anim.plane.canva):
     # ─── Items
 
     self.item.P = anim.plane.path(
+      position = [0.5, 0.5],
       points = self.generate(0),
       color = 'lemonchiffon',
       stroke = 'orange'
@@ -32,8 +33,8 @@ class Canva(anim.plane.canva):
 
     P = []
     for x in range(self.N):
-      P.append([0.1+x*0.8/(self.N-1),
-                0.5 + np.sin(x*20/self.N + t/20)/5])
+      P.append([0.4*(2*x/(self.N-1)-1),
+                np.sin(x*20/self.N + t/20)/5])
 
     return P
 

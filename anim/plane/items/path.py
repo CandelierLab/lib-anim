@@ -13,7 +13,8 @@ class path(item, hasColor, hasStroke):
   '''
   A path item is defined by its:
 
-  - points (the point of reference is the first point)
+  - reference point
+  - path points (locations relative to the point of reference)
   - styling
   
   Parameters
@@ -32,9 +33,25 @@ class path(item, hasColor, hasStroke):
 
     ─── positions ───────────────────────────────
 
+    * x
+        float
+        default: 0
+        x-position of the reference point.
+
+    * y
+        float
+        default: 0
+        y-position of the reference point.
+
+    * position
+        (float, float), [float, float], complex
+        default: [0,0]
+        Position of the reference point. The user can define either x, y or
+        the position. In case of conflict, the position attribute wins.
+
     * points
         [(float, float)], [[float, float]], [complex]
-        Positions of the path points.
+        Positions of the path points, relatively to the reference point.
 
     ─── transformations ─────────────────────────
 
@@ -88,8 +105,11 @@ class path(item, hasColor, hasStroke):
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, 
+  def __init__(self,
                points,
+               x = 0,
+               y = 0,
+               position = None,
                color = None,
                stroke = 'grey',
                thickness = 0.005,
@@ -107,7 +127,9 @@ class path(item, hasColor, hasStroke):
 
     item.__init__(self, 
                   group = group,
-                  position = points[0],
+                  x = x,
+                  y = y,
+                  position = position,
                   center_of_rotation = center_of_rotation,
                   orientation = orientation,
                   zvalue = zvalue,
@@ -155,10 +177,12 @@ class path(item, hasColor, hasStroke):
 
     P = QPainterPath()
     for k, p in enumerate(self.points):
-      if k:
-        P.lineTo(p.x*self.ppu, p.y*self.ppu)
-      else:
-        P.moveTo(p.x*self.ppu, p.y*self.ppu)
+
+      x = (p.x + self.position.X)*self.ppu
+      y = (p.y + self.position.Y)*self.ppu
+
+      if k: P.lineTo(x, y)
+      else: P.moveTo(x, y)
 
     self.qitem.setPath(P)
 
