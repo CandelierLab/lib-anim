@@ -108,6 +108,9 @@ class polygon(item, hasColor, hasStroke):
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, 
                points,
+               x = 0,
+               y = 0,
+               position = None,
                color = 'grey',
                stroke = None,
                thickness = 0.005,
@@ -125,7 +128,9 @@ class polygon(item, hasColor, hasStroke):
 
     item.__init__(self, 
                   group = group,
-                  position = points[0],
+                  x = x,
+                  y = y,
+                  position = position,
                   center_of_rotation = center_of_rotation,
                   orientation = orientation,
                   zvalue = zvalue,
@@ -171,7 +176,7 @@ class polygon(item, hasColor, hasStroke):
     # Check qitem
     if self.qitem is None: return
 
-    self.qitem.setPolygon(QPolygonF([QPointF(p.x*self.ppu, p.y*self.ppu) for p in self.points]))
+    self.qitem.setPolygon(QPolygonF([QPointF((p.x  + self.position.X)*self.ppu, (p.y  + self.position.Y)*self.ppu) for p in self.points]))
 
   # ─── points ─────────────────────────────────────────────────────────────
   

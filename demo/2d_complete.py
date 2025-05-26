@@ -17,22 +17,27 @@ class Canva(anim.plane.canva):
                      display_boundaries = True,    
                      **kwargs)
 
-    self.item.line = anim.plane.line(
-      x = 0.5,
-      y = 0.5,
-      Lx = 0.3,
-      Ly = 0, 
-      center = True,
-      orientation = 0.2
+    # self.item.line = anim.plane.line(
+    #   x = 0.5,
+    #   y = 0.5,
+    #   Lx = 0.3,
+    #   Ly = 0, 
+    #   center = True,
+    #   orientation = 0.2
+    # )
+
+    self.item.A = anim.plane.arrow(
+      points = [[0.1,0.25], [0.5,0.7]],
+      color = 'pink',
+      string = '0.18',
+      draggable = True
     )
 
-    # self.item.A = anim.plane.arrow(
-    #   points = [[0.1,0.9], [0.5,0.5]],
-    #   color = 'pink',
-    #   string = '0.18',
-    #   draggable = True
-    # )
+    # self.item.A.position = [0.5,0.5]
+    # self.item.A.points = [[0.5,0.5], [0.75,0.25]]
     
+    print(self.item.A.position)
+
     # print(self.item.A.subitem.path.position)
 
   # ────────────────────────────────────────────────────────────────────────

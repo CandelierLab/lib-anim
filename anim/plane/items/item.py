@@ -211,6 +211,8 @@ class item:
     if self.qitem is not None:
       self.qitem.setPos(self.position.X*self.ppu, 
                         self.position.Y*self.ppu)
+      
+      print('set pos:', self.position.X, self.position.Y)
 
   # ────────────────────────────────────────────────────────────────────────
   def setOrientation(self):

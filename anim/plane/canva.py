@@ -21,7 +21,7 @@ class canva(QObject):
                boundaries_thickness = None,
                padding = 0,
                background_color = None,
-               pixelperunit = 2,
+               pixelperunit = 1,
                coordinates = 'xy'):
     '''
     Canva constructor

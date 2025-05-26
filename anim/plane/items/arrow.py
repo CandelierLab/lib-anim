@@ -105,7 +105,6 @@ class arrow(composite):
     # ─── Properties
 
     self._color = color
-
     self.init_string = string
 
     self.shape = shape
@@ -124,38 +123,60 @@ class arrow(composite):
     # Parent constructor
     super().initialize()
 
-    # ─── Child items (for composite items)
+    # ─── Child items (for composite items) ─────
 
-    # Path
+    # ─── Path
+
     self.subitem.path = path(
-      group = self, 
-      points = self.points,
+      group = self,
+      position = [0,0],
+      points = [[0,0],[0,0]],
       stroke = self.color
     )
 
-    # Arrowhead
-    match self.shape:
+    # # ─── Arrowhead
 
-      case 'dart':
+    # match self.shape:
 
-        self.subitem.head = polygon(
-          group = self,
-          points = [[0,0], [0.1,0], [0,0.1]]
-        )
+    #   case 'dart':
 
-      case 'disk':
+    #     self.subitem.head = polygon(
+    #       group = self,
+    #       points = [[0,0], [0.1,0], [0,0.1]]
+    #     )
 
-        pass
-        # self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
-        #   parent = self.name,
-        #   position = [0,0],
-        #   radius = 0)
+    #   case 'disk':
 
-    # String
-    self.subitem.string = text(
-      group = self,
-      string = self.init_string
-    )
+    #     pass
+    #     # self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
+    #     #   parent = self.name,
+    #     #   position = [0,0],
+    #     #   radius = 0)
+
+    # # ─── String
+
+    # self.subitem.string = text(
+    #   group = self,
+    #   string = self.init_string
+    # )
+
+    # ─── Update geometry ───────────────────────
+
+    self.setGeometry()
+
+  # ────────────────────────────────────────────────────────────────────────
+  def setGeometry(self):
+    '''
+    Sets the elements geometry
+    '''
+
+    # Check qitem
+    if self.qitem is None: return 
+
+    # Group positionning
+    super().setGeometry()
+
+    self.subitem.path.points = [[p[0]-self.position.X, p[1]-self.position.Y] for p in self.points]
 
   # ─── string ─────────────────────────────────────────────────────────────
   
