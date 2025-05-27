@@ -112,6 +112,22 @@ class group(item):
     
     self.qitem = QGraphicsItemGroup()
 
+  # # ────────────────────────────────────────────────────────────────────────
+  # def initialize(self):
+  #   '''
+  #   Initialize the item
+
+  #   This method is meant to be overloaded and called.
+  #   At this point:
+  #   - the canva should be defined (automatically managed by itemDict)
+  #   - the qitem should be defined (managed by the children class)
+  #   '''
+
+  #   # Generic item initialization
+  #   super().initialize()
+
+
+
   # ────────────────────────────────────────────────────────────────────────
   def Lx(self):
     return self.qitem.childrenBoundingRect().width()/self.ppu

@@ -9,7 +9,8 @@ from PyQt6.QtGui import QColor, QPen, QBrush
 from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsLineItem, QGraphicsTextItem
 
 from ..canva import canva
-from ..geometry import vector, point
+from ..geometry import vector, position as geom_position
+from ..events import event
 
 '''
 May be useful sometimes:
@@ -126,13 +127,13 @@ class item:
     
     # Item position
     if position is not None and isinstance(position, (tuple, list, complex)):
-      self._position:point = point(position)
+      self._position:geom_position = geom_position(position)
 
     elif x is None or y is None:
       raise AttributeError("Item position must be specified, either with 'position' or with 'x' and 'y'.")
       
     else:
-      self._position:point = point(x,y)
+      self._position:geom_position = geom_position(x,y)
 
     # Center of rotation
     self.center_of_rotation = center_of_rotation
@@ -152,8 +153,6 @@ class item:
     - the qitem should be defined (managed by the children class)
     '''
 
-    from ..events import event
-
     # Add item
     self.qitem.item = self
 
@@ -171,6 +170,9 @@ class item:
 
     #  Group
     self.group = self._group
+
+    # Position
+    self.setPosition()
 
     # Orientation
     self.setOrientation()
@@ -202,18 +204,19 @@ class item:
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
-  def setGeometry(self):
+  def setPosition(self, position=None):
     '''
-    Sets the qitem's position at the reference point.
+    Sets the qitem's position.
     '''
 
     # Place on the canva
-    if self.qitem is not None:
-      self.qitem.setPos(self.position.X*self.ppu, 
-                        self.position.Y*self.ppu)
-      
-      print('set pos:', self.position.X, self.position.Y)
+    if self.qitem is None: return
 
+    if position is None: position = self._position
+
+    self.qitem.setPos(position.x*self.ppu, 
+                      position.y*self.ppu)
+    
   # ────────────────────────────────────────────────────────────────────────
   def setOrientation(self):
     '''
@@ -225,8 +228,8 @@ class item:
 
     # Set orientation
     self.qitem.setTransformOriginPoint(
-      (self.position.X + self.center_of_rotation.x)*self.ppu,
-      (self.position.Y + self.center_of_rotation.y)*self.ppu)
+      self.center_of_rotation.x*self.ppu,
+      self.center_of_rotation.y*self.ppu)
           
     self.qitem.setRotation(self._orientation*180/np.pi)
     
@@ -282,6 +285,7 @@ class item:
   @group.setter
   def group(self, group):
 
+    # Set group
     self._group = group
 
     if self.qitem is not None and \
@@ -290,9 +294,12 @@ class item:
 
       # Add to group
       group.qitem.addToGroup(self.qitem)
+      
+      # Set relative position
+      self.position.absolute = False
 
       # Switch to relative coordinates
-      self.position.shift['group'] = vector(group.position.X, group.position.Y)
+      self.setPosition()
 
   # ─── Position ───────────────────────────────────────────────────────────
   
@@ -304,7 +311,7 @@ class item:
   @x.setter
   def x(self, v):
     self._position.x = v
-    self.setGeometry()
+    self.setPosition()
 
   @property
   def y(self): return self._position.y
@@ -312,7 +319,7 @@ class item:
   @x.setter
   def y(self, v):
     self._position.y = v
-    self.setGeometry()
+    self.setPosition()
 
   @property
   def position(self): return self._position
@@ -321,10 +328,12 @@ class item:
   def position(self, pt):
 
     # Set point
-    self._position = point(pt)
+    v = vector(pt)
+    self._position.x = v.x
+    self._position.y = v.y
 
-    # Update geometry
-    self.setGeometry()
+    # Update position
+    self.setPosition()
 
   # ─── Center of rotation ─────────────────────────────────────────────────
   
@@ -337,7 +346,7 @@ class item:
   def center_of_rotation(self, pt):
 
     # Set point    
-    self._center_of_rotation = vector(pt)
+    self._center_of_rotation = geom_position(pt)
 
     # Update orientation
     self.setOrientation()  

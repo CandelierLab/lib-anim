@@ -219,8 +219,8 @@ class rectangle(item, hasColor, hasStroke):
     if self.qitem is None: return
 
     # Rectangle bottom-left corner
-    x0 = self.position.X - (self.Lx/2 if self._center[0] else 0)
-    y0 = self.position.Y - (self.Ly/2 if self._center[1] else 0)
+    x0 = -self.Lx/2 if self._center[0] else 0
+    y0 = -self.Ly/2 if self._center[1] else 0
 
     # Set geometry
     self.qitem.setRect(QRectF(x0*self.ppu, 

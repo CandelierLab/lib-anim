@@ -3,7 +3,6 @@ import numpy as np
 from PyQt6.QtGui import QColor, QFont, QTransform, QTextDocument
 from PyQt6.QtWidgets import QGraphicsTextItem
 
-from ..geometry import vector
 from .item import item, hasColor
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -203,6 +202,14 @@ class text(item, hasColor):
   # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
+  def setPosition(self):
+    '''
+    Override
+    '''
+
+    self.setGeometry()
+
+  # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''
     Set the text box geometry
@@ -212,8 +219,8 @@ class text(item, hasColor):
     if self.qitem is None: return
 
     # text box bottom-left corner
-    x0 = self.position.X - (self.Lx()/2 if self._center[0] else 0)
-    y0 = self.position.Y + (self.Ly()/2 if self._center[1] else 0)
+    x0 = self.position.x - (self.Lx()/2 if self._center[0] else 0)
+    y0 = self.position.y + (self.Ly()/2 if self._center[1] else 0)
 
     # Set position
     self.qitem.setPos(x0*self.ppu, y0*self.ppu)

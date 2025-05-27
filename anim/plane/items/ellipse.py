@@ -206,13 +206,9 @@ class ellipse(item, hasColor, hasStroke):
     # Check qitem
     if self.qitem is None: return
 
-    # Rectangle bottom-left corner
-    x0 = self.position.X - self.Lx/2
-    y0 = self.position.Y - self.Ly/2
-
     # Set geometry
-    self.qitem.setRect(QRectF(x0*self.ppu,
-                              y0*self.ppu,
+    self.qitem.setRect(QRectF(-self.Lx/2*self.ppu,
+                              -self.Ly/2*self.ppu,
                               self.Lx*self.ppu,
                               self.Ly*self.ppu))
 

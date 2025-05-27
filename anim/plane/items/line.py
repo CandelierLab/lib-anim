@@ -199,8 +199,8 @@ class line(item, hasStroke):
     if self.qitem is None: return
 
     # Rectangle bottom-left corner
-    x0 = self.position.X - (self.Lx/2 if self._center else 0)
-    y0 = self.position.Y - (self.Ly/2 if self._center else 0)
+    x0 = -self.Lx/2 if self._center else 0
+    y0 = -self.Ly/2 if self._center else 0
 
     self.qitem.setLine(x0*self.ppu,
                        y0*self.ppu,

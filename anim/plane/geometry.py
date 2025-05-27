@@ -2,10 +2,6 @@
 GEOMETRICAL OBJECTS
 
 - Vector of 2D coordinates
-- Point in the plane
-
-lowercase letters: absolute position, in user coordinates
-uppercase letters: absolute position, in QGraphicsScene coordinates
 '''
 
 import numpy as np
@@ -39,48 +35,75 @@ class vector:
         self.y = x[1]
 
       else:
-        raise TypeError('Vectors can be defined with complex, tuples or lists.') 
+        raise TypeError(f'A {self.__class__.__name__} can be defined with complex, tuples or lists.') 
 
     else:
 
       self.x = x
       self.y = y
 
+  # ────────────────────────────────────────────────────────────────────────
+  def __str__(self):
+
+    return f'[vector] ({self.x},{self.y})'
+
 # ══════════════════════════════════════════════════════════════════════════
-#                                   POINT
+#                                 POSITION
 # ══════════════════════════════════════════════════════════════════════════
 
-class point(vector):
-  '''
-  Point in the plane
-  '''
+class position(vector):
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, x, y=None):
+  def __init__(self, x, y=None, absolute=True):
+    ''' 
+    Position
+    '''
 
-    # Parent constructor
     super().__init__(x, y)
 
-    # Shifts
-    self.shift = {}
+    self.absolute = absolute
 
   # ────────────────────────────────────────────────────────────────────────
   def __str__(self):
 
-    s = '═══ Point\n'
-    s += f'initial: ({self.x},{self.y})\n'
-    for k, v in self.shift.items():
-      s += f'shift {k}: ({v.x},{v.y})\n'
-    s += f'scene position: ({self.X},{self.Y})'
+    q = 'absolute' if self.absolute else 'relative'
+    return f'[{q} position] ({self.x},{self.y})'
 
-    return s
+# # ══════════════════════════════════════════════════════════════════════════
+# #                                   POINT
+# # ══════════════════════════════════════════════════════════════════════════
 
-  # ─── Scene position ─────────────────────────────────────────────────────
+# class point(vector):
+#   '''
+#   Point in the plane
+#   '''
+
+#   # ────────────────────────────────────────────────────────────────────────
+#   def __init__(self, x, y=None):
+
+#     # Parent constructor
+#     super().__init__(x, y)
+
+#     # Shifts
+#     self.shift = {}
+
+#   # ────────────────────────────────────────────────────────────────────────
+#   def __str__(self):
+
+#     s = '═══ Point: '
+#     s += f'({self.x},{self.y})'
+#     for k, v in self.shift.items():
+#       s += f' + shift_{k} ({v.x},{v.y})'
+#     s += f' = ({self.X},{self.Y})'
+
+#     return s
+
+#   # ─── Scene position ─────────────────────────────────────────────────────
   
-  ''' Position of the point in the QGraphicsScene '''
+#   ''' Position of the point in the QGraphicsScene '''
 
-  @property
-  def X(self): return sum([v.x for v in self.shift.values()], self.x)
+#   @property
+#   def X(self): return sum([v.x for v in self.shift.values()], self.x)
    
-  @property
-  def Y(self): return sum([v.y for v in self.shift.values()], self.y)
+#   @property
+#   def Y(self): return sum([v.y for v in self.shift.values()], self.y)

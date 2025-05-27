@@ -1,7 +1,9 @@
+import numpy as np
+
 from PyQt6.QtGui import QPainterPath
 from PyQt6.QtWidgets import QGraphicsPathItem
 
-from ..geometry import point
+from ..geometry import vector
 
 from .item import item, hasColor, hasStroke
 
@@ -178,8 +180,8 @@ class path(item, hasColor, hasStroke):
     P = QPainterPath()
     for k, p in enumerate(self.points):
 
-      x = (p.x + self.position.X)*self.ppu
-      y = (p.y + self.position.Y)*self.ppu
+      x = p.x*self.ppu
+      y = p.y*self.ppu
 
       if k: P.lineTo(x, y)
       else: P.moveTo(x, y)
@@ -194,7 +196,10 @@ class path(item, hasColor, hasStroke):
   @points.setter
   def points(self, P):
 
-    self._points = [point(p) for p in P]
+    if isinstance(P, np.ndarray):
+      self._points = [vector(p) for p in P.tolist()]
+    else:
+      self._points = [vector(p) for p in P]
     
     # Set geometry
     self.setGeometry()

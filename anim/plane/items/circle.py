@@ -160,13 +160,9 @@ class circle(item, hasColor, hasStroke):
     # Check qitem
     if self.qitem is None: return
 
-    # Rectangle bottom-left corner
-    x0 = self.position.X - self.radius
-    y0 = self.position.Y - self.radius
-
     # Set geometry
-    self.qitem.setRect(QRectF(x0*self.ppu,
-                              y0*self.ppu,
+    self.qitem.setRect(QRectF(-self.radius*self.ppu,
+                              -self.radius*self.ppu,
                               2*self.radius*self.ppu,
                               2*self.radius*self.ppu))
 

@@ -1,8 +1,11 @@
+
+import numpy as np
+
 from PyQt6.QtCore import Qt, QPointF
 from PyQt6.QtGui import QPolygonF
 from PyQt6.QtWidgets import QGraphicsPolygonItem
 
-from ..geometry import point
+from ..geometry import vector
 
 from .item import item, hasColor, hasStroke
 
@@ -176,7 +179,7 @@ class polygon(item, hasColor, hasStroke):
     # Check qitem
     if self.qitem is None: return
 
-    self.qitem.setPolygon(QPolygonF([QPointF((p.x  + self.position.X)*self.ppu, (p.y  + self.position.Y)*self.ppu) for p in self.points]))
+    self.qitem.setPolygon(QPolygonF([QPointF(p.x*self.ppu, p.y*self.ppu) for p in self.points]))
 
   # ─── points ─────────────────────────────────────────────────────────────
   
@@ -186,7 +189,10 @@ class polygon(item, hasColor, hasStroke):
   @points.setter
   def points(self, P):
 
-    self._points = [point(p) for p in P]
+    if isinstance(P, np.ndarray):
+      self._points = [vector(p) for p in P.tolist()]
+    else:
+      self._points = [vector(p) for p in P]
     
     # Set geometry
     self.setGeometry()

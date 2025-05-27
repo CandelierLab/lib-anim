@@ -1,3 +1,6 @@
+import numpy as np
+
+from .item import item
 from .group import composite
 from .path import path
 from .polygon import polygon
@@ -22,13 +25,13 @@ class arrow(composite):
         str
         The arrow's name
 
-    * shape
+    * head_shape
         'dart', 'circle'
         default: 'dart'
         The arrow head shape.
 
     * string
-        str
+        str, [*  str(*)]
         default: ''
         The arrow text's string. HTML formatting is supported by default.
 
@@ -44,6 +47,16 @@ class arrow(composite):
     * points
         [(float, float)], [[float, float]], [complex]
         Positions of the arrow points.
+
+    * head_segment
+        int
+        default: -1
+        Path segment where the arrowhead stands
+
+    * head_location
+        float ∈ [0,1]
+        default: 1
+        Location of the arrowhead on the specified path segment
 
     ─── transformations ─────────────────────────
 
@@ -83,7 +96,9 @@ class arrow(composite):
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, 
                points,
-               shape = 'dart',
+               head_shape = 'dart',
+               head_segment = -1,
+               head_location = 1,
                string = '',
                color = 'grey',
                thickness = 0.005,
@@ -106,9 +121,9 @@ class arrow(composite):
 
     self._color = color
     self.init_string = string
+    self._points = points
 
-    self.shape = shape
-    self.points = points
+    self.head_shape = head_shape
     
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -129,29 +144,30 @@ class arrow(composite):
 
     self.subitem.path = path(
       group = self,
-      position = [0,0],
-      points = [[0,0],[0,0]],
+      points = [[p[0]-self.position.x, p[1]-self.position.y] for p in self._points],
       stroke = self.color
     )
 
-    # # ─── Arrowhead
+    # ─── Arrowhead
 
-    # match self.shape:
+    match self.head_shape:
 
-    #   case 'dart':
+      case 'dart':
 
-    #     self.subitem.head = polygon(
-    #       group = self,
-    #       points = [[0,0], [0.1,0], [0,0.1]]
-    #     )
+        pts = np.array([[0,0], [0.1,0], [0,0.1]])
 
-    #   case 'disk':
+        self.subitem.head = polygon(
+          group = self,
+          points = pts
+        )
 
-    #     pass
-    #     # self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
-    #     #   parent = self.name,
-    #     #   position = [0,0],
-    #     #   radius = 0)
+      case 'disk':
+
+        pass
+        # self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
+        #   parent = self.name,
+        #   position = [0,0],
+        #   radius = 0)
 
     # # ─── String
 
@@ -162,27 +178,42 @@ class arrow(composite):
 
     # ─── Update geometry ───────────────────────
 
-    self.setGeometry()
+    # self.setGeometry()
 
-  # ────────────────────────────────────────────────────────────────────────
-  def setGeometry(self):
-    '''
-    Sets the elements geometry
-    '''
+  # # ────────────────────────────────────────────────────────────────────────
+  # def setGeometry(self):
+  #   '''
+  #   Sets the elements geometry
+  #   '''
 
-    # Check qitem
-    if self.qitem is None: return 
+  #   # Check qitem
+  #   if self.qitem is None: return 
 
-    # Group positionning
-    super().setGeometry()
+  #   # Group positionning
+  #   super().setGeometry()
 
-    self.subitem.path.points = [[p[0]-self.position.X, p[1]-self.position.Y] for p in self.points]
+
+  # ─── points ─────────────────────────────────────────────────────────────
+  
+  @property
+  def points(self): return self.subitem.path.points
+
+  @points.setter
+  def points(self, P): 
+
+    self._points = P
+
+    # Set reference point
+    self.position = self._points[0]
+
+    # Path points
+    self.subitem.path.points = [[p[0]-self.position.x, p[1]-self.position.y] for p in self._points]
 
   # ─── string ─────────────────────────────────────────────────────────────
   
   @property
   def string(self): 
-    print(self.subitem)
+    # print(self.subitem)
     return self.subitem.string.string
 
   @string.setter
