@@ -1,79 +1,74 @@
+'''
+2D image array demo
+'''
+
 import numpy as np
 import anim
 
-# === 2D Animation =========================================================
+# ═══ 2D Animation ═════════════════════════════════════════════════════════
 
-class myAnimation(anim.plane.canva):
+class Canva(anim.plane.canva):
 
-  def __init__(self, W):
+  # ────────────────────────────────────────────────────────────────────────
+  def __init__(self, window):
 
-    super().__init__(W)
+    # Number of pixels in the image
+    self.npix = 1000
 
-    # --- Colorbar
+    # Colormap
+    self.cmap = anim.colormap('gnuplot', range=[-1, 1])
 
-    self.colormap = anim.colormap()
-    self.colormap.range = [-1,1]
+    super().__init__(window,
+                     display_boundaries = False,
+                     pixelperunit = self.npix)
 
-    self.add(anim.plane.colorbar, 'Cb',
-      colormap = self.colormap,
+    # ─── display
+
+    self.item.img = anim.plane.image(
+      position = [0.57, 0.5],
+      dimension = [0.8, 0.8],
+      array = self.phase(0),
+      colormap = self.cmap
+    )
+
+    # ─── colorbar
+
+    self.item.cbar = anim.plane.colorbar(
       position = [0.05, 0.1],
-      height = 0.8,
-      width = 0.01,
-      nticks = 5
+      dimension = [0.1, 0.8],
+      colormap = self.cmap  s
     )
 
-    # --- Animation
+  # ────────────────────────────────────────────────────────────────────────
+  def phase(self, t):
 
-    self.x0 = 0.5
-    self.y0 = 0.5
-    self.R = 0.25
-    self.r = 0.01
+    # Base field
+    x = np.linspace(-0.5, 0.5, self.npix)
+    X, Y = np.meshgrid(x, x)
+    return np.angle(np.exp(t/(X + 1j*Y)/10))/np.pi
 
-    self.add(anim.plane.ellipse, 'E0',
-      position = [self.x0, self.y0],
-      major = 0.005,
-      minor = 0.005,
-      colors = ('white', None),
-    )
-
-    self.add(anim.plane.circle, 'C0',
-      position = [self.x0, self.y0],
-      radius = self.R,
-      colors = (None, 'grey'),
-      thickness = 2,
-      linestyle = '--'
-    )
-
-    self.add(anim.plane.circle, 'C',
-      position = [self.x0 + self.R, self.y0],
-      radius = self.r,
-      colors = (None, None),
-      thickness = 5
-    )
-
-  # ========================================================================
+  # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
-    
+
     # Update timer display
     super().update(t)
 
-    x_ = np.cos(t.time)
-    y_ = np.sin(t.time)
+    self.item.img.array = self.phase(t.step)
 
-    # Update position
-    x = self.x0 + self.R*x_
-    y = self.y0 + self.R*y_
-    self.item['C'].position = [x, y]
+# ═══ Main ═════════════════════════════════════════════════════════════════
 
-    # Update color
-    self.item['C'].colors = (self.colormap.qcolor(x_), self.colormap.qcolor(y_))
+import os
+os.system('clear')
 
-# === Main =================================================================
-
-W = anim.window('Colorbar')
+W = anim.window('Image animation', display_information=False)
 
 # Add animation
-W.add(myAnimation)
+W.add(Canva)
 
+# Allow backward animation
+W.allow_backward = True
+W.allow_negative_time = True
+
+W.autoplay = False
 
 W.show()

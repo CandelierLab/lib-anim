@@ -15,4 +15,8 @@ from .items.path import path
 from .items.polygon import polygon
 from .items.image import image
 from .items.text import text
+
+# ─── Composites
+
 from .items.arrow import arrow
+from .items.colorbar import colobar

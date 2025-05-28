@@ -1,79 +1,96 @@
 import numpy as np
 
-from .item import item
 from .group import composite
 from .path import path
 from .polygon import polygon
 from .circle import circle
 from .text import text
 
-class arrow(composite):
+class colorbar(composite):
   '''
-  Arrow item (composite)
+  Colorbar item (composite)
 
-  An arrow is defined by its:
+  A colorbar is defined by its:
 
-    - points (the point of reference is the first point)
-    - head
-    - text (optional)
-    - styling
+    - position and dimension. The reference point is the center of the colorbar 
+        rectangle, and the dimensions are those of the colorbar rectangle. The 
+        ticks take some extra space.
+    - colormap
+    - ticks
     
   Parameters
   ══════════
 
     * name       
         str
-        The arrow's name
+        The colormap's name
 
-    * head_shape
-        'dart', 'disk'
-        default: 'dart'
-        The arrow head shape.
+    * colormap
+        anim.colormap
+        The colormap associated with the colorbar
 
-    * string
+    * title
         str, [*  str(*)]
         default: ''
-        The arrow text's string. HTML formatting is supported by default.
+        The colorbar title. HTML formating is supported by default.
 
     * group
         anim.plane.group
         default: None
-        The arrow's group. If None, the position of the reference point is in
+        The colorbar's group. If None, the position of the reference point is in
         absolute coordinates. Otherwise, the positions are relative to the
         group's reference point.
 
-    ─── positions ───────────────────────────────
+    ─── dimensions ──────────────────────────────
 
-    * points
-        [(float, float)], [[float, float]], [complex]
-        Positions of the arrow points.
+    * Lx          
+        float
+        The colorbar rectangle width, i.e. length along the x axis when orientation
+        is 0. 
 
-    * head_segment
-        int
-        default: -1
-        Path segment where the arrowhead stands
+    * Ly
+        float
+        The colorbar rectangle height, i.e.length along the y axis when orientation
+        is 0.
 
-    * head_location
-        float ∈ [0,1]
-        default: 1
-        Location of the arrowhead on the specified path segment
+    * dimension
+        (float, float), [float, float], complex
+        default: [0,0]
+        Dimensions along the x and y axes when orientation is 0. The user
+        must define either Lx, Ly or the dimension array. In case of
+        conflicting definitions, the dimension attribute wins.
 
-    * text_segment
-        int
-        default: -1
-        Path segment where the text stands
+    ─── position ────────────────────────────────
 
-    * text_location
-        float ∈ [0,1]
-        default: 0.5
-        Location of the text on the specified path segment
+    * x           
+        float
+        default: 0
+        x-position of the reference point.
+
+    * y
+        float
+        default: 0
+        y-position of the reference point.
+
+    * position
+        (float, float), [float, float], complex
+        default: [0,0]
+        Position of the reference point. The user can define either x, y or
+        the position. In case of conflict, the position attribute wins.
+
+    * center
+        (bool, bool), [bool, bool], bool
+        default: [True,True]
+        Boolean defining the centering around the reference point. For tuple
+        and list the first element is for the x-axis and the second is for 
+        the y-axis.
 
     ─── transformations ─────────────────────────
 
     * draggable
         bool
         default: False
-        Boolean specifying if the arrow can be dragged. If True, the dragging
+        Boolean specifying if the colorbar can be dragged. If True, the dragging
         callback is defined in the 'itemChange' method of the event class,
         which is transfered to the canva's 'event' method (recommended).
 
@@ -82,82 +99,29 @@ class arrow(composite):
     * zvalue
         float
         default: 0
-        Z-value (stack order) of the arrow.
-    
-    ─── style ───────────────────────────────────
-
-    * thickness
-        float
-        default: 0.005
-        Arrow line thickness, in scene units. When it is equal to 0, the stroke
-        has the minimal thickness of 1 pixel.
-
-    * linestyle
-        'solid'/'-', 'dash'/'--', 'dot'/'..'/':', 'dashdot'/'-.'
-        default: '-'
-        Line style.
-
-    * fontname
-        str
-        default: 'Helvetica'
-        Font name
-
-    * fontsize
-        float
-        default: 0.05
-        Text font size, in scene units.
-
-    * style
-        str
-        default: ''
-        Associated document's css style sheet. Global styling is accessed
-        through the html selector.
-        Example: 'html { background-color: yellow; }'
-
-    * color
-        str, QColor
-        default: 'grey'
-        Arrow color. By default all the subitems have this color.
-
-    * path_color
-        None, str, QColor
-        default: color
-        Stroke color. None stands for transparency.
-
-    * head_color
-        None, str, QColor
-        default: color
-        Arrowhead color. None stands for transparency.
-
-    * text_color
-        None, str, QColor
-        default: color
-        Text color. None stands for transparency.
+        Z-value (stack order) of the colorbar.
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self,
-               points,
-               color = 'grey',
-               thickness = 0.005,
-               linestyle = '-',
-               path_color = None,
-               head_shape = 'dart',
-               head_segment = -1,
-               head_location = 1,
-               head_color = None,
-               string = '',
-               fontname = 'Helvetica',
-               fontsize = None,
-               text_segment = -1,
-               text_location = 0.5,
-               text_color = None,
-               text_style = '',
+  def __init__(self, 
+               colormap,
+               title = None,
+               ticks_number = 2,
+               ticks_precision = 2,
                group = None,
+               x = 0,
+               y = 0,
+               position = None,
+               Lx = None,
+               Ly = None,
+               dimension = None,
+               center = [True, True],
+               center_of_rotation = [0,0],
+               orientation = 0,
                zvalue = 0,
                draggable = False):
     '''
-    Arrow item constructor
+    Colorbar item constructor
     '''  
 
     # ─── Parent constructor
