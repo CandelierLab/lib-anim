@@ -192,7 +192,7 @@ class arrow(composite):
     self._text_segment = text_segment
     self._text_location = text_location
     self._text_color = text_color
-    self._text_style = text_style
+    self.init_text_style = text_style
     
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -227,39 +227,19 @@ class arrow(composite):
 
     self.subitem.text = text(
       group = self,
-      position = [0,0],
       string = self.init_string,
       color = self._color if self._text_color is None else self._text_color,
       fontname = self.init_fontname,
-      # fontsize = self.init_fontsize,
+      style = self.init_text_style
     )
 
     # ─── Geometry
 
     self.setGeometry()
 
-    
-
-    # ─── Update geometry ───────────────────────
-
-    # self.setGeometry()
-
-
   # ════════════════════════════════════════════════════════════════════════
-  #                              GETTERS
+  #                              SETTERS
   # ════════════════════════════════════════════════════════════════════════
-
-  # # ────────────────────────────────────────────────────────────────────────
-  # def setGeometry(self):
-  #   '''
-  #   Sets the elements geometry
-  #   '''
-
-  #   # Check qitem
-  #   if self.qitem is None: return 
-
-  #   # Group positionning
-  #   super().setGeometry()
 
   # ────────────────────────────────────────────────────────────────────────
   def setHeadShape(self):
@@ -287,7 +267,7 @@ class arrow(composite):
         self.subitem.head = circle(
           group = self,
           position = [0,0],
-          radius = 0.01,
+          radius = 2*self.subitem.path.thickness,
           color = color
         )
 
@@ -351,30 +331,32 @@ class arrow(composite):
 
     # ─── Text
 
-    # if 'text' in self.subitem and self.subitem.text.qitem is not None:
+    if 'text' in self.subitem and self.subitem.text.qitem is not None:
 
-    #   # Fontsize
-    #   if self._fontsize is None:
-    #     # self.subitem.text.fontsize = 0.1
-    #     pass
+      # Fontsize
+      fontsize = thickness*10 if self._fontsize is None else self._fontsize
+      self.subitem.text.fontsize = fontsize
 
-      # # Segment number
-      # k = self._text_segment if self._text_segment>=0 else len(self.points)-2
+      # Segment number
+      k = self._text_segment if self._text_segment>=0 else len(self.points)-2
 
-      # # Segment coordinates
-      # x0 = points[k][0]
-      # y0 = points[k][1]
-      # x1 = points[k+1][0]
-      # y1 = points[k+1][1]
+      # Segment coordinates
+      x0 = points[k][0]
+      y0 = points[k][1]
+      x1 = points[k+1][0]
+      y1 = points[k+1][1]
 
-      # # Position
-      # x = x0 + (x1-x0)*self._text_location
-      # y = y0 + (y1-y0)*self._text_location
-      # self.subitem.text.position = [x,y]
+      # Segment orientation
+      a = np.angle(x1-x0 + 1j*(y1-y0))
 
-      # # Orientation
-      # if self._head_shape in ['dart']:
-      #   self.subitem.text.orientation = np.angle(x1-x0 + 1j*(y1-y0))
+      # Position
+      r = fontsize/2*(1 if np.abs(a)<=np.pi/2 else -1)
+      x = x0 + (x1-x0)*self._text_location - r*np.sin(a)
+      y = y0 + (y1-y0)*self._text_location + r*np.cos(a)
+      self.subitem.text.position = [x,y]
+
+      # Orientation
+      self.subitem.text.orientation = a if np.abs(a)<=np.pi/2 else a+np.pi
 
   # ════════════════════════════════════════════════════════════════════════
   #                             PROPERTIES
@@ -439,10 +421,19 @@ class arrow(composite):
   def head_segment(self): return self._head_segment
 
   @head_segment.setter
-  def head_segment(self, c): self.subitem.head.color = c
+  def head_segment(self, k): 
+    self._head_segment = k
+    self.setGeometry()
 
   # ─── location ────────────────────────────────
 
+  @property
+  def head_location(self): return self._head_location
+
+  @head_location.setter
+  def head_location(self, r):
+    self._head_location = r
+    self.setGeometry()
 
   # ─── color ───────────────────────────────────
   
@@ -455,13 +446,10 @@ class arrow(composite):
   # ─── text ───────────────────────────────────────────────────────────────
   
   @property
-  def string(self): 
-    # print(self.subitem)
-    return self.subitem.string.string
+  def string(self): return self.subitem.text.string
 
   @string.setter
-  def string(self, s): 
-    self.subitem.string.string = s
+  def string(self, s): self.subitem.text.string = str(s)
 
   # ─── color ───────────────────────────────────
   
@@ -472,7 +460,13 @@ class arrow(composite):
   def text_color(self, c): self.subitem.text.color = c
 
   # ─── fontname ────────────────────────────────
-  
+
+  @property
+  def fontname(self): return self.subitem.text.fontname
+
+  @fontname.setter
+  def fontname(self, s): self.subitem.text.fontname = s
+
   # ─── fontsize ────────────────────────────────
 
   @property
@@ -481,15 +475,35 @@ class arrow(composite):
   @fontsize.setter
   def fontsize(self, s):
     self.subitem.text.fontsize = s
-    # self.setGeometry()
+    self.setGeometry()
 
-  # ─── style ───────────────────────────────────
+  # ─── segment ─────────────────────────────────
+
+  @property
+  def text_segment(self): return self._text_segment
+
+  @fontname.setter
+  def text_segment(self, k):
+    self._text_segment = k
+    self.setGeometry()
 
   # ─── location ────────────────────────────────
 
+  @property
+  def text_location(self): return self._text_location
+
+  @text_location.setter
+  def text_location(self, r):
+    self._text_location = r
+    self.setGeometry()
+
   # ─── style ───────────────────────────────────
 
+  @property
+  def style(self): return self.subitem.text.style
 
+  @style.setter
+  def style(self, s): self.subitem.text.style = s
 
   # ─── color ──────────────────────────────────────────────────────────────
   

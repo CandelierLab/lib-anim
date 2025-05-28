@@ -258,10 +258,11 @@ class text(item, hasColor):
     # Scale factor
     f = self.fontsize/self.qitem.boundingRect().height()
 
-    # print(f)
+    # Item scale
+    self.qitem.setTransform(QTransform.fromScale(f*self.ppu, -f*self.ppu), False)
 
-    # # Item scale
-    # self.qitem.setTransform(QTransform.fromScale(f*self.ppu, -f*self.ppu), True)
+    # Update geometry
+    self.setGeometry()
 
   # ─── string ─────────────────────────────────────────────────────────────
   
