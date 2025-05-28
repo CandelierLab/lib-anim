@@ -18,13 +18,29 @@ class Canva(anim.plane.canva):
                      **kwargs)
 
     self.item.A = anim.plane.arrow(
-      points = [[0.1,0.2], [0.4, 0.5]],
-      color = 'pink',
-      string = '0.18',
-      draggable = True
+      points = [[0.1,0.2], [0.4, 0.5], [0.6,0.5]],
+      color = 'magenta',
+      string = 0.18,
+      head_shape = 'dart',
+      head_location = 1,
+      head_segment = 1,
+      text_color = 'white',
+      draggable = True,
     )
 
-    # self.item.A.position = [0.5,0.5]
+    # self.item.R = anim.plane.rectangle(
+    #   position = [0.6, 0.4],
+    #   dimension = [0.1, 0.2],
+    #   center = [False, False]
+    # )
+
+    # self.item.T = anim.plane.text(
+    #   string = 'ok',
+    #   position = [0.5,0.5],
+    #   fontsize = 0.1,
+    # )
+
+    # self.item.A.color = 'cyan'
     # self.item.A.points = [[0.5,0.5], [0.75,0.25]]
     
     # print(self.item.A.position)

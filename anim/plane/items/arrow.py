@@ -26,7 +26,7 @@ class arrow(composite):
         The arrow's name
 
     * head_shape
-        'dart', 'circle'
+        'dart', 'disk'
         default: 'dart'
         The arrow head shape.
 
@@ -58,6 +58,16 @@ class arrow(composite):
         default: 1
         Location of the arrowhead on the specified path segment
 
+    * text_segment
+        int
+        default: -1
+        Path segment where the text stands
+
+    * text_location
+        float ∈ [0,1]
+        default: 0.5
+        Location of the text on the specified path segment
+
     ─── transformations ─────────────────────────
 
     * draggable
@@ -76,11 +86,6 @@ class arrow(composite):
     
     ─── style ────────────────────────────────
 
-    * color
-        None, str, QColor
-        default: 'grey'
-        Arrow color. None stands for transparency.
-
     * thickness
         float
         default: 0.005
@@ -91,18 +96,63 @@ class arrow(composite):
         'solid'/'-', 'dash'/'--', 'dot'/'..'/':', 'dashdot'/'-.'
         default: '-'
         Line style.
+
+    * fontname
+        str
+        default: 'Helvetica'
+        Font name
+
+    * fontsize
+        float
+        default: 0.05
+        Text font size, in scene units.
+
+    * style
+        str
+        default: ''
+        Associated document's css style sheet. Global styling is accessed
+        through the html selector.
+        Example: 'html { background-color: yellow; }'
+
+    * color
+        str, QColor
+        default: 'grey'
+        Arrow color. By default all the subitems have this color.
+
+    * path_color
+        None, str, QColor
+        default: color
+        Stroke color. None stands for transparency.
+
+    * head_color
+        None, str, QColor
+        default: color
+        Arrowhead color. None stands for transparency.
+
+    * text_color
+        None, str, QColor
+        default: color
+        Text color. None stands for transparency.
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, 
+  def __init__(self,
                points,
-               head_shape = 'dart',
-               head_segment = -1,
-               head_location = 1,
-               string = '',
                color = 'grey',
                thickness = 0.005,
                linestyle = '-',
+               path_color = None,
+               head_shape = 'dart',
+               head_segment = -1,
+               head_location = 1,
+               head_color = None,
+               string = '',
+               fontname = 'Helvetica',
+               fontsize = None,
+               text_segment = -1,
+               text_location = 0.5,
+               text_color = None,
+               text_style = '',
                group = None,
                zvalue = 0,
                draggable = False):
@@ -119,11 +169,30 @@ class arrow(composite):
     
     # ─── Properties
 
+    # General
     self._color = color
-    self.init_string = string
-    self._points = points
 
-    self.head_shape = head_shape
+    # Path
+    self._points = points
+    self.init_thickness = thickness
+    self.init_linestyle = linestyle
+    self._path_color = path_color
+
+    # Head
+    self._head_position = None
+    self._head_shape = head_shape
+    self._head_segment = head_segment
+    self._head_location = head_location
+    self._head_color = head_color
+
+    # Text
+    self.init_string = str(string)
+    self.init_fontname = fontname
+    self._fontsize = fontsize
+    self._text_segment = text_segment
+    self._text_location = text_location
+    self._text_color = text_color
+    self._text_style = text_style
     
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -144,41 +213,41 @@ class arrow(composite):
 
     self.subitem.path = path(
       group = self,
-      points = [[p[0]-self.position.x, p[1]-self.position.y] for p in self._points],
-      stroke = self.color
+      points = [[0,0], [0,0]],
+      thickness = self.init_thickness,
+      stroke = self._color if self._path_color is None else self._path_color,      
+      linestyle = self.init_linestyle
     )
 
-    # ─── Arrowhead
+    # ─── Head
 
-    match self.head_shape:
+    self.setHeadShape()
 
-      case 'dart':
+    # ─── String
 
-        pts = np.array([[0,0], [0.1,0], [0,0.1]])
+    self.subitem.text = text(
+      group = self,
+      position = [0,0],
+      string = self.init_string,
+      color = self._color if self._text_color is None else self._text_color,
+      fontname = self.init_fontname,
+      # fontsize = self.init_fontsize,
+    )
 
-        self.subitem.head = polygon(
-          group = self,
-          points = pts
-        )
+    # ─── Geometry
 
-      case 'disk':
+    self.setGeometry()
 
-        pass
-        # self.animation.item[self.head] = anim.plane.circle(self.animation, self.head,
-        #   parent = self.name,
-        #   position = [0,0],
-        #   radius = 0)
-
-    # # ─── String
-
-    # self.subitem.string = text(
-    #   group = self,
-    #   string = self.init_string
-    # )
+    
 
     # ─── Update geometry ───────────────────────
 
     # self.setGeometry()
+
+
+  # ════════════════════════════════════════════════════════════════════════
+  #                              GETTERS
+  # ════════════════════════════════════════════════════════════════════════
 
   # # ────────────────────────────────────────────────────────────────────────
   # def setGeometry(self):
@@ -192,8 +261,128 @@ class arrow(composite):
   #   # Group positionning
   #   super().setGeometry()
 
+  # ────────────────────────────────────────────────────────────────────────
+  def setHeadShape(self):
 
-  # ─── points ─────────────────────────────────────────────────────────────
+    if 'head' in self.subitem and self.subitem.head.qitem is not None:
+      self.canva.scene.removeItem(self.subitem.head.qitem)
+
+    # Color
+    color = self._color if self._head_color is None else self._head_color
+
+    match self._head_shape:
+
+      case 'dart':
+
+        pts = np.array([[-8, -3], [0, 0], [-8, 3], [-6, 0]])*self.subitem.path.thickness/1.5
+
+        self.subitem.head = polygon(
+          group = self,
+          points = pts,
+          color = color,
+        )
+
+      case 'disk':
+
+        self.subitem.head = circle(
+          group = self,
+          position = [0,0],
+          radius = 0.01,
+          color = color
+        )
+
+    # Update position
+    self.setGeometry()
+
+  # ────────────────────────────────────────────────────────────────────────
+  def setGeometry(self):
+    '''
+    Arrow geometry
+
+    * Sets the path points
+    * Sets the arrow head position and orientation
+    * Adjust the last path point to leave the arrowhead tip
+    '''
+
+    # ─── Positions
+
+    # Set reference point
+    self.position = self._points[0]
+
+    # Relative points
+    points = [[p[0]-self.position.x, p[1]-self.position.y] for p in self._points]
+
+    # Thickness
+    thickness = self.thickness
+
+    # ─── Arrow head
+
+    if 'head' in self.subitem and self.subitem.head.qitem is not None:
+
+      # Segment number
+      k = self._head_segment if self._head_segment>=0 else len(self.points)-2
+
+      # Segment coordinates
+      x0 = points[k][0]
+      y0 = points[k][1]
+      x1 = points[k+1][0]
+      y1 = points[k+1][1]
+
+      # Position
+      x = x0 + (x1-x0)*self._head_location
+      y = y0 + (y1-y0)*self._head_location
+      self.subitem.head.position = [x,y]
+
+      # Orientation
+      if self._head_shape in ['dart']:
+        self.subitem.head.orientation = np.angle(x1-x0 + 1j*(y1-y0))
+
+      # Path tip adjustment
+      if self._head_shape in ['dart']:
+        r = np.sqrt((x1-x0)**2 + (y1-y0)**2)
+        x = x0 + (x1-x0)*(r-thickness*3)/r
+        y = y0 + (y1-y0)*(r-thickness*3)/r
+        points[-1] = [x, y]
+
+    # ─── Adjust arrow path
+
+    # Path points
+    self.subitem.path.points = points
+
+    # ─── Text
+
+    # if 'text' in self.subitem and self.subitem.text.qitem is not None:
+
+    #   # Fontsize
+    #   if self._fontsize is None:
+    #     # self.subitem.text.fontsize = 0.1
+    #     pass
+
+      # # Segment number
+      # k = self._text_segment if self._text_segment>=0 else len(self.points)-2
+
+      # # Segment coordinates
+      # x0 = points[k][0]
+      # y0 = points[k][1]
+      # x1 = points[k+1][0]
+      # y1 = points[k+1][1]
+
+      # # Position
+      # x = x0 + (x1-x0)*self._text_location
+      # y = y0 + (y1-y0)*self._text_location
+      # self.subitem.text.position = [x,y]
+
+      # # Orientation
+      # if self._head_shape in ['dart']:
+      #   self.subitem.text.orientation = np.angle(x1-x0 + 1j*(y1-y0))
+
+  # ════════════════════════════════════════════════════════════════════════
+  #                             PROPERTIES
+  # ════════════════════════════════════════════════════════════════════════
+
+  # ─── path ───────────────────────────────────────────────────────────────
+
+  # ─── points ──────────────────────────────────
   
   @property
   def points(self): return self.subitem.path.points
@@ -203,13 +392,67 @@ class arrow(composite):
 
     self._points = P
 
-    # Set reference point
-    self.position = self._points[0]
+    # Update geometry
+    self.setGeometry()
 
-    # Path points
-    self.subitem.path.points = [[p[0]-self.position.x, p[1]-self.position.y] for p in self._points]
+  # ─── thickness ───────────────────────────────
+  
+  @property
+  def thickness(self): return self.subitem.path.thickness
 
-  # ─── string ─────────────────────────────────────────────────────────────
+  @thickness.setter
+  def thickness(self, t): 
+    self.subitem.path.thickness = t
+    self.setGeometry()
+
+  # ─── linestyle ───────────────────────────────
+  
+  @property
+  def linestyle(self): return self.subitem.path.linestyle
+
+  @thickness.setter
+  def linestyle(self, s): self.subitem.path.linestyle = s
+
+  # ─── color ───────────────────────────────────
+  
+  @property
+  def path_color(self): return self.subitem.path.stroke
+
+  @path_color.setter
+  def path_color(self, c): self.subitem.path.stroke = c
+
+  # ─── arrowhead ──────────────────────────────────────────────────────────
+  
+  # ─── shape ───────────────────────────────────
+
+  @property
+  def head_shape(self): return self._head_shape
+
+  @head_shape.setter
+  def head_shape(self, s):
+    self._head_shape = s
+    self.setHeadShape()
+
+  # ─── segment ─────────────────────────────────
+  
+  @property
+  def head_segment(self): return self._head_segment
+
+  @head_segment.setter
+  def head_segment(self, c): self.subitem.head.color = c
+
+  # ─── location ────────────────────────────────
+
+
+  # ─── color ───────────────────────────────────
+  
+  @property
+  def head_color(self): return self.subitem.head.color
+
+  @head_color.setter
+  def head_color(self, c): self.subitem.head.color = c
+
+  # ─── text ───────────────────────────────────────────────────────────────
   
   @property
   def string(self): 
@@ -220,6 +463,34 @@ class arrow(composite):
   def string(self, s): 
     self.subitem.string.string = s
 
+  # ─── color ───────────────────────────────────
+  
+  @property
+  def text_color(self): return self.subitem.text.color
+
+  @text_color.setter
+  def text_color(self, c): self.subitem.text.color = c
+
+  # ─── fontname ────────────────────────────────
+  
+  # ─── fontsize ────────────────────────────────
+
+  @property
+  def fontsize(self): return self.subitem.text.fontsize
+
+  @fontsize.setter
+  def fontsize(self, s):
+    self.subitem.text.fontsize = s
+    # self.setGeometry()
+
+  # ─── style ───────────────────────────────────
+
+  # ─── location ────────────────────────────────
+
+  # ─── style ───────────────────────────────────
+
+
+
   # ─── color ──────────────────────────────────────────────────────────────
   
   @property
@@ -228,3 +499,6 @@ class arrow(composite):
   @color.setter
   def color(self, c):
     self._color = c
+    if self._path_color is None: self.subitem.path.stroke = c
+    if self._head_color is None: self.subitem.head.color = c
+    if self._text_color is None: self.subitem.text.color = c
