@@ -19,4 +19,4 @@ from .items.text import text
 # ─── Composites
 
 from .items.arrow import arrow
-from .items.colorbar import colobar
+from .items.colorbar import colorbar

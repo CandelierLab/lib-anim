@@ -162,7 +162,7 @@ class item:
     # Add events
     C = self.qitem.__class__
     if C is not QGraphicsTextItem:
-      self.qitem.__class__ = C.__class__(C.__name__, (C, event), {})
+      self.qitem.__class__ = C.__class__(C.__name__+'_event', (C, event), {})
       '''
       For some reason this does not work with QGraphicsTextItem (core dump)
       Would certainly necessit more investigation.

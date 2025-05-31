@@ -175,7 +175,7 @@ class rectangle(item, hasColor, hasStroke):
 
     self._Lx = None 
     self._Ly = None 
-    self._center = center 
+    self._center = (center, center) if isinstance(center, bool) else center
 
     # ─── Rectangle attributes
 

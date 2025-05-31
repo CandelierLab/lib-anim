@@ -1,5 +1,5 @@
 '''
-2D image array demo
+2D colorbar array demo
 '''
 
 import numpy as np
@@ -16,7 +16,7 @@ class Canva(anim.plane.canva):
     self.npix = 1000
 
     # Colormap
-    self.cmap = anim.colormap('gnuplot', range=[-1, 1])
+    self.cmap = anim.colormap('magma', range=[-1, 1])
 
     super().__init__(window,
                      display_boundaries = False,
@@ -34,9 +34,10 @@ class Canva(anim.plane.canva):
     # ─── colorbar
 
     self.item.cbar = anim.plane.colorbar(
-      position = [0.05, 0.1],
-      dimension = [0.1, 0.8],
-      colormap = self.cmap  s
+      position = [0.1, 0.5],
+      dimension = [0.05, 0.4],
+      colormap = self.cmap,
+      ticks_number = 5,
     )
 
   # ────────────────────────────────────────────────────────────────────────
@@ -60,7 +61,7 @@ class Canva(anim.plane.canva):
 import os
 os.system('clear')
 
-W = anim.window('Image animation', display_information=False)
+W = anim.window('Colorbar animation', display_information=False)
 
 # Add animation
 W.add(Canva)
@@ -68,7 +69,5 @@ W.add(Canva)
 # Allow backward animation
 W.allow_backward = True
 W.allow_negative_time = True
-
-W.autoplay = False
 
 W.show()

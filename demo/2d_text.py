@@ -65,7 +65,5 @@ W.add(Canva)
 W.allow_backward = True
 W.allow_negative_time = True
 
-W.autoplay = False
-
 # Display
 W.show()
