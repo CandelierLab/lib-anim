@@ -22,6 +22,7 @@ class window(QMainWindow):
                title = 'Animation', 
                style = 'dark',
                height = 0.75,
+               aspect_ratio = 1,
                display_information = True):
     '''
     Creates a new window.
@@ -48,7 +49,7 @@ class window(QMainWindow):
     # Window size
     self.height = height
     self.width = None
-    self.aspect_ratio = 1
+    self.aspect_ratio = aspect_ratio
     ''' The aspect ratio is the window's width / height. '''
 
     # Main widget

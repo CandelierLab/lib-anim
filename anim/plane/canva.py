@@ -1,6 +1,6 @@
-from PyQt6.QtCore import Qt, QObject, QRectF, pyqtSignal
-from PyQt6.QtGui import QColor, QPainter, QPen, QBrush, QColorConstants
-from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsItem, QGraphicsRectItem
+from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtGui import QColor, QPen
+from PyQt6.QtWidgets import QGraphicsScene, QGraphicsRectItem
 
 import anim
 from .graphicsView import graphicsView
@@ -88,6 +88,11 @@ class canva(QObject):
     self.scene.addItem(bounds)
 
     # ─── Grid ──────────────────────────────────
+
+    # Number/spacing
+    # Color
+    # Shift
+    # Zvalue: -1
 
   # # ────────────────────────────────────────────────────────────────────────
   # def add(self, type, name, **kwargs):
