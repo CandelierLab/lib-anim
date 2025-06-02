@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QGraphicsPathItem
 from ..geometry import vector
 
 from .item import item, hasColor, hasStroke
+from ..events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                 PATH
@@ -150,7 +151,8 @@ class path(item, hasColor, hasStroke):
 
     # ─── QGraphicsItem
 
-    self.qitem = QGraphicsPathItem()
+    class QPath(QGraphicsPathItem, event): pass
+    self.qitem = QPath()
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):

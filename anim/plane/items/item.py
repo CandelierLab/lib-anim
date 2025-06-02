@@ -10,7 +10,6 @@ from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphics
 
 from ..canva import canva
 from ..geometry import vector, position as geom_position
-from ..events import event
 
 '''
 May be useful sometimes:
@@ -159,15 +158,6 @@ class item:
     # Pixels per unit
     self.ppu = float(self.canva.pixelperunit)
 
-    # Add events
-    C = self.qitem.__class__
-    if C is not QGraphicsTextItem:
-      self.qitem.__class__ = C.__class__(C.__name__+'_event', (C, event), {})
-      '''
-      For some reason this does not work with QGraphicsTextItem (core dump)
-      Would certainly necessit more investigation.
-      '''
-
     #  Group
     self.group = self._group
 
@@ -185,7 +175,8 @@ class item:
     self.zvalue = self._zvalue
 
     # Draggability
-    self.draggable = self._draggable
+    if self._draggable:
+      self.draggable = self._draggable
 
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS

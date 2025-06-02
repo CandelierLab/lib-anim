@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QGraphicsItemGroup
 
 from .item import item
 from ..itemDict import itemDict
+from ..events import event
 
 class group(item):
   '''
@@ -110,7 +111,9 @@ class group(item):
 
     # ─── QGraphicsItem
     
-    self.qitem = QGraphicsItemGroup()
+    class QGroup(QGraphicsItemGroup, event): pass
+    self.qitem = QGroup()
+
 
   # # ────────────────────────────────────────────────────────────────────────
   # def initialize(self):

@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QGraphicsItem, QGraphicsPixmapItem
 
 import anim
 from .item import item
+from ..events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                IMAGE
@@ -202,8 +203,9 @@ class image(item):
 
     # ─── QGraphicsItem
 
-    self.qitem = QGraphicsPixmapItem()
-
+    class QImage(QGraphicsPixmapItem, event): pass
+    self.qitem = QImage()
+    
     # Smooth scaling
     self.qitem.setTransformationMode(Qt.TransformationMode.SmoothTransformation)
 

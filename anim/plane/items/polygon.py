@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import QGraphicsPolygonItem
 from ..geometry import vector
 
 from .item import item, hasColor, hasStroke
+from ..events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                POLYGON
@@ -152,7 +153,8 @@ class polygon(item, hasColor, hasStroke):
 
     # ─── QGraphicsItem
 
-    self.qitem = QGraphicsPolygonItem()
+    class QPolygon(QGraphicsPolygonItem, event): pass
+    self.qitem = QPolygon()
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):

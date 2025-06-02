@@ -32,26 +32,32 @@ class event:
 
     self.item.canva.event(self, event.button().__str__() + '.double')
 
+  def dragEnterEvent(self, event):
+      
+    print('resize start')
+
   # ────────────────────────────────────────────────────────────────────────
   def itemChange(self, change, value):
+  # def itemChange(self, *args, **kwargs):
     '''
     Item change notification
     '''
 
-    print('ok')
+    # Skip is not item is defined
+    if hasattr(self, 'item'):
 
-    # ─── Define type
+      # ─── Define type
 
-    desc = None
+      desc = None
 
-    match change:
-      case QGraphicsItem.GraphicsItemChange.ItemPositionHasChanged:
-        desc = 'motion'
+      match change:
+        case QGraphicsItem.GraphicsItemChange.ItemPositionHasChanged:
+          desc = 'motion'
 
-    # ─── Report to canva
+      # ─── Report to canva
 
-    if self.item.canva is not None and desc is not None:
-      self.item.canva.event(self, desc)
+      if self.item.canva is not None and desc is not None:
+        self.item.canva.event(self, desc)
 
     # ─── Propagate change
     

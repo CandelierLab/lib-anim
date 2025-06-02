@@ -4,6 +4,7 @@ from PyQt6.QtCore import QRectF
 from PyQt6.QtWidgets import QGraphicsRectItem
 
 from .item import item, hasColor, hasStroke
+from ..events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                 RECTANGLE
@@ -191,7 +192,8 @@ class rectangle(item, hasColor, hasStroke):
 
     # ─── QGraphicsItem
 
-    self.qitem = QGraphicsRectItem()
+    class QRectangle(QGraphicsRectItem, event): pass
+    self.qitem = QRectangle()
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):

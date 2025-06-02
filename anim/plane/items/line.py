@@ -3,6 +3,7 @@ import numpy as np
 from PyQt6.QtWidgets import QGraphicsLineItem
 
 from .item import item, hasStroke
+from ..events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                 LINE
@@ -171,7 +172,8 @@ class line(item, hasStroke):
 
     # ─── QGraphicsItem
 
-    self.qitem = QGraphicsLineItem()
+    class QLine(QGraphicsLineItem, event): pass
+    self.qitem = QLine()
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):

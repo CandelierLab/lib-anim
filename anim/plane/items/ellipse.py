@@ -4,6 +4,7 @@ from PyQt6.QtCore import QRectF
 from PyQt6.QtWidgets import QGraphicsEllipseItem
 
 from .item import item, hasColor, hasStroke
+from ..events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                 ELLIPSE
@@ -179,7 +180,9 @@ class ellipse(item, hasColor, hasStroke):
 
     # ─── QGraphicsItem
 
-    self.qitem = QGraphicsEllipseItem()
+    class QEllipse(QGraphicsEllipseItem, event): pass
+    self.qitem = QEllipse()
+
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):

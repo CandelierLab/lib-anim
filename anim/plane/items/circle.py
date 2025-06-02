@@ -4,11 +4,12 @@ from PyQt6.QtCore import QRectF
 from PyQt6.QtWidgets import QGraphicsEllipseItem
 
 from .item import item, hasColor, hasStroke
+from ..events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                 CIRCLE
 # ══════════════════════════════════════════════════════════════════════════
-
+   
 class circle(item, hasColor, hasStroke):
   '''
   A circle item is defined by its:
@@ -133,7 +134,8 @@ class circle(item, hasColor, hasStroke):
 
     # ─── QGraphicsItem
 
-    self.qitem = QGraphicsEllipseItem()
+    class QCircle(QGraphicsEllipseItem, event): pass
+    self.qitem = QCircle()
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):

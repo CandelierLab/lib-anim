@@ -16,7 +16,7 @@ class myAnimation(anim.plane.canva):
 
     super().__init__(window, boundaries=[[-1,1], [-1,1]])
 
-    self.R = 0.75
+    self.R = 0.6
 
     # ─── Zone
 
@@ -24,6 +24,7 @@ class myAnimation(anim.plane.canva):
       radius = self.R,
       color = None,
       stroke = 'white',
+      thickness = 0.005,
       linestyle = '--'
     )
 
@@ -41,16 +42,11 @@ class myAnimation(anim.plane.canva):
     Track changes
     '''
     
-    print(desc)
-
     if desc=='motion':
 
       pos = qitem.pos()
-      print(pos)
       x = pos.x()
       y = pos.y()
-
-      # print(x, y)
 
       if (x**2 + y**2) <= self.R**2:
         qitem.item.color = 'green'
