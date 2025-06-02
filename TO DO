@@ -1,7 +1,5 @@
 Items 
 - grid (+ offset)
-- Fix the text drag issue: events.itemChange > Propagate change change QGraphicsItem with q_something_textitem
-- Fix the event + draggable demo
 - Improve the colorbar : possibility to update everything
 
 - Panels

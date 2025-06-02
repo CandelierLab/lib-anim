@@ -43,13 +43,13 @@ class Canva(anim.plane.canva):
       draggable = True
     )
 
-    self.item.rect_click = anim.plane.rectangle(
+    self.item.rect_drag = anim.plane.rectangle(
       group = self.item.group_drag,
       position = [0, 0],
       dimension = [0.25, 0.1]
     )
     
-    self.item.text_click = anim.plane.text(
+    self.item.text_drag = anim.plane.text(
       group = self.item.group_drag,
       position = [0, 0],
       string = 'Drag me',
@@ -80,12 +80,17 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def event(self, item, desc):
 
-    print(desc)
+    match item:
+      
+      case self.item.group_click.qitem:
 
-    if item == self.item.group_click.qitem:
-      self.item.text_result.string = str(desc)
+        self.item.text_result.string = str(desc)
 
-    # p = self.item.rect.qitem.pos()
+      case self.item.group_drag.qitem:
+
+        p = self.item.group_drag.qitem.pos()
+
+        self.item.text_result.string = f'position ({p.x():.02f},{p.y():.02f})'
     
     # print(self.item.rect.x + p.x(), self.item.rect.y + p.y())
     

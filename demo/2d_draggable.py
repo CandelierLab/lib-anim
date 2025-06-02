@@ -28,7 +28,7 @@ class myAnimation(anim.plane.canva):
       linestyle = '--'
     )
 
-    # ─── Disk
+    # ─── Text
 
     self.item.disk = anim.plane.circle(
       radius = 0.1,

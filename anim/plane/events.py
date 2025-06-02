@@ -19,6 +19,8 @@ class event:
 
     self.item.canva.event(self, event.button())
 
+    return QGraphicsItem.mousePressEvent(self, event)
+
   # ────────────────────────────────────────────────────────────────────────
   def mouseDoubleClickEvent(self, event):
     '''
@@ -32,9 +34,7 @@ class event:
 
     self.item.canva.event(self, event.button().__str__() + '.double')
 
-  def dragEnterEvent(self, event):
-      
-    print('resize start')
+    return QGraphicsItem.mouseDoubleClickEvent(self, event)
 
   # ────────────────────────────────────────────────────────────────────────
   def itemChange(self, change, value):
