@@ -3,10 +3,11 @@ animate API
 '''
 
 from .canva import canva
+from .grid import grid
 
 # ─── Items
 
-from .items.group import group
+from .items.group import group, composite
 from .items.rectangle import rectangle
 from .items.ellipse import ellipse
 from .items.circle import circle

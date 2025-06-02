@@ -5,8 +5,8 @@ from PyQt6.QtWidgets import QGraphicsScene, QGraphicsRectItem
 import anim
 from .graphicsView import graphicsView
 from .boundingBox import boundingBox
-
 from .itemDict import itemDict
+from .grid import grid as canva_grid
 
 class canva(QObject):
 
@@ -22,7 +22,8 @@ class canva(QObject):
                padding = 0,
                background_color = None,
                pixelperunit = 1,
-               coordinates = 'xy'):
+               coordinates = 'xy',
+               grid = None):
     '''
     Canva constructor
     '''
@@ -89,11 +90,10 @@ class canva(QObject):
 
     # ─── Grid ──────────────────────────────────
 
-    # Number/spacing
-    # Color
-    # Shift
-    # Zvalue: -1
-
+    self.grid = canva_grid(self,
+      spacing = 0.25,
+      ) if grid is True else grid
+      
   # # ────────────────────────────────────────────────────────────────────────
   # def add(self, type, name, **kwargs):
   #   '''

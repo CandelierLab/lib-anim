@@ -12,7 +12,7 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, window, **kwargs):
 
-    super().__init__(window)
+    super().__init__(window, **kwargs)
 
     self.item.dot = anim.plane.circle(
       position = [0.5,0.5],
@@ -37,6 +37,6 @@ os.system('clear')
 W = anim.window('Grid animation', display_information=False)
 
 # Add animation
-W.add(Canva)
+W.add(Canva, grid=True)
 
 W.show()
