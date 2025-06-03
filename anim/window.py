@@ -2,9 +2,10 @@ import os
 import inspect
 import numpy as np
 import imageio
+
 from PyQt6.QtCore import pyqtSignal, QTimer, Qt
 from PyQt6.QtGui import QKeySequence, QImage, QShortcut
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QSizeGrip
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout
 
 import anim 
 
@@ -14,7 +15,7 @@ class window(QMainWindow):
   '''
 
   # Generic event signal
-  signal = pyqtSignal(dict)
+  signal = pyqtSignal(object)
   ''' A pyqtSignal object to manage external events.'''
 
   # ────────────────────────────────────────────────────────────────────────
@@ -22,8 +23,9 @@ class window(QMainWindow):
                title = 'Animation', 
                style = 'dark',
                height = 0.75,
+               width = None,
                aspect_ratio = 1,
-               display_information = True):
+               information = None):
     '''
     Creates a new window.
         
@@ -44,19 +46,24 @@ class window(QMainWindow):
     # Call widget parent's constructor (otherwise no signal can be caught)
     super().__init__()
 
-    # ─── Main widged and layout ────────────────
-
     # Window size
     self.height = height
-    self.width = None
+    self.width = width
     self.aspect_ratio = aspect_ratio
     ''' The aspect ratio is the window's width / height. '''
+    
+    # ─── Layout ───────────────────────────────────────────────────────────
+
+    # ─── Docks ─────────────────────────────────
+
+    # Information panel
+    self.information = anim.information(self) if information is None else information(self)
+
+    # ─── Main widget and grid layout ───────────
 
     # Main widget
     self.mainWidget = QWidget()
     self.setCentralWidget(self.mainWidget)
-
-    # ─── Grid layout ───────────────────────────
 
     self.layout = QGridLayout()
     self.mainWidget.setLayout(self.layout)
@@ -75,22 +82,8 @@ class window(QMainWindow):
     with open(os.path.dirname(os.path.abspath(__file__)) + f'/style/{self.style}.css', 'r') as f:
       css = f.read()
       self.app.setStyleSheet(css)
-
-    # ─── Information panel ─────────────────────
-
-    if display_information:
-
-      self.information = anim.information(self)
     
-      self.layout.addWidget(self.information.view, 0, 0)
-      self.signal.connect(self.information.receive)
-      self.information.signal.connect(self.capture)
-      self._nCanva += 1
-
-    else:
-      self.information = None
-    
-    # --- Timing
+    # ─── Timing ────────────────────────────────
 
     # Framerate
     self.fps = 25
@@ -101,7 +94,7 @@ class window(QMainWindow):
 
     # Timer
     self.timer = QTimer()
-    self.timer.timeout.connect(self.set_step)
+    self.timer.timeout.connect(self.setStep)
 
     # Play
     self.autoplay = True
@@ -111,7 +104,7 @@ class window(QMainWindow):
     
     self.play_forward = True
 
-    # --- Output 
+    # ─── Video output ──────────────────────────
 
     # Movie
     self.movieFile = None
@@ -119,30 +112,6 @@ class window(QMainWindow):
     self.movieWidth = 1600     # Must be a multiple of 16
     self.moviefps = 25
     self.keep_every = 1
-
-  # def add_test(self):
-
-  #   from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsItem, QGraphicsRectItem
-  #   from PyQt6.QtGui import QBrush
-
-  #   # Define app and scene
-  #   scene = QGraphicsScene(0, 0, 500, 500)
-
-  #   # Create a red square
-  #   rect = QGraphicsRectItem(100, 100, 100, 100)
-  #   rect.setBrush(QBrush(Qt.GlobalColor.red))
-
-  #   rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
-  #   # rect.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges, True)
-
-  #   # rect.setCacheMode(QGraphicsItem.CacheMode.ItemCoordinateCache)
-  #   # rect.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
-
-  #   # Display
-  #   scene.addItem(rect)
-  #   view = QGraphicsView(scene)
-
-  #   self.layout.addWidget(view, 0 , 0)
 
   # ────────────────────────────────────────────────────────────────────────
   def add(self, canva, row=None, col=None, **kwargs):
@@ -188,18 +157,6 @@ class window(QMainWindow):
       self.layout.addLayout(canva, row, col)
 
   # ────────────────────────────────────────────────────────────────────────
-  def compute_canva_size(self, canva):
-
-    for i in range(self.layout.count()):
-      r, c, rspan, cspan = self.layout.getItemPosition(i)
-      nextrow = max(nextrow, r + rspan)
-      nextcol = max(nextcol, c + cspan)
-
-    print(canva.vspan)
-
-    return None
-
-  # ────────────────────────────────────────────────────────────────────────
   def show(self):
     """
     Display the animation window
@@ -218,13 +175,25 @@ class window(QMainWindow):
     self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowMinimizeButtonHint)
     self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowMaximizeButtonHint)
        
-    # ─── Shortcuts
+    # ─── Information panel ─────────────────────
+    
+    # Connect display signal
+    self.signal.connect(self.information.setTime)
+
+    # Initial display
+    self.information.display(self.information._display)
+
+    # ─── Shortcuts ─────────────────────────────
 
     self.shortcut = {}
 
     # Quit
     self.shortcut['esc'] = QShortcut(QKeySequence('Esc'), self)
     self.shortcut['esc'].activated.connect(self.close)
+
+    # Information panel
+    self.shortcut['info'] = QShortcut(QKeySequence('i'), self)
+    self.shortcut['info'].activated.connect(self.information.display)
 
     # Play/pause
     self.shortcut['space'] = QShortcut(QKeySequence('Space'), self)
@@ -241,23 +210,12 @@ class window(QMainWindow):
     # ─── Window display ────────────────────────
 
     super().show()
-    self.signal.emit({'type': 'show'})
+    self.signal.emit(self.signalObject({'type' : 'show'}))
 
-    # ─── Sizing
+    # Sizing
+    self.setWindowSize()
 
-    # Height
-    if self.height<=1:
-      self.height = self.app.screens()[0].size().height()*self.height
-    self.height = int(self.height)
-
-    # Compute width
-    if self.width is None:
-      self.width = int(self.height*self.aspect_ratio)
-
-    # Set window size
-    self.resize(self.width, self.height)
-
-    # --- Timing -----------------------------------------------------------
+    # ─── Timing ────────────────────────────────    
 
     # Timer settings
     self.timer.setInterval(int(1000*self.dt))
@@ -266,8 +224,8 @@ class window(QMainWindow):
     if self.autoplay:
       self.play_pause()
     
-    # --- Movie ------------------------------------------------------------
-
+    # ─── Video output ──────────────────────────
+    
     if self.movieFile is not None:
 
       # Check directory
@@ -284,7 +242,30 @@ class window(QMainWindow):
     self.app.exec()
 
   # ────────────────────────────────────────────────────────────────────────
-  def set_step(self, step=None):
+  def setWindowSize(self):
+
+    # Height
+    if self.height<=1:
+      height = self.app.screens()[0].size().height()*self.height
+
+    # Compute width
+    if self.width is None:
+
+      # Main layout
+      width = height*self.aspect_ratio
+
+      # Information panel
+      if self.information._display:
+        width += self.information.setWidth(height)
+      
+    else: 
+      width = self.app.screens()[0].size().width()*self.width
+
+    # Set window size
+    self.resize(int(width), int(height))
+
+  # ────────────────────────────────────────────────────────────────────────
+  def setStep(self, step=None):
 
     if step is None:
       self.step += 1 if self.play_forward else -1
@@ -302,7 +283,7 @@ class window(QMainWindow):
         return
         
     # Emit event
-    self.signal.emit({'type': 'update', 'time': anim.time(self.step, self.step*self.dt)})
+    self.signal.emit(self.signalObject({'type': 'update', 'time': anim.time(self.step, self.step*self.dt)}))
 
   # ────────────────────────────────────────────────────────────────────────
   def capture(self, force=False):
@@ -339,7 +320,7 @@ class window(QMainWindow):
       self.timer.stop()
 
       # Emit event
-      self.signal.emit({'type': 'pause'})
+      self.signal.emit(self.signalObject({'type': 'pause'}))
 
     else:
 
@@ -347,7 +328,7 @@ class window(QMainWindow):
       self.timer.start()
     
       # Emit event
-      self.signal.emit({'type': 'play'})
+      self.signal.emit(self.signalObject({'type': 'play'}))
 
   # ────────────────────────────────────────────────────────────────────────
   def increment(self):
@@ -355,7 +336,7 @@ class window(QMainWindow):
     self.play_forward = True
 
     if not self.timer.isActive():
-      self.set_step()
+      self.setStep()
 
   # ────────────────────────────────────────────────────────────────────────
   def decrement(self):
@@ -365,7 +346,7 @@ class window(QMainWindow):
       self.play_forward = False
 
       if not self.timer.isActive():
-        self.set_step()
+        self.setStep()
 
   # ────────────────────────────────────────────────────────────────────────
   def close(self):
@@ -379,10 +360,26 @@ class window(QMainWindow):
     self.timer.stop()
 
     # Emit event
-    self.signal.emit({'type': 'stop'})
+    self.signal.emit(self.signalObject({'type': 'stop'}))
+
 
     # Movie
     if self.movieWriter is not None:
       self.movieWriter.close()
 
     self.app.quit()
+
+  # ────────────────────────────────────────────────────────────────────────
+  @staticmethod
+  def signalObject(d):
+    return type('signal_object', (object,), d)
+
+  # # ────────────────────────────────────────────────────────────────────────
+  # def compute_canva_size(self):
+
+  #   for i in range(self.layout.count()):
+  #     r, c, rspan, cspan = self.layout.getItemPosition(i)
+  #     nextrow = max(nextrow, r + rspan)
+  #     nextcol = max(nextcol, c + cspan)
+
+  #   return None

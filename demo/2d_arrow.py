@@ -7,7 +7,7 @@ import datetime
 import numpy as np
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -66,8 +66,6 @@ class Canva(anim.plane.canva):
       zvalue = -1
     ) 
     
-
-    
   # ────────────────────────────────────────────────────────────────────────
   def data(self):
 
@@ -87,9 +85,6 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
-    # Update timer display
-    super().update(t)
-
     D = self.data()
     
     self.item.hours.string = D.h
@@ -101,12 +96,12 @@ class Canva(anim.plane.canva):
     self.item.seconds.string = D.s
     self.item.seconds.points = D.sp
 
+    # Confirm update
+    super().update(t)
+
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-import os
-os.system('clear')
-
-W = anim.window('Arrow animation', display_information=False)
+W = anim.window('Arrow animation')
 
 # Add animation
 W.add(Canva)

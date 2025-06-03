@@ -5,7 +5,7 @@
 import numpy as np
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -54,17 +54,14 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
-    # Update timer display
-    super().update(t)
-
     self.item.img.array = self.ripple(t.step)
+
+    # Confirm update
+    super().update(t)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-import os
-os.system('clear')
-
-W = anim.window('Image animation', display_information=False)
+W = anim.window('Image animation')
 
 # Add animation
 W.add(Canva)

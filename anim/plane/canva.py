@@ -91,68 +91,7 @@ class canva(QObject):
     # ─── Grid ──────────────────────────────────
 
     self._grid = canva_grid(self, spacing=0.25,) if grid is True else grid
-      
-  # # ────────────────────────────────────────────────────────────────────────
-  # def add(self, type, name, **kwargs):
-  #   '''
-  #   Add an item to the scene.
-  #   '''
-
-  #   # Stack
-  #   if 'stack' in kwargs:
-  #     stack = kwargs['stack']
-  #     del kwargs['stack']
-  #   else:
-  #     stack = False
-
-  #   height = kwargs['height'] if 'height' in kwargs else None
-
-  #   if height=='fill':
-  #     height = self.stack['vpos']-self.boundaries['y'][0]
-  #     kwargs['height'] = height
-      
-  #   # ─── Add element ───────────────────────────
-
-  #   if issubclass(type, anim.plane.composite):
-
-  #     ''' COMPOSITES '''
-
-  #     # Let composite elements create their own items
-  #     self.composite[name] = type(self, name, **kwargs)
-
-  #   else:
-
-  #     ''' ITEMS '''
-
-  #     # Create item
-  #     self.item[name] = type(self, name, **kwargs)
-
-  #     # Add item to the scene
-  #     if self.item[name].parent is None:
-  #       self.scene.addItem(self.item[name])
-    
-  #   # Place the item on the canva (once created)
-  #   self.item[name].init_display()
-
-  #   # ─── Stack ─────────────────────────────────
-
-  #   if stack:
-
-  #     x = 0
-  #     y = self.stack['vpos']
-
-  #     if height is None:
-  #       self.stack['vpos'] -= self.item[name].height()
-  #     else:
-  #       self.stack['vpos'] -= height
-  #       y -= height
-
-  #     # Set position
-  #     self.item[name].position = [x, y]
-
-  #     # Bottom padding
-  #     self.stack['vpos'] -= kwargs['vpadding'] if 'vpadding' in kwargs else self.stack['vpadding']
-
+  
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t=None):
     """
@@ -171,7 +110,7 @@ class canva(QObject):
     Event reception
     """
 
-    match event['type']:
+    match event.type:
 
       case 'show':
         
@@ -182,7 +121,7 @@ class canva(QObject):
       case 'update':
 
         # Update dispay
-        self.update(event['time'])
+        self.update(event.time)
 
       case 'stop':
         self.stop()

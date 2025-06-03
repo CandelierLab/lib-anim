@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib as mpl
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -25,9 +25,6 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
-    # Update timer display
-    super().update(t)
-
     # Geometry
     self.item.rect_0.Lx = (np.sin(t.step/10) + 1)*0.3  + 0.2
     self.item.rect_0.Ly = (np.cos(t.step/23) + 1)*0.2  + 0.3
@@ -36,12 +33,12 @@ class Canva(anim.plane.canva):
     # Color
     self.item.rect_0.color = self.colormap(t.step % self.colormap.N)
 
+    # Confirm update
+    super().update(t)
+
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-import os
-os.system('clear')
-
-W = anim.window('2D rectangle demo', display_information=False)
+W = anim.window('2D rectangle demo')
 
 # Add animation
 W.add(Canva)

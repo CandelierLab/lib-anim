@@ -5,7 +5,7 @@
 import numpy as np
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -34,9 +34,6 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
-    # Update timer display
-    super().update(t)
-
     # String
     self.item.time_second.string = f't = {t.time:.02f} s'
     self.item.time_step.string = f't = {t.step}'
@@ -51,12 +48,12 @@ class Canva(anim.plane.canva):
     self.item.time_step.y = np.cos(t.step/33)*0.2  + 0.5
     self.item.time_step.orientation = t.step/50
 
+    # Confirm update
+    super().update(t)
+
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-import os
-os.system('clear')
-
-W = anim.window('2D text demo', display_information=False)
+W = anim.window('2D text demo')
 
 # Add animation
 W.add(Canva)

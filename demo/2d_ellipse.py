@@ -5,7 +5,7 @@
 import numpy as np
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -35,21 +35,18 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
-    # Update timer display
-    super().update(t)
-
     for i in range(self.a):
       for j in range(self.a):
 
         L = self.b*(1 + np.cos(t.step/20)/2)
         self.item[f'ellipse_{i}_{j}'].dimension = [L, 2*self.b-L] if (i+j)%2 else [2*self.b-L, L]
 
+    # Confirm update
+    super().update(t)
+
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-import os
-os.system('clear')
-
-W = anim.window('Ellipse animation', display_information=False)
+W = anim.window('Ellipse animation')
 
 # Add animation
 W.add(Canva)

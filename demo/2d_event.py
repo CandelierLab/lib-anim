@@ -5,7 +5,7 @@
 import numpy as np
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -92,15 +92,7 @@ class Canva(anim.plane.canva):
 
         self.item.text_result.string = f'position ({p.x():.02f},{p.y():.02f})'
     
-    # print(self.item.rect.x + p.x(), self.item.rect.y + p.y())
-    
-
-
-
 # ═══ Main ═════════════════════════════════════════════════════════════════
-
-import os
-os.system('clear')
 
 W = anim.window('Event animation', display_information=False)
 

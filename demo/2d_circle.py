@@ -5,7 +5,7 @@
 import numpy as np
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -36,21 +36,18 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
-    # Update timer display
-    super().update(t)
-
     for i in range(self.a):
       for j in range(self.a):
 
         shift = ((i + j) % 2)*np.pi/2
         self.item[f'circle_{i}_{j}'].radius = self.b*(np.cos(t.step/30 + shift)*np.sqrt(2))/2
 
+    # Confirm update
+    super().update(t)
+
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-import os
-os.system('clear')
-
-W = anim.window('Ellispe animation', display_information=False)
+W = anim.window('Circle animation')
 
 # Add animation
 W.add(Canva)

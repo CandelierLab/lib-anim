@@ -1,47 +1,108 @@
 import re
 import anim
 
-class information(anim.plane.canva):
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QDockWidget, QVBoxLayout, QLabel
+
+class information:
     
-  # ========================================================================
-  def __init__(self, W, disp_time=True):
+  # ────────────────────────────────────────────────────────────────────────
+  def __init__(self, window, width=0.25):
+
+    # ─── Definitions ───────────────────────────
+
+    # Set window
+    self.window:anim.window = window
+
+    # Dock width
+    self.width = width
+
+    # Display state
+    self._display = False
+
+    # Strings
+    self.time = ''
+    self.html = ''
+
+    # ─── QWidgets ──────────────────────────────
+
+    # ─── Dock
+
+    self.dock = QDockWidget('', self.window)
+    self.dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
+    self.window.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dock)
     
-    # Parent contructor
-    super().__init__(W, 
-                     boundaries=[[0, 0.2], [0, 1]], 
-                     boundaries_color = None,
-                     background_color='#555')
+    '''Custom size hints, minimum and maximum sizes and size policies
+    should be implemented in the child widget'''
 
-    # --- Optional display
+    # self.dock.setWindowTitle('dock title')
 
-    # Time string
-    self.disp_time = disp_time
+    # ─── Vertical layout
 
-    if self.disp_time:
-      self.add(anim.plane.text, 'Time',
-        stack = True,
-        string = self.time_str(anim.time(0,0)),
-        fontsize = 12,
-      )
+    self.dock.setWidget(QWidget())
+    self.layout = QVBoxLayout(self.dock.widget())
+       
+    # ─── Label
 
-  # ========================================================================
-  def time_str(self, t):
+    self.label = QLabel()
+    self.layout.addWidget(self.label)
+
+    self.setHtml()
+
+    self.layout.addStretch()
+
+  # ────────────────────────────────────────────────────────────────────────
+  def setWidth(self, windowHeight):
+
+    width = int(self.width*windowHeight)
+    self.dock.widget().setMinimumWidth(width)
+    self.dock.widget().setMaximumWidth(width)
+
+    return width
+
+  # ────────────────────────────────────────────────────────────────────────
+  def display(self, state='toggle'):
+    '''
+    Defines if the dock is displayed or not
+    '''
+
+    # Display state
+    if state=='toggle':
+      self._display = not self._display
+    else:
+      self._display = state
+
+    # Set visibility
+    self.dock.setVisible(self._display)
+
+    # Update window size
+    self.window.setWindowSize()
+
+  # ────────────────────────────────────────────────────────────────────────
+  def setTime(self, signal):
     '''
     Format time string for display
     '''
 
-    s = '<p>step {:06d}</p><font size=2> {:06.02f} sec</font>'.format(t.step, t.time)
+    match signal.type:
 
-    # Grey zeros
-    s = re.sub(r'( )([0]+)', r'\1<span style="color:grey;">\2</span>', s)
+      case 'show' | 'update':
 
-    return s
-  
-  # ========================================================================
-  def update(self, t):
+        step = signal.time.step if hasattr(signal, 'time') else 0
+        time = signal.time.time if hasattr(signal, 'time') else 0
+    
+        s = '<table width="100%"><tr><td align=center>step</td><td align=center>time</td></tr><tr>'
+        s += f'<th align=center style="color:lightgrey;">{step}</th>'
+        s += f'<th align=center style="color:lightgrey;">{time:.02f} sec</th>'
+        s += '</tr></table><hr style="background-color:grey;">'
+        self.time = s
 
-    if self.disp_time:
-      self.item['Time'].string = self.time_str(t) 
+        self.setHtml()
 
-    # Repaint & confirm
-    super().update(t)
+  # ────────────────────────────────────────────────────────────────────────
+  def setHtml(self, html=None):
+
+    if html is not None:
+      self.html = html
+
+    self.label.setText(self.time + self.html)

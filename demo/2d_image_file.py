@@ -5,7 +5,7 @@
 import numpy as np
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -19,24 +19,26 @@ class Canva(anim.plane.canva):
     self.item.img = anim.plane.image(
       file = 'demo/images/corgi.png',
       position = [0.5, 0.5],
-      dimension = [0.2, 0.2]
+      dimension = self.scale(0)
     )
+
+  # ────────────────────────────────────────────────────────────────────────
+  def scale(self, t):
+
+    s = np.sin(t/self.period)/4 + 0.75
+    return (s,s)
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
-    # Update timer display
-    super().update(t)
+    self.item.img.dimension = self.scale(t.step)
 
-    scale = np.sin(t.step/self.period)/4 + 0.75
-    self.item.img.dimension = (scale, scale)
+    # Confirm update
+    super().update(t)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-import os
-os.system('clear')
-
-W = anim.window('Image animation', display_information=False)
+W = anim.window('Image animation')
 
 # Add animation
 W.add(Canva)

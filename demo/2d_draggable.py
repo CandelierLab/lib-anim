@@ -4,7 +4,7 @@
 
 import anim
 
-# === 2D Animation =========================================================
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class myAnimation(anim.plane.canva):
 
@@ -55,7 +55,7 @@ class myAnimation(anim.plane.canva):
 
 # === Main =================================================================
 
-W = anim.window('Draggable animation', display_information=False)
+W = anim.window('Draggable animation')
 
 # Add animation
 W.add(myAnimation)

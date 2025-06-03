@@ -1,10 +1,7 @@
 Items 
-- grid (+ offset)
 - Improve the colorbar : possibility to update everything
 
 - Panels
-  - Generic
-  - Information
   - Timebar
   - Parameters
 
@@ -12,12 +9,9 @@ REACHING DECENCY
 - Work on documentation
   
 DEVELOPMENTS
-- Initialization and loop mode
-- Better handling of theme styles
-- Rework information panel: html or view widget ?
-- Smart scrollbar
+- Loop mode
+- Better handling of theme styles (in particuar with information)
 - Snapshots
-- Parameters panel
 
 NEW FEATURES
 - Compatibility wih matplotlib:

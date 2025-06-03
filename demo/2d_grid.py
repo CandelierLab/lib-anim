@@ -5,7 +5,7 @@
 import numpy as np
 import anim
 
-# ═══ 2D Animation ═════════════════════════════════════════════════════════
+# ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
 class Canva(anim.plane.canva):
 
@@ -39,9 +39,6 @@ class Canva(anim.plane.canva):
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
 
-    # Update timer display
-    super().update(t)
-
     # ─── Update dot position
 
     new_pos = np.array(self.pos[-1]) + np.random.randn(2)/50
@@ -55,12 +52,12 @@ class Canva(anim.plane.canva):
 
     self.grid.shift = np.mean(self.pos, axis=0)
 
+    # Confirm update
+    super().update(t)
+
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-import os
-os.system('clear')
-
-W = anim.window('Grid animation', display_information=False)
+W = anim.window('Grid animation')
 
 # Add animation
 W.add(Canva)
