@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-VERSION = '0.0.8'
+VERSION = '1.0.0'
 DESCRIPTION = 'Beautifully simple animations'
 LONG_DESCRIPTION = 'A content-oriented package to create animations'
 

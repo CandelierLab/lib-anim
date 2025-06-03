@@ -55,7 +55,6 @@ class Canva(anim.plane.canva):
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
 W = anim.window('Animation with information panel')
-
 W.information.display(True)
 
 # Add animation
@@ -64,7 +63,5 @@ W.add(Canva)
 # Allow backward animation
 W.allow_backward = True
 W.allow_negative_time = True
-
-W.autoplay = False
 
 W.show()
