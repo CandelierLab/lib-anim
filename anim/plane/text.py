@@ -4,7 +4,7 @@ from PyQt6.QtGui import QColor, QFont, QTransform, QTextDocument
 from PyQt6.QtWidgets import QGraphicsTextItem
 
 from .item import item, hasColor
-from ..events import event
+from .events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                  TEXT

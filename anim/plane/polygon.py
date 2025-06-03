@@ -5,10 +5,10 @@ from PyQt6.QtCore import Qt, QPointF
 from PyQt6.QtGui import QPolygonF
 from PyQt6.QtWidgets import QGraphicsPolygonItem
 
-from ..geometry import vector
+from .geometry import vector
 
 from .item import item, hasColor, hasStroke
-from ..events import event
+from .events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                POLYGON

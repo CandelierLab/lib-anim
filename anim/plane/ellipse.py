@@ -1,23 +1,22 @@
 import numpy as np
 
-from PyQt6.QtGui import QPainterPath
-from PyQt6.QtWidgets import QGraphicsPathItem
-
-from ..geometry import vector
+from PyQt6.QtCore import QRectF
+from PyQt6.QtWidgets import QGraphicsEllipseItem
 
 from .item import item, hasColor, hasStroke
-from ..events import event
+from .events import event
 
 # ══════════════════════════════════════════════════════════════════════════
-#                                 PATH
+#                                 ELLIPSE
 # ══════════════════════════════════════════════════════════════════════════
 
-class path(item, hasColor, hasStroke):
+class ellipse(item, hasColor, hasStroke):
   '''
-  A path item is defined by its:
+  An ellipse item is defined by its:
 
-  - reference point
-  - path points (locations relative to the point of reference)
+  - dimensions (major and minor axis length, named here a and b respectively)
+  - position of the point of reference
+  - orientation of the major axis
   - styling
   
   Parameters
@@ -25,18 +24,37 @@ class path(item, hasColor, hasStroke):
 
     * name       
         str
-        The path's name
+        The ellipse's name
 
     * group
         anim.plane.group
         default: None
-        The path's group. If None, the position of the reference point is in
-        absolute coordinates. Otherwise, the positions are relative to the
-        group's reference point.
+        The ellipse's group. If None, the position of the reference point and
+        center of rotation are in absolute coordinates. Otherwise, the
+        position is relative to the group's reference point.
 
-    ─── positions ───────────────────────────────
+    ─── dimensions ──────────────────────────────
 
-    * x
+    * Lx          
+        float
+        The ellipse's width, i.e. length along the x axis when orientation
+        is 0. 
+
+    * Ly
+        float
+        The ellipse's height, i.e.length along the y axis when orientation
+        is 0.
+
+    * dimension
+        (float, float), [float, float], complex
+        default: [0,0]
+        Dimensions along the x and y axes when orientation is 0. The user
+        must define either Lx, Ly or the dimension array. In case of
+        conflicting definitions, the dimension attribute wins.
+
+    ─── position ────────────────────────────────
+
+    * x           
         float
         default: 0
         x-position of the reference point.
@@ -52,22 +70,18 @@ class path(item, hasColor, hasStroke):
         Position of the reference point. The user can define either x, y or
         the position. In case of conflict, the position attribute wins.
 
-    * points
-        [(float, float)], [[float, float]], [complex]
-        Positions of the path points, relatively to the reference point.
-
     ─── transformations ─────────────────────────
 
     * orientation
         float
         default: 0, unit: radians
-        Orientation of the path, with respect to the positive part of the 
+        Orientation of the ellipse, with respect to the positive part of the 
         x-axis.
 
     * center_of_rotation
         (float, float), [float, float], complex
         default: None
-        Center point for the rotation, relative to the reference point.
+        Center point for the rotation.
 
     * draggable
         bool
@@ -76,28 +90,29 @@ class path(item, hasColor, hasStroke):
         callback is defined in the 'itemChange' method of the event class,
         which is transfered to the canva's 'event' method (recommended).
 
+
     ─── stack ───────────────────────────────────
 
     * zvalue
         float
         default: 0
-        Z-value (stack order) of the path.
+        Z-value (stack order) of the ellipse.
     
     ─── style ────────────────────────────────
 
     * color
         None, str, QColor
-        default: None
+        default: 'grey'
         Fill color. None stands for transparency.
 
     * stroke
         None, str, QColor
-        default: 'grey'
+        default: None
         Stroke color. None stands for transparency.
 
     * thickness
         float
-        default: 0.005
+        default: 0
         Stroke thickness, in scene units. When it is equal to 0, the stroke
         has the minimal thickness of 1 pixel.
 
@@ -108,26 +123,27 @@ class path(item, hasColor, hasStroke):
   '''
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self,
-               points,
+  def __init__(self, 
+               Lx = None,
+               Ly = None,
+               dimension = None,
+               color = 'grey',
+               stroke = None,
+               thickness = 0,
+               linestyle = '-',
+               group = None,
                x = 0,
                y = 0,
                position = None,
-               color = None,
-               stroke = 'grey',
-               thickness = 0.005,
-               linestyle = '-',
-               group = None,
                center_of_rotation = [0,0],
                orientation = 0,
                zvalue = 0,
                draggable = False):
     '''
-    Path item constructor
+    Ellipse item constructor
     '''  
 
-    # ─── Parent constructors
-
+    # Parent constructors
     item.__init__(self, 
                   group = group,
                   x = x,
@@ -139,25 +155,39 @@ class path(item, hasColor, hasStroke):
                   draggable = draggable)
     
     hasColor.__init__(self, color = color)
-
+    
     hasStroke.__init__(self,
                        stroke = stroke,
                        thickness = thickness,
                        linestyle = linestyle)
-    
+
     # ─── Internal properties
 
-    self.points = points
+    self._Lx = None 
+    self._Ly = None 
+
+    # ─── Ellipse attributes
+
+    if dimension is not None and isinstance(dimension, (tuple, list, complex)):
+      self.dimension = dimension
+
+    elif Lx is None or Ly is None:
+      raise AttributeError("Ellipse dimensions must be specified, either with 'dimension' or with 'Lx' and 'Ly'.")
+      
+    else:
+      self.Lx = Lx
+      self.Ly = Ly
 
     # ─── QGraphicsItem
 
-    class QPath(QGraphicsPathItem, event): pass
-    self.qitem = QPath()
+    class QEllipse(QGraphicsEllipseItem, event): pass
+    self.qitem = QEllipse()
+
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
-    Initialize the path
+    Initialize the ellipse
 
     At this point:
     - the canva should be defined (automatically managed by itemDict)
@@ -169,39 +199,67 @@ class path(item, hasColor, hasStroke):
 
     # Initialization specifics
     self.setGeometry()
-    
+
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''
-    Set the path geometry
+    Set the ellipse's geometry
     '''
 
     # Check qitem
     if self.qitem is None: return
 
-    P = QPainterPath()
-    for k, p in enumerate(self.points):
+    # Set geometry
+    self.qitem.setRect(QRectF(-self.Lx/2*self.ppu,
+                              -self.Ly/2*self.ppu,
+                              self.Lx*self.ppu,
+                              self.Ly*self.ppu))
 
-      x = p.x*self.ppu
-      y = p.y*self.ppu
-
-      if k: P.lineTo(x, y)
-      else: P.moveTo(x, y)
-
-    self.qitem.setPath(P)
-
-  # ─── points ─────────────────────────────────────────────────────────────
+  # ─── width ──────────────────────────────────────────────────────────────
   
   @property
-  def points(self): return self._points
+  def Lx(self): return self._Lx
 
-  @points.setter
-  def points(self, P):
+  @Lx.setter
+  def Lx(self, w):
 
-    if isinstance(P, np.ndarray):
-      self._points = [vector(p) for p in P.tolist()]
-    else:
-      self._points = [vector(p) for p in P]
+    self._Lx = abs(w)
     
+    # Set geometry
+    self.setGeometry()
+  
+  # ─── height ─────────────────────────────────────────────────────────────
+
+  @property
+  def Ly(self): return self._Ly
+
+  @Ly.setter
+  def Ly(self, h):
+
+    self._Ly = abs(h)
+
+    # Set geometry
+    self.setGeometry() 
+
+  # ─── dimensions ─────────────────────────────────────────────────────────
+  
+  @property
+  def dimension(self): return [self._Lx, self._Ly]
+
+  @dimension.setter
+  def dimension(self, D):
+    
+    if isinstance(D, complex):
+
+      # Convert from complex coordinates
+      self._Lx = abs(np.real(D))
+      self._Ly = abs(np.imag(D))
+
+    else:
+
+      # Doublet input
+      self._Lx = abs(D[0])
+      self._Ly = abs(D[1])
+
     # Set geometry
     self.setGeometry()

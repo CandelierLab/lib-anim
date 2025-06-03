@@ -8,8 +8,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QPen, QBrush
 from PyQt6.QtWidgets import QAbstractGraphicsShapeItem, QGraphicsItem, QGraphicsLineItem, QGraphicsTextItem
 
-from ..canva import canva
-from ..geometry import vector, position as geom_position
+from .canva import canva
+from .geometry import vector, position as geom_position
 
 '''
 May be useful sometimes:

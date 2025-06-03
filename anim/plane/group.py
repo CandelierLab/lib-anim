@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QGraphicsItemGroup
 
 from .item import item
-from ..itemDict import itemDict
-from ..events import event
+from .itemDict import itemDict
+from .events import event
 
 class group(item):
   '''

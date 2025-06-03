@@ -1,22 +1,25 @@
 import numpy as np
 
 from PyQt6.QtCore import QRectF
-from PyQt6.QtWidgets import QGraphicsEllipseItem
+from PyQt6.QtWidgets import QGraphicsRectItem
 
 from .item import item, hasColor, hasStroke
-from ..events import event
+from .events import event
 
 # ══════════════════════════════════════════════════════════════════════════
-#                                 ELLIPSE
+#                                 RECTANGLE
 # ══════════════════════════════════════════════════════════════════════════
 
-class ellipse(item, hasColor, hasStroke):
+class rectangle(item, hasColor, hasStroke):
   '''
-  An ellipse item is defined by its:
+  A rectangle item is defined by its:
 
-  - dimensions (major and minor axis length, named here a and b respectively)
+  - dimensions (width and height)
   - position of the point of reference
-  - orientation of the major axis
+  - horizontal and vertical centering, with respect to the point of
+      reference. The defaut centering is (True,True), while (False,False)
+      defines the reference as the bottom-left corner. One can also use a single
+      value to set both at the same time.
   - styling
   
   Parameters
@@ -24,12 +27,12 @@ class ellipse(item, hasColor, hasStroke):
 
     * name       
         str
-        The ellipse's name
+        The rectangle's name
 
     * group
         anim.plane.group
         default: None
-        The ellipse's group. If None, the position of the reference point and
+        The rectangle's group. If None, the position of the reference point and
         center of rotation are in absolute coordinates. Otherwise, the
         position is relative to the group's reference point.
 
@@ -37,12 +40,12 @@ class ellipse(item, hasColor, hasStroke):
 
     * Lx          
         float
-        The ellipse's width, i.e. length along the x axis when orientation
+        The rectangle's width, i.e. length along the x axis when orientation
         is 0. 
 
     * Ly
         float
-        The ellipse's height, i.e.length along the y axis when orientation
+        The rectangle's height, i.e.length along the y axis when orientation
         is 0.
 
     * dimension
@@ -70,12 +73,19 @@ class ellipse(item, hasColor, hasStroke):
         Position of the reference point. The user can define either x, y or
         the position. In case of conflict, the position attribute wins.
 
+    * center
+        (bool, bool), [bool, bool], bool
+        default: [True,True]
+        Boolean defining the centering around the reference point. For tuple
+        and list the first element is for the x-axis and the second is for 
+        the y-axis.
+
     ─── transformations ─────────────────────────
 
     * orientation
         float
         default: 0, unit: radians
-        Orientation of the ellipse, with respect to the positive part of the 
+        Orientation of the rectangle, with respect to the positive part of the 
         x-axis.
 
     * center_of_rotation
@@ -90,13 +100,12 @@ class ellipse(item, hasColor, hasStroke):
         callback is defined in the 'itemChange' method of the event class,
         which is transfered to the canva's 'event' method (recommended).
 
-
     ─── stack ───────────────────────────────────
 
     * zvalue
         float
         default: 0
-        Z-value (stack order) of the ellipse.
+        Z-value (stack order) of the rectangle.
     
     ─── style ────────────────────────────────
 
@@ -127,6 +136,7 @@ class ellipse(item, hasColor, hasStroke):
                Lx = None,
                Ly = None,
                dimension = None,
+               center = [True, True],
                color = 'grey',
                stroke = None,
                thickness = 0,
@@ -140,10 +150,11 @@ class ellipse(item, hasColor, hasStroke):
                zvalue = 0,
                draggable = False):
     '''
-    Ellipse item constructor
+    Rectangle item constructor
     '''  
 
-    # Parent constructors
+    # ─── Parent constructors
+
     item.__init__(self, 
                   group = group,
                   x = x,
@@ -155,24 +166,25 @@ class ellipse(item, hasColor, hasStroke):
                   draggable = draggable)
     
     hasColor.__init__(self, color = color)
-    
+
     hasStroke.__init__(self,
                        stroke = stroke,
                        thickness = thickness,
                        linestyle = linestyle)
-
+    
     # ─── Internal properties
 
     self._Lx = None 
     self._Ly = None 
+    self._center = (center, center) if isinstance(center, bool) else center
 
-    # ─── Ellipse attributes
+    # ─── Rectangle attributes
 
     if dimension is not None and isinstance(dimension, (tuple, list, complex)):
       self.dimension = dimension
 
     elif Lx is None or Ly is None:
-      raise AttributeError("Ellipse dimensions must be specified, either with 'dimension' or with 'Lx' and 'Ly'.")
+      raise AttributeError("Rectangle dimensions must be specified, either with 'dimension' or with 'Lx' and 'Ly'.")
       
     else:
       self.Lx = Lx
@@ -180,14 +192,13 @@ class ellipse(item, hasColor, hasStroke):
 
     # ─── QGraphicsItem
 
-    class QEllipse(QGraphicsEllipseItem, event): pass
-    self.qitem = QEllipse()
-
+    class QRectangle(QGraphicsRectItem, event): pass
+    self.qitem = QRectangle()
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
     '''
-    Initialize the ellipse
+    Initialize the rectangle
 
     At this point:
     - the canva should be defined (automatically managed by itemDict)
@@ -199,20 +210,24 @@ class ellipse(item, hasColor, hasStroke):
 
     # Initialization specifics
     self.setGeometry()
-
+    
   # ────────────────────────────────────────────────────────────────────────
   def setGeometry(self):
     '''
-    Set the ellipse's geometry
+    Set the rectangle's geometry
     '''
 
     # Check qitem
     if self.qitem is None: return
 
+    # Rectangle bottom-left corner
+    x0 = -self.Lx/2 if self._center[0] else 0
+    y0 = -self.Ly/2 if self._center[1] else 0
+
     # Set geometry
-    self.qitem.setRect(QRectF(-self.Lx/2*self.ppu,
-                              -self.Ly/2*self.ppu,
-                              self.Lx*self.ppu,
+    self.qitem.setRect(QRectF(x0*self.ppu, 
+                              y0*self.ppu, 
+                              self.Lx*self.ppu, 
                               self.Ly*self.ppu))
 
   # ─── width ──────────────────────────────────────────────────────────────
@@ -223,7 +238,7 @@ class ellipse(item, hasColor, hasStroke):
   @Lx.setter
   def Lx(self, w):
 
-    self._Lx = abs(w)
+    self._Lx = w
     
     # Set geometry
     self.setGeometry()
@@ -236,10 +251,10 @@ class ellipse(item, hasColor, hasStroke):
   @Ly.setter
   def Ly(self, h):
 
-    self._Ly = abs(h)
-
+    self._Ly = h
+    
     # Set geometry
-    self.setGeometry() 
+    self.setGeometry()   
 
   # ─── dimensions ─────────────────────────────────────────────────────────
   
@@ -252,14 +267,30 @@ class ellipse(item, hasColor, hasStroke):
     if isinstance(D, complex):
 
       # Convert from complex coordinates
-      self._Lx = abs(np.real(D))
-      self._Ly = abs(np.imag(D))
+      self._Lx = np.real(D)
+      self._Ly = np.imag(D)
 
     else:
 
       # Doublet input
-      self._Lx = abs(D[0])
-      self._Ly = abs(D[1])
+      self._Lx = D[0]
+      self._Ly = D[1]
+
+    # Set geometry
+    self.setGeometry()
+
+  # ─── center ─────────────────────────────────────────────────────────────
+
+  @property
+  def center(self): return self._center
+
+  @center.setter
+  def center(self, C):
+
+    if isinstance(C, bool):
+      self._center = (C,C)
+    else:
+      self._center = C
 
     # Set geometry
     self.setGeometry()

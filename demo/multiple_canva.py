@@ -118,8 +118,7 @@ os.system('clear')
 
 W = anim.window('Multiple canvas',
                 height = 0.5,
-                aspect_ratio = 3,
-                display_information=False)
+                aspect_ratio = 3)
 
 # Add animation
 W.add(clock, city='America/New_York')

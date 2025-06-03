@@ -3,7 +3,7 @@ import numpy as np
 from PyQt6.QtWidgets import QGraphicsLineItem
 
 from .item import item, hasStroke
-from ..events import event
+from .events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                 LINE

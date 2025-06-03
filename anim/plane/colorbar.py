@@ -5,7 +5,7 @@ from .group import composite
 from .rectangle import rectangle
 from .polygon import polygon
 from .text import text
-from ...colormap import colormap as anim_colormap
+from ..colormap import colormap as anim_colormap
 
 class colorbar(composite):
   '''

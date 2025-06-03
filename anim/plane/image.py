@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QGraphicsItem, QGraphicsPixmapItem
 
 import anim
 from .item import item
-from ..events import event
+from .events import event
 
 # ══════════════════════════════════════════════════════════════════════════
 #                                IMAGE
