@@ -8,9 +8,13 @@ anim/information.py
 anim/time.py
 anim/window.py
 anim/plane/__init__.py
-anim/plane/composites.py
-anim/plane/items.py
-anim/plane/panel.py
+anim/plane/boundingBox.py
+anim/plane/canva.py
+anim/plane/events.py
+anim/plane/geometry.py
+anim/plane/graphicsView.py
+anim/plane/grid.py
+anim/plane/itemDict.py
 anim/style/dark.css
 anim/style/light.css
 anim/style/white.css
