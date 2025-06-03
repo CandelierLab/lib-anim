@@ -12,6 +12,7 @@ pip install numpy matplotlib pyqt6 imageio[ffmpeg] build setuptools sphinx furo
 Update package
 
 * Change version number in setyp.py
+* Remove previous packages in dist
 * Create the package
 python -m build
 
@@ -34,7 +35,7 @@ pip uninstall lib-anim
 Publish package
 ---------------
 
-* Remove previous packages in dist
+* Update the package (as explained above)
 * git commit
 * Push to github
 * Create a new release
