@@ -28,7 +28,7 @@ class vector:
         self.x = np.real(x)
         self.y = np.imag(x)
 
-      elif isinstance(x, (tuple, list)):
+      elif isinstance(x, (tuple, list, np.ndarray)):
 
         # Doublet input
         self.x = x[0]  

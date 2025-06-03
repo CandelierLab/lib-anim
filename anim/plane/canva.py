@@ -90,9 +90,7 @@ class canva(QObject):
 
     # ─── Grid ──────────────────────────────────
 
-    self.grid = canva_grid(self,
-      spacing = 0.25,
-      ) if grid is True else grid
+    self._grid = canva_grid(self, spacing=0.25,) if grid is True else grid
       
   # # ────────────────────────────────────────────────────────────────────────
   # def add(self, type, name, **kwargs):
@@ -216,3 +214,14 @@ class canva(QObject):
     It does nothing and has to be reimplemented in subclasses.
     '''
     pass
+
+  # ─── grid ───────────────────────────────────────────────────────────────
+
+  @property
+  def grid(self): return self._grid
+
+  @grid.setter
+  def grid(self, g):
+    self._grid = g
+    self._grid.canva = self
+    self._grid.initialize()

@@ -10,16 +10,31 @@ import anim
 class Canva(anim.plane.canva):
 
   # ────────────────────────────────────────────────────────────────────────
-  def __init__(self, window, **kwargs):
+  def __init__(self, window):
 
-    super().__init__(window, **kwargs)
+    super().__init__(window, boundaries=[[-1,1], [-1,1]])
+
+    self.pos = np.zeros((100, 2))
+
+    # ─── Grid
+
+    self.grid = anim.plane.grid(spacing = 0.4)
+
+    # ─── Dot
 
     self.item.dot = anim.plane.circle(
-      position = [0.5,0.5],
-      radius = 0.01,
+      position = [0,0],
+      radius = 0.02,
       color = 'red'
     )
-    
+
+    # ─── Tail
+
+    self.item.tail = anim.plane.path(
+      position = [0,0],
+      points = self.pos,
+      stroke = 'red'
+    )
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t):
@@ -27,7 +42,18 @@ class Canva(anim.plane.canva):
     # Update timer display
     super().update(t)
 
-    pass
+    # ─── Update dot position
+
+    new_pos = np.array(self.pos[-1]) + np.random.randn(2)/50
+    self.pos = np.roll(self.pos, -1, axis=0)
+    self.pos[-1] = new_pos
+
+    self.item.dot.position = self.pos[-1,:]
+    self.item.tail.points = self.pos
+
+    # ─── Update grid
+
+    self.grid.shift = np.mean(self.pos, axis=0)
 
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
@@ -37,6 +63,6 @@ os.system('clear')
 W = anim.window('Grid animation', display_information=False)
 
 # Add animation
-W.add(Canva, grid=True)
+W.add(Canva)
 
-W.show()
+W.show() 
