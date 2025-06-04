@@ -17,7 +17,7 @@ class Canva(anim.plane.canva):
     self.item.time_step = anim.plane.text(
       x = 0.5,
       y = 0.7,
-      fontsize = 0.1,
+      fontsize = 0.2,
       string = 't = 0.00 s',
       color = 'darkblue',
       style = 'html { background-color: lightblue; }',

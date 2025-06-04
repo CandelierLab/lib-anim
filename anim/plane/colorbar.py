@@ -253,7 +253,7 @@ class colorbar(composite):
         position = [0, y],
         string = f'{v:.{self._ticks_precision}f}',
         color = self.ticks_color,
-        fontsize = 0.025,
+        fontsize = self.ticks_fontsize,
         center = (False, True))
   
       # ─── Triangle

@@ -4,6 +4,8 @@ import anim
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QDockWidget, QVBoxLayout, QLabel
 
+import anim
+
 class information:
     
   # ────────────────────────────────────────────────────────────────────────
@@ -23,6 +25,10 @@ class information:
     # Strings
     self.time = ''
     self.html = ''
+
+    # Formating options
+    self.show_steps = True
+    self.show_time = True
 
     # ─── QWidgets ──────────────────────────────
 
@@ -45,11 +51,16 @@ class information:
     # ─── Label
 
     self.label = QLabel()
+    self.label.setWordWrap(True)
     self.layout.addWidget(self.label)
 
-    self.setHtml()
+    # ─── Canva
 
-    self.layout.addStretch()
+    self.canva = anim.plane.canva(self.window, display_boundaries = False)
+    self.layout.addWidget(self.canva.view)
+
+    # Strech element (useful if there is no canva)
+    # self.layout.addStretch()
 
   # ────────────────────────────────────────────────────────────────────────
   def setWidth(self, windowHeight):
@@ -91,12 +102,24 @@ class information:
         step = signal.time.step if hasattr(signal, 'time') else 0
         time = signal.time.time if hasattr(signal, 'time') else 0
     
-        s = '<table width="100%"><tr><td align=center>step</td><td align=center>time</td></tr><tr>'
-        s += f'<th align=center style="color:lightgrey;">{step}</th>'
-        s += f'<th align=center style="color:lightgrey;">{time:.02f} sec</th>'
-        s += '</tr></table><hr style="background-color:grey;">'
-        self.time = s
+        s = ''
+        if self.show_steps and self.show_time:
+          s += '<table width="100%"><tr><td align=center>step</td><td align=center>time</td></tr><tr>'
+          s += f'<th align=center style="color:lightgrey;">{step}</th>'
+          s += f'<th align=center style="color:lightgrey;">{time:.02f} sec</th>'
+          s += '</tr></table><hr style="background-color:grey;">'
 
+        elif self.show_steps:
+          s += '<table width="100%"><tr><td align=center>step</td></tr><tr>'
+          s += f'<th align=center style="color:lightgrey;">{step}</th>'
+          s += '</tr></table><hr style="background-color:grey;">'
+
+        elif self.show_time:
+          s += '<table width="100%"><tr><td align=center>time</td></tr><tr>'
+          s += f'<th align=center style="color:lightgrey;">{time:.02f} sec</th>'
+          s += '</tr></table><hr style="background-color:grey;">'
+
+        self.time = s
         self.setHtml()
 
   # ────────────────────────────────────────────────────────────────────────
@@ -105,4 +128,4 @@ class information:
     if html is not None:
       self.html = html
 
-    self.label.setText(self.time + self.html)
+    self.label.setText('<html style="color:white;">' + self.time + self.html + '</html>')

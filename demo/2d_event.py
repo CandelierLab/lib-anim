@@ -94,7 +94,7 @@ class Canva(anim.plane.canva):
     
 # ═══ Main ═════════════════════════════════════════════════════════════════
 
-W = anim.window('Event animation', display_information=False)
+W = anim.window('Event animation')
 
 # Add animation
 W.add(Canva)

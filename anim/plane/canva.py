@@ -33,7 +33,7 @@ class canva(QObject):
 
     # ─── Scene boundaries
 
-    self.boundaries = boundingBox(display_boundaries, boundaries, boundaries_color, boundaries_thickness)
+    self._boundaries = boundingBox(display_boundaries, boundaries, boundaries_color, boundaries_thickness)
 
     # ─── Qt elements
 
@@ -64,34 +64,34 @@ class canva(QObject):
     
     # ─── Display items ────────────────────────────
 
-    self.item = itemDict(self)
-    self.composite = {}
-    
-    # Stack
-    # self.stack = {'vpos': self.boundaries.y1, 
-    #               'vmin': self.boundaries.y0,
-    #               'vpadding': 0.02}
-    
+    self.item = itemDict(self) 
+      
     # ─── Dummy boundary rectangle ──────────────
 
-    bounds = QGraphicsRectItem(self.boundaries.x0*self.pixelperunit, 
+    self.bounds = QGraphicsRectItem(self.boundaries.x0*self.pixelperunit, 
                                self.boundaries.y0*self.pixelperunit,
                                self.boundaries.width*self.pixelperunit,
                                self.boundaries.height*self.pixelperunit)
-    
-    Pen = QPen()
-    if self.boundaries.display:
-      Pen.setColor(QColor(self.boundaries.color))
-    Pen.setWidthF(0)
-    Pen.setCosmetic(True)
-    bounds.setPen(Pen)
-
-    self.scene.addItem(bounds)
+    self.setBoundaryStyle()
+    self.scene.addItem(self.bounds)
 
     # ─── Grid ──────────────────────────────────
 
     self._grid = canva_grid(self, spacing=0.25,) if grid is True else grid
   
+  # ────────────────────────────────────────────────────────────────────────
+  def setBoundaryStyle(self):
+    '''
+    Sets the boundary style
+    '''
+
+    Pen = QPen()
+    if self.boundaries.display:
+      Pen.setColor(QColor(self.boundaries.color))
+    Pen.setWidthF(0)
+    Pen.setCosmetic(True)
+    self.bounds.setPen(Pen)
+
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t=None):
     """
@@ -114,9 +114,7 @@ class canva(QObject):
 
       case 'show':
         
-        for name in self.composite:
-          if isinstance(self.composite[name], anim.plane.arrow):
-            self.composite[name].points = self.composite[name].points
+        pass
 
       case 'update':
 
@@ -164,3 +162,36 @@ class canva(QObject):
     self._grid = g
     self._grid.canva = self
     self._grid.initialize()
+
+  # ─── Boundaries ─────────────────────────────────────────────────────────
+
+  @property
+  def boundaries(self): return self._boundaries
+
+  @boundaries.setter
+  def boundaries(self, B):
+
+    self._boundaries = boundingBox(self._boundaries.display,
+                                   B,
+                                   self._boundaries.color, 
+                                   self._boundaries.thickness)
+    
+    # Update view
+    self.view.boundaries = self.boundaries
+    self.view.fit()
+
+    # Update bounds
+    self.bounds.setRect(self.boundaries.x0*self.pixelperunit,
+                        self.boundaries.y0*self.pixelperunit,
+                        self.boundaries.width*self.pixelperunit,
+                        self.boundaries.height*self.pixelperunit)
+    
+  # ─── Boundary display ───────────────────────────────────────────────────
+
+  @property
+  def display_boundaries(self): return self.boundaries.display
+
+  @display_boundaries.setter
+  def display_boundaries(self, b):
+    self.boundaries.display = b
+    self.setBoundaryStyle()
