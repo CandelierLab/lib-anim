@@ -31,14 +31,19 @@ class canva(QObject):
     # Parent constructor
     super().__init__()
 
+    # Window
+    self.window = window
+
     # ─── Scene boundaries
 
+    if boundaries_color is None:
+      match self.window.style:
+        case 'white' | 'light': boundaries_color = 'black'
+        case _: boundaries_color = 'white'
+    
     self._boundaries = boundingBox(display_boundaries, boundaries, boundaries_color, boundaries_thickness)
 
     # ─── Qt elements
-
-    # Window
-    self.window = window
 
     # Scene
     self.scene = QGraphicsScene()  
@@ -72,8 +77,9 @@ class canva(QObject):
                                self.boundaries.y0*self.pixelperunit,
                                self.boundaries.width*self.pixelperunit,
                                self.boundaries.height*self.pixelperunit)
-    self.setBoundaryStyle()
+    
     self.scene.addItem(self.bounds)
+    self.setBoundaryStyle()
 
     # ─── Grid ──────────────────────────────────
 
@@ -86,11 +92,11 @@ class canva(QObject):
     '''
 
     Pen = QPen()
-    if self.boundaries.display:
-      Pen.setColor(QColor(self.boundaries.color))
+    Pen.setColor(QColor(self.boundaries.color))
     Pen.setWidthF(0)
     Pen.setCosmetic(True)
     self.bounds.setPen(Pen)
+    self.bounds.setVisible(self.boundaries.display)
 
   # ────────────────────────────────────────────────────────────────────────
   def update(self, t=None):

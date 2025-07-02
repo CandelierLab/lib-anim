@@ -1,3 +1,6 @@
+Bug
+- Visibility of the bounding box seems complicated (Demo > 2d_colorbar_in_information, no boundingbox display on the info canva)
+
 Items 
 - Improve the colorbar : possibility to update everything
 

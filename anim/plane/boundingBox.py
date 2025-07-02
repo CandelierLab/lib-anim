@@ -33,7 +33,7 @@ class boundingBox:
 
     # ─── Color
 
-    self.color = color if color is not None else 'white'
+    self.color = color
 
     # ─── Thickness
 
