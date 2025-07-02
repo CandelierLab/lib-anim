@@ -6,4 +6,9 @@
   border-style: none;
   border-image: none;
   outline: 0;
+  color: #000;
+}
+
+QLabel {
+  color: #000;
 }

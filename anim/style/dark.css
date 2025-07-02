@@ -72,6 +72,10 @@ QDialogButtonBox QPushButton {
   min-width: 80px;
 }
 
+QLabel {
+  color: #FFF;
+}
+
 /* Light Style - QDarkStyleSheet ------------------------------------------ * /
 /*
 

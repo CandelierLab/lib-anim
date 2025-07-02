@@ -95,6 +95,11 @@ class information:
     Format time string for display
     '''
 
+    # Colors
+    match self.window.style:
+      case 'white'|'light': t_color = 'grey'
+      case 'dark': t_color = 'lightgrey'
+
     match signal.type:
 
       case 'show' | 'update':
@@ -105,18 +110,18 @@ class information:
         s = ''
         if self.show_steps and self.show_time:
           s += '<table width="100%"><tr><td align=center>step</td><td align=center>time</td></tr><tr>'
-          s += f'<th align=center style="color:lightgrey;">{step}</th>'
-          s += f'<th align=center style="color:lightgrey;">{time:.02f} sec</th>'
+          s += f'<th align=center style="color:{t_color};">{step}</th>'
+          s += f'<th align=center style="color:{t_color};">{time:.02f} sec</th>'
           s += '</tr></table><hr style="background-color:grey;">'
 
         elif self.show_steps:
           s += '<table width="100%"><tr><td align=center>step</td></tr><tr>'
-          s += f'<th align=center style="color:lightgrey;">{step}</th>'
+          s += f'<th align=center style="color:{t_color};">{step}</th>'
           s += '</tr></table><hr style="background-color:grey;">'
 
         elif self.show_time:
           s += '<table width="100%"><tr><td align=center>time</td></tr><tr>'
-          s += f'<th align=center style="color:lightgrey;">{time:.02f} sec</th>'
+          s += f'<th align=center style="color:{t_color};">{time:.02f} sec</th>'
           s += '</tr></table><hr style="background-color:grey;">'
 
         self.time = s
@@ -128,4 +133,4 @@ class information:
     if html is not None:
       self.html = html
 
-    self.label.setText('<html style="color:white;">' + self.time + self.html + '</html>')
+    self.label.setText('<html>' + self.time + self.html + '</html>')
