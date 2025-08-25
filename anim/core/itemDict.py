@@ -2,7 +2,7 @@
 Dictionnary of items
 '''
 
-from PyQt6.QtWidgets import QGraphicsItem
+import anim
 
 class itemDict(dict):
 
@@ -55,9 +55,16 @@ class itemDict(dict):
     # Assign item name
     item.name = key
 
-    # Add the item to the scene
-    if not item.qitem.parentItem():
-      self._canva.scene.addItem(item.qitem)
+    # ─── Add the item to the scene
+
+    # 2d
+    if isinstance(self._canva, (anim.plane.canva)):
+      if not item.qitem.parentItem():
+        self._canva.scene.addItem(item.qitem)
+
+    # 3d
+    if isinstance(self._canva, (anim.volume.canva)):
+      pass
 
     # Initialize item
     item.initialize()

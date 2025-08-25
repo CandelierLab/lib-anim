@@ -1,5 +1,5 @@
 '''
-Generic item
+Generic 2d item
 '''
 
 import numpy as np

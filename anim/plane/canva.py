@@ -3,10 +3,7 @@ from PyQt6.QtGui import QColor, QPen
 from PyQt6.QtWidgets import QGraphicsScene, QGraphicsRectItem
 
 import anim
-from .graphicsView import graphicsView
-from .boundingBox import boundingBox
-from .itemDict import itemDict
-from .grid import grid as canva_grid
+from anim.plane.grid import grid as canva_grid
 
 class canva(QObject):
 
@@ -41,7 +38,7 @@ class canva(QObject):
         case 'white' | 'light': boundaries_color = 'black'
         case _: boundaries_color = 'white'
     
-    self._boundaries = boundingBox(display_boundaries, boundaries, boundaries_color, boundaries_thickness)
+    self._boundaries = anim.core.boundingBox(display_boundaries, boundaries, boundaries_color, boundaries_thickness)
 
     # ─── Qt elements
 
@@ -49,7 +46,7 @@ class canva(QObject):
     self.scene = QGraphicsScene()  
 
     # View
-    self.view = graphicsView(self.scene, self.boundaries, pixelperunit, padding=padding)
+    self.view = anim.core.view2d(self.scene, self.boundaries, pixelperunit, padding=padding)
 
     # Coordinates
     self.coordinates = coordinates
@@ -69,7 +66,7 @@ class canva(QObject):
     
     # ─── Display items ────────────────────────────
 
-    self.item = itemDict(self) 
+    self.item = anim.core.itemDict(self) 
       
     # ─── Dummy boundary rectangle ──────────────
 
@@ -177,7 +174,7 @@ class canva(QObject):
   @boundaries.setter
   def boundaries(self, B):
 
-    self._boundaries = boundingBox(self._boundaries.display,
+    self._boundaries = anim.core.boundingBox(self._boundaries.display,
                                    B,
                                    self._boundaries.color, 
                                    self._boundaries.thickness)

@@ -1,5 +1,5 @@
 '''
-animate API
+animation plane API
 '''
 
 from .canva import canva

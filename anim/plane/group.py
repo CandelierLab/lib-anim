@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QGraphicsItemGroup
 
+import anim
 from .item import item
-from .itemDict import itemDict
 from .events import event
 
 class group(item):
@@ -163,4 +163,4 @@ class composite(group):
 
     # ─── Child items (for composite items)
 
-    self.subitem = itemDict(self.canva)
+    self.subitem = anim.core.itemDict(self.canva)

@@ -11,4 +11,4 @@ pip install lib-anim
 
 ## Dependencies
 
-Depends on `numpy`, `matplotlib`, `pyqt6` and `imageio[ffmpeg]`
+Depends on `numpy`, `matplotlib`, `pyqt6`, pyqt6-3d and `imageio[ffmpeg]`

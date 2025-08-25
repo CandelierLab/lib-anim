@@ -1,10 +1,17 @@
-from PyQt6.QtCore import Qt, QRectF, QPointF
-from PyQt6.QtGui import QPainter
-from PyQt6.QtWidgets import QGraphicsView
+from PyQt6.QtCore import Qt, QRectF
+from PyQt6.QtGui import QPainter, QVector3D, QColor
+from PyQt6.QtWidgets import QWidget, QGraphicsView, QGridLayout
+
+from PyQt6.Qt3DCore import QEntity, QTransform
+from PyQt6.Qt3DExtras import QPhongMaterial, QSphereMesh, QTorusMesh, Qt3DWindow, QOrbitCameraController
 
 from .boundingBox import boundingBox
 
-class graphicsView(QGraphicsView):
+# ══════════════════════════════════════════════════════════════════════════
+#                                 2D VIEW
+# ══════════════════════════════════════════════════════════════════════════
+
+class view2d(QGraphicsView):
     
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, scene, boundaries:boundingBox, pixelperunit, padding=0, *args, **kwargs):
@@ -69,3 +76,37 @@ class graphicsView(QGraphicsView):
     Capture the wheel events to avoid scene motion.
     '''
     pass
+
+# ══════════════════════════════════════════════════════════════════════════
+#                                 3D VIEW
+# ══════════════════════════════════════════════════════════════════════════
+
+class view3d(QWidget):
+
+  def __init__(self, scene):
+      
+    super().__init__()
+
+    # Qt3d window object
+    self.qt3dwindow = Qt3DWindow()
+
+    # Layout
+    layout = QGridLayout()
+    layout.addWidget(self.createWindowContainer(self.qt3dwindow))
+    self.setLayout(layout)
+
+    # Assign scene
+    self.scene = scene
+    self.qt3dwindow.setRootEntity(self.scene)
+
+    camera = self.qt3dwindow.camera()
+    camera.lens().setPerspectiveProjection(45.0, 16.0 / 9.0, 0.1, 1000.0)
+    camera.setPosition(QVector3D(0.0, 0.0, 40.0))
+    camera.setViewCenter(QVector3D(0.0, 0.0, 0.0))
+
+    # For camera controls
+    camController = QOrbitCameraController(self.scene)
+    camController.setLinearSpeed(50.0)
+    camController.setLookSpeed(180.0)
+    camController.setCamera(camera)
+
