@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-VERSION = '1.0.7'
+VERSION = '1.0.8'
 DESCRIPTION = 'Beautifully simple animations'
 LONG_DESCRIPTION = 'A content-oriented package to create animations'
 
@@ -15,7 +15,7 @@ setup(
     license='GNU GPL v3',
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['numpy', 'matplotlib', 'pyqt6', 'imageio[ffmpeg]'],
+    install_requires=['numpy', 'matplotlib', 'pyqt6', 'pyqt6-3d', 'imageio[ffmpeg]'],
     keywords='conversion',
     classifiers= [
         "Development Status :: 4 - Beta",

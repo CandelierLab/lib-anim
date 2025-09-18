@@ -1,4 +1,5 @@
 numpy
 matplotlib
 pyqt6
+pyqt6-3d
 imageio[ffmpeg]

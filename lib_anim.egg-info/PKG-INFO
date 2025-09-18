@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: lib-anim
-Version: 1.0.7
+Version: 1.0.8
 Summary: Beautifully simple animations
 Author: Raphaël Candelier
 Author-email: raphael.candelier@sorbonne-universite.fr
@@ -16,6 +16,7 @@ License-File: LICENSE
 Requires-Dist: numpy
 Requires-Dist: matplotlib
 Requires-Dist: pyqt6
+Requires-Dist: pyqt6-3d
 Requires-Dist: imageio[ffmpeg]
 Dynamic: author
 Dynamic: author-email
