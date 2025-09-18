@@ -190,6 +190,7 @@ class window(QMainWindow):
     # Quit
     self.shortcut['esc'] = QShortcut(QKeySequence('Esc'), self)
     self.shortcut['esc'].activated.connect(self.close)
+    self.closeEvent = self.close
 
     # Information panel
     self.shortcut['info'] = QShortcut(QKeySequence('i'), self)
@@ -349,12 +350,14 @@ class window(QMainWindow):
         self.setStep()
 
   # ────────────────────────────────────────────────────────────────────────
-  def close(self):
+  def close(self, *args):
     """
     Stop the animation
 
     Stops the timer and close the window
     """
+
+    # print(args)
 
     # Stop the timer
     self.timer.stop()
@@ -362,12 +365,12 @@ class window(QMainWindow):
     # Emit event
     self.signal.emit(self.signalObject({'type': 'stop'}))
 
-
     # Movie
     if self.movieWriter is not None:
       self.movieWriter.close()
 
     self.app.quit()
+    if len(args): del self.app
 
   # ────────────────────────────────────────────────────────────────────────
   @staticmethod
