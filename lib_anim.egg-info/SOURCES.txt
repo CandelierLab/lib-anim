@@ -35,6 +35,7 @@ anim/volume/__init__.py
 anim/volume/canva.py
 anim/volume/item.py
 anim/volume/sphere.py
+anim/volume/torus.py
 lib_anim.egg-info/PKG-INFO
 lib_anim.egg-info/SOURCES.txt
 lib_anim.egg-info/dependency_links.txt

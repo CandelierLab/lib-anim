@@ -9,6 +9,12 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout
 
 import anim 
 
+# ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+# █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█
+# █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ WINDOW ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█
+# █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█
+# ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
 class window(QMainWindow):
   '''
   Animation-specific window.
@@ -17,6 +23,10 @@ class window(QMainWindow):
   # Generic event signal
   signal = pyqtSignal(object)
   ''' A pyqtSignal object to manage external events.'''
+
+  # ════════════════════════════════════════════════════════════════════════
+  #                               CONSTRUCTOR
+  # ════════════════════════════════════════════════════════════════════════
 
   # ────────────────────────────────────────────────────────────────────────
   def __init__(self, 
@@ -190,7 +200,6 @@ class window(QMainWindow):
     # Quit
     self.shortcut['esc'] = QShortcut(QKeySequence('Esc'), self)
     self.shortcut['esc'].activated.connect(self.close)
-    self.closeEvent = self.close
 
     # Information panel
     self.shortcut['info'] = QShortcut(QKeySequence('i'), self)
@@ -313,9 +322,20 @@ class window(QMainWindow):
         self.movieWriter.append_data(A)
 
   # ────────────────────────────────────────────────────────────────────────
-  def play_pause(self, force=None):
+  def play(self):
 
-    if self.timer.isActive():
+    if not self.timer.isActive():      
+
+      # Start timer
+      self.timer.start()
+    
+      # Emit event
+      self.signal.emit(self.signalObject({'type': 'play'}))
+
+  # ────────────────────────────────────────────────────────────────────────
+  def pause(self):
+
+    if self.timer.isActive():      
 
       # Stop qtimer
       self.timer.stop()
@@ -323,13 +343,11 @@ class window(QMainWindow):
       # Emit event
       self.signal.emit(self.signalObject({'type': 'pause'}))
 
-    else:
+  # ────────────────────────────────────────────────────────────────────────
+  def play_pause(self):
 
-      # Start timer
-      self.timer.start()
-    
-      # Emit event
-      self.signal.emit(self.signalObject({'type': 'play'}))
+    if self.timer.isActive(): self.pause()
+    else: self.play()
 
   # ────────────────────────────────────────────────────────────────────────
   def increment(self):
@@ -350,14 +368,12 @@ class window(QMainWindow):
         self.setStep()
 
   # ────────────────────────────────────────────────────────────────────────
-  def close(self, *args):
+  def close(self):
     """
     Stop the animation
 
     Stops the timer and close the window
     """
-
-    # print(args)
 
     # Stop the timer
     self.timer.stop()
@@ -365,12 +381,12 @@ class window(QMainWindow):
     # Emit event
     self.signal.emit(self.signalObject({'type': 'stop'}))
 
+
     # Movie
     if self.movieWriter is not None:
       self.movieWriter.close()
 
     self.app.quit()
-    if len(args): del self.app
 
   # ────────────────────────────────────────────────────────────────────────
   @staticmethod
