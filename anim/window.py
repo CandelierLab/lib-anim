@@ -2,6 +2,7 @@ import os
 import inspect
 import numpy as np
 import imageio
+from types import SimpleNamespace
 
 from PyQt6.QtCore import pyqtSignal, QTimer, Qt
 from PyQt6.QtGui import QKeySequence, QImage, QShortcut
@@ -52,6 +53,7 @@ class window(QMainWindow):
     # Misc private properties
     self._nCanva = 0
     self._movieCounter = 0
+    self._canvae = []  # Strong references to prevent GC of canva objects
     
     # Call widget parent's constructor (otherwise no signal can be caught)
     super().__init__()
@@ -160,6 +162,7 @@ class window(QMainWindow):
       self.layout.addWidget(canva.view, row, col)
       self.signal.connect(canva.receive)
       canva.signal.connect(self.capture)
+      self._canvae.append(canva)  # Keep strong reference to prevent GC
       self._nCanva += 1
 
     else:
@@ -391,7 +394,7 @@ class window(QMainWindow):
   # ────────────────────────────────────────────────────────────────────────
   @staticmethod
   def signalObject(d):
-    return type('signal_object', (object,), d)
+    return SimpleNamespace(**d)
 
   # # ────────────────────────────────────────────────────────────────────────
   # def compute_canva_size(self):

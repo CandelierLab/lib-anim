@@ -50,9 +50,9 @@ class sphere(item):
     self.entity = QEntity(self.canva.scene)
 
     # Material
-    material = QDiffuseSpecularMaterial(self.canva.scene)
-    material.setAmbient(QColor('red'))
-    self.entity.addComponent(material)
+    self.material = QDiffuseSpecularMaterial(self.canva.scene)
+    self.material.setAmbient(QColor('red'))
+    self.entity.addComponent(self.material)
 
     # Geometry
     self.setGeometry()
@@ -68,18 +68,14 @@ class sphere(item):
 
     # ─── Mesh
 
-    # Remove current mesh
     if self.mesh is not None:
-      self.entity.removeComponent(self.mesh)
-
-    # Define mesh
-    self.mesh = QSphereMesh()
-
-    # Set radius
-    self.mesh.setRadius(self._radius)
-
-    # Add mesh component
-    self.entity.addComponent(self.mesh)
+      # Mesh already exists: just update the radius in place
+      self.mesh.setRadius(self._radius)
+    else:
+      # First time: create the mesh with the entity as parent to prevent GC
+      self.mesh = QSphereMesh(self.entity)
+      self.mesh.setRadius(self._radius)
+      self.entity.addComponent(self.mesh)
 
   # ─── radius ─────────────────────────────────────────────────────────────
   

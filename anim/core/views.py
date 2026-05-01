@@ -105,8 +105,8 @@ class view3d(QWidget):
     camera.setViewCenter(QVector3D(0.0, 0.0, 0.0))
 
     # For camera controls
-    camController = QOrbitCameraController(self.scene)
-    camController.setLinearSpeed(50.0)
-    camController.setLookSpeed(180.0)
-    camController.setCamera(camera)
+    self.camController = QOrbitCameraController(self.scene)
+    self.camController.setLinearSpeed(50.0)
+    self.camController.setLookSpeed(180.0)
+    self.camController.setCamera(camera)
 
