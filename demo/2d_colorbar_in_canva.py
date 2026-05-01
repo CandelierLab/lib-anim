@@ -25,7 +25,7 @@ class Canva(anim.plane.canva):
     # ─── display
 
     self.item.img = anim.plane.image(
-      position = [0.57, 0.5],
+      position = [0.6, 0.5],
       dimension = [0.8, 0.8],
       array = self.phase(0),
       colormap = self.cmap
@@ -34,8 +34,8 @@ class Canva(anim.plane.canva):
     # ─── colorbar
 
     self.item.cbar = anim.plane.colorbar(
-      position = [0.1, 0.5],
-      dimension = [0.05, 0.4],
+      position = [0.15, 0.5],
+      dimension = [0.03, 0.4],
       colormap = self.cmap,
       ticks_number = 5,
     )

@@ -1,4 +1,4 @@
-anim.plane.group
+﻿anim.plane.group
 ================
 
 .. currentmodule:: anim.plane
@@ -31,6 +31,7 @@ anim.plane.group
    .. autosummary::
    
       ~group.center_of_rotation
+      ~group.clickable
       ~group.draggable
       ~group.group
       ~group.orientation

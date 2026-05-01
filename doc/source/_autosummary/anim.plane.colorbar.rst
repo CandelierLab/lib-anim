@@ -1,4 +1,4 @@
-anim.plane.colorbar
+﻿anim.plane.colorbar
 ===================
 
 .. currentmodule:: anim.plane
@@ -34,6 +34,7 @@ anim.plane.colorbar
       ~colorbar.Ly
       ~colorbar.center
       ~colorbar.center_of_rotation
+      ~colorbar.clickable
       ~colorbar.colormap
       ~colorbar.dimension
       ~colorbar.draggable

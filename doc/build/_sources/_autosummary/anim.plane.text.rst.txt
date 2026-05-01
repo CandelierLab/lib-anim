@@ -1,4 +1,4 @@
-anim.plane.text
+﻿anim.plane.text
 ===============
 
 .. currentmodule:: anim.plane
@@ -35,6 +35,7 @@ anim.plane.text
    
       ~text.center
       ~text.center_of_rotation
+      ~text.clickable
       ~text.color
       ~text.draggable
       ~text.fontname

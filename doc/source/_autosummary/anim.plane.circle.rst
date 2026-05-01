@@ -1,4 +1,4 @@
-anim.plane.circle
+﻿anim.plane.circle
 =================
 
 .. currentmodule:: anim.plane
@@ -34,6 +34,7 @@ anim.plane.circle
    .. autosummary::
    
       ~circle.center_of_rotation
+      ~circle.clickable
       ~circle.color
       ~circle.draggable
       ~circle.group

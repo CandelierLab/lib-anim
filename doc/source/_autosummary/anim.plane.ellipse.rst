@@ -1,4 +1,4 @@
-anim.plane.ellipse
+﻿anim.plane.ellipse
 ==================
 
 .. currentmodule:: anim.plane
@@ -34,6 +34,7 @@ anim.plane.ellipse
       ~ellipse.Lx
       ~ellipse.Ly
       ~ellipse.center_of_rotation
+      ~ellipse.clickable
       ~ellipse.color
       ~ellipse.dimension
       ~ellipse.draggable

@@ -1,4 +1,4 @@
-anim.plane.polygon
+﻿anim.plane.polygon
 ==================
 
 .. currentmodule:: anim.plane
@@ -34,6 +34,7 @@ anim.plane.polygon
    .. autosummary::
    
       ~polygon.center_of_rotation
+      ~polygon.clickable
       ~polygon.color
       ~polygon.draggable
       ~polygon.group

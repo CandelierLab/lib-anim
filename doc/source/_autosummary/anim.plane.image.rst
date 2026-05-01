@@ -1,4 +1,4 @@
-anim.plane.image
+﻿anim.plane.image
 ================
 
 .. currentmodule:: anim.plane
@@ -35,6 +35,7 @@ anim.plane.image
       ~image.array
       ~image.center
       ~image.center_of_rotation
+      ~image.clickable
       ~image.colormap
       ~image.dimension
       ~image.draggable

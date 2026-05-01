@@ -1,7 +1,3 @@
-BUGS
-- 2d_event: ne marche pas bien.
-- Check 2d_colorbar_in_canva
-
 REACHING DECENCY
 - Improve the colorbar : possibility to update everything
 - Work on documentation

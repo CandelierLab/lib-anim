@@ -1,4 +1,4 @@
-anim.plane.rectangle
+﻿anim.plane.rectangle
 ====================
 
 .. currentmodule:: anim.plane
@@ -35,6 +35,7 @@ anim.plane.rectangle
       ~rectangle.Ly
       ~rectangle.center
       ~rectangle.center_of_rotation
+      ~rectangle.clickable
       ~rectangle.color
       ~rectangle.dimension
       ~rectangle.draggable

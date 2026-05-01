@@ -1,4 +1,4 @@
-anim.plane.arrow
+﻿anim.plane.arrow
 ================
 
 .. currentmodule:: anim.plane
@@ -33,6 +33,7 @@ anim.plane.arrow
    .. autosummary::
    
       ~arrow.center_of_rotation
+      ~arrow.clickable
       ~arrow.color
       ~arrow.draggable
       ~arrow.fontname

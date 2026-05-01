@@ -309,7 +309,7 @@
 <h1>anim.plane.image<a class="headerlink" href="#anim-plane-image" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="anim.plane.image">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anim.plane.</span></span><span class="sig-name descname"><span class="pre">image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">file=None,</span> <span class="pre">array=None,</span> <span class="pre">flip=[False,</span> <span class="pre">False],</span> <span class="pre">colormap=&lt;anim.colormap.colormap</span> <span class="pre">object&gt;,</span> <span class="pre">Lx=None,</span> <span class="pre">Ly=None,</span> <span class="pre">dimension=None,</span> <span class="pre">center=[True,</span> <span class="pre">True],</span> <span class="pre">group=None,</span> <span class="pre">x=0,</span> <span class="pre">y=0,</span> <span class="pre">position=None,</span> <span class="pre">center_of_rotation=[0,</span> <span class="pre">0],</span> <span class="pre">orientation=0,</span> <span class="pre">zvalue=0,</span> <span class="pre">draggable=False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#anim.plane.image" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">anim.plane.</span></span><span class="sig-name descname"><span class="pre">image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">file=None,</span> <span class="pre">array=None,</span> <span class="pre">flip=[False,</span> <span class="pre">False],</span> <span class="pre">colormap=&lt;anim.colormap.colormap</span> <span class="pre">object&gt;,</span> <span class="pre">Lx=None,</span> <span class="pre">Ly=None,</span> <span class="pre">dimension=None,</span> <span class="pre">center=[True,</span> <span class="pre">True],</span> <span class="pre">group=None,</span> <span class="pre">x=0,</span> <span class="pre">y=0,</span> <span class="pre">position=None,</span> <span class="pre">center_of_rotation=[0,</span> <span class="pre">0],</span> <span class="pre">orientation=0,</span> <span class="pre">zvalue=0,</span> <span class="pre">draggable=False,</span> <span class="pre">clickable=False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#anim.plane.image" title="Link to this definition">¶</a></dt>
 <dd><p>An image item is defined by its:</p>
 <ul class="simple">
 <li><p>source image (numpy array or file)</p></li>
@@ -473,7 +473,7 @@ Z-value (stack order) of the image.</p>
 </div></blockquote>
 <dl class="py method">
 <dt class="sig sig-object py" id="anim.plane.image.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">file=None,</span> <span class="pre">array=None,</span> <span class="pre">flip=[False,</span> <span class="pre">False],</span> <span class="pre">colormap=&lt;anim.colormap.colormap</span> <span class="pre">object&gt;,</span> <span class="pre">Lx=None,</span> <span class="pre">Ly=None,</span> <span class="pre">dimension=None,</span> <span class="pre">center=[True,</span> <span class="pre">True],</span> <span class="pre">group=None,</span> <span class="pre">x=0,</span> <span class="pre">y=0,</span> <span class="pre">position=None,</span> <span class="pre">center_of_rotation=[0,</span> <span class="pre">0],</span> <span class="pre">orientation=0,</span> <span class="pre">zvalue=0,</span> <span class="pre">draggable=False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#anim.plane.image.__init__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">file=None,</span> <span class="pre">array=None,</span> <span class="pre">flip=[False,</span> <span class="pre">False],</span> <span class="pre">colormap=&lt;anim.colormap.colormap</span> <span class="pre">object&gt;,</span> <span class="pre">Lx=None,</span> <span class="pre">Ly=None,</span> <span class="pre">dimension=None,</span> <span class="pre">center=[True,</span> <span class="pre">True],</span> <span class="pre">group=None,</span> <span class="pre">x=0,</span> <span class="pre">y=0,</span> <span class="pre">position=None,</span> <span class="pre">center_of_rotation=[0,</span> <span class="pre">0],</span> <span class="pre">orientation=0,</span> <span class="pre">zvalue=0,</span> <span class="pre">draggable=False,</span> <span class="pre">clickable=False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#anim.plane.image.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Image constructor</p>
 </dd></dl>
 
@@ -527,37 +527,40 @@ Z-value (stack order) of the image.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">center_of_rotation</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">colormap</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clickable</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dimension</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">colormap</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">draggable</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dimension</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">draggable</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flip</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">group</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flip</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">orientation</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">group</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">orientation</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zvalue</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zvalue</span></code></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

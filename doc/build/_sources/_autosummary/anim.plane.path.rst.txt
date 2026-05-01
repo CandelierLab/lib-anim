@@ -1,4 +1,4 @@
-anim.plane.path
+﻿anim.plane.path
 ===============
 
 .. currentmodule:: anim.plane
@@ -34,6 +34,7 @@ anim.plane.path
    .. autosummary::
    
       ~path.center_of_rotation
+      ~path.clickable
       ~path.color
       ~path.draggable
       ~path.group

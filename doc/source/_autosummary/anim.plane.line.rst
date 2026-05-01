@@ -1,4 +1,4 @@
-anim.plane.line
+﻿anim.plane.line
 ===============
 
 .. currentmodule:: anim.plane
@@ -34,6 +34,7 @@ anim.plane.line
       ~line.Ly
       ~line.center
       ~line.center_of_rotation
+      ~line.clickable
       ~line.color
       ~line.dimension
       ~line.draggable
