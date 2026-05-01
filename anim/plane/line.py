@@ -129,7 +129,8 @@ class line(item, hasStroke):
                linestyle = '-',
                group = None,
                zvalue = 0,
-               draggable = False):
+               draggable = False,
+               clickable = False):
     '''
     Path item constructor
     '''  
@@ -144,7 +145,8 @@ class line(item, hasStroke):
                   center_of_rotation = [0,0],
                   orientation = orientation,
                   zvalue = zvalue,
-                  draggable = draggable)
+                  draggable = draggable,
+                  clickable = clickable)
     
     hasStroke.__init__(self,
                        stroke = color,

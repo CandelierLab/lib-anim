@@ -20,11 +20,11 @@ When executed, this should display a small, empty window. You can close it by cl
 Creating an animation
 ---------------------
 
-A custom animation is created by defining a children class to the :py:class:`anim.plane.view` class:
+A custom animation is created by defining a children class to the :py:class:`anim.plane.canva` class:
 
 .. code-block:: python
 
-  class myAnimation(anim.plane.view):
+  class myAnimation(anim.plane.canva):
 
     def __init__(self, window):
 
@@ -53,7 +53,7 @@ Now, you want to put different elements on the scene. The constructor of the ani
 
 .. code-block:: python
 
-  class myAnimation(anim.plane.view):
+  class myAnimation(anim.plane.canva):
 
     def __init__(self, window):
 
@@ -90,7 +90,7 @@ Now, you want to put different elements on the scene. The constructor of the ani
 Define updates to create motion
 -------------------------------
 
-An animation is a sequence of steps, so we have to define what we'd like to change from one step to the other. This is where the :py:func:`update <anim.plane.view.update>` method of the :py:class:`anim.plane.view` is brought to action:
+An animation is a sequence of steps, so we have to define what we'd like to change from one step to the other. This is where the :py:func:`update <anim.plane.canva.update>` method of the :py:class:`anim.plane.canva` is brought to action:
 
 .. code-block:: python
 
@@ -121,7 +121,7 @@ Putting everythign together, the final code looks like:
 
   # === 2D Animation =========================================================
 
-  class myAnimation(anim.plane.view):
+  class myAnimation(anim.plane.canva):
 
     def __init__(self, window):
 

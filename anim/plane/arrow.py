@@ -155,7 +155,8 @@ class arrow(composite):
                text_style = '',
                group = None,
                zvalue = 0,
-               draggable = False):
+               draggable = False,
+               clickable = False):
     '''
     Arrow item constructor
     '''  
@@ -165,7 +166,8 @@ class arrow(composite):
     super().__init__(group = group,
                      position = points[0],
                      zvalue = zvalue,
-                     draggable = draggable)
+                     draggable = draggable,
+                     clickable = clickable)
     
     # ─── Properties
 

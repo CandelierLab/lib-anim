@@ -11,11 +11,11 @@ class colorbar(composite):
   '''
   Colorbar item (composite)
 
-  ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ###
+  ### WARNING ### WARNING ### WARNING ### WARNING ### WARNING ###
 
   !! This is not finished !!
 
-  ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ### /!\ ###
+  ### WARNING ### WARNING ### WARNING ### WARNING ### WARNING ###
   
   A colorbar is defined by its:
 

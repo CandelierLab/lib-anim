@@ -18,8 +18,21 @@ class event:
     '''
 
     self.item.canva.event(self, event.button())
+    QGraphicsItem.mousePressEvent(self, event)
 
-    return QGraphicsItem.mousePressEvent(self, event)
+  # ────────────────────────────────────────────────────────────────────────
+  def mouseReleaseEvent(self, event):
+    '''
+    Mouse release event.
+
+    For internal use only.
+
+    args:
+      event (QGraphicsSceneMouseEvent): The release event.
+    '''
+
+    self.item.canva.event(self, 'release')
+    QGraphicsItem.mouseReleaseEvent(self, event)
 
   # ────────────────────────────────────────────────────────────────────────
   def mouseDoubleClickEvent(self, event):
@@ -33,8 +46,7 @@ class event:
     '''
 
     self.item.canva.event(self, event.button().__str__() + '.double')
-
-    return QGraphicsItem.mouseDoubleClickEvent(self, event)
+    QGraphicsItem.mouseDoubleClickEvent(self, event)
 
   # ────────────────────────────────────────────────────────────────────────
   def itemChange(self, change, value):

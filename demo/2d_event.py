@@ -20,7 +20,8 @@ class Canva(anim.plane.canva):
     # ─── Click
 
     self.item.group_click = anim.plane.group(
-      position = [0.5, 0.7]
+      position = [0.5, 0.7],
+      clickable = True
     )
 
     self.item.rect_click = anim.plane.rectangle(
@@ -77,20 +78,16 @@ class Canva(anim.plane.canva):
       color = 'black'
     )
 
+
   # ────────────────────────────────────────────────────────────────────────
   def event(self, item, desc):
 
-    match item:
-      
-      case self.item.group_click.qitem:
+    if item is self.item.group_click.qitem and not isinstance(desc, str):
+      self.item.text_result.string = str(desc)
 
-        self.item.text_result.string = str(desc)
-
-      case self.item.group_drag.qitem:
-
-        p = self.item.group_drag.qitem.pos()
-
-        self.item.text_result.string = f'position ({p.x():.02f},{p.y():.02f})'
+    elif desc == 'motion' and item is self.item.group_drag.qitem:
+      p = self.item.group_drag.qitem.pos()
+      self.item.text_result.string = f'position ({p.x():.02f},{p.y():.02f})'
     
 # ═══ Main ═════════════════════════════════════════════════════════════════
 

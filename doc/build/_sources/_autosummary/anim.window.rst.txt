@@ -1,4 +1,4 @@
-﻿anim.window
+anim.window
 ===========
 
 .. currentmodule:: anim
@@ -16,6 +16,7 @@
       ~window.__init__
       ~window.acceptDrops
       ~window.accessibleDescription
+      ~window.accessibleIdentifier
       ~window.accessibleName
       ~window.actionEvent
       ~window.actions
@@ -23,12 +24,16 @@
       ~window.add
       ~window.addAction
       ~window.addActions
+      ~window.addDockWidget
+      ~window.addToolBar
+      ~window.addToolBarBreak
       ~window.adjustSize
       ~window.autoFillBackground
       ~window.backgroundRole
       ~window.baseSize
       ~window.blockSignals
       ~window.capture
+      ~window.centralWidget
       ~window.changeEvent
       ~window.childAt
       ~window.childEvent
@@ -45,7 +50,9 @@
       ~window.contentsRect
       ~window.contextMenuEvent
       ~window.contextMenuPolicy
+      ~window.corner
       ~window.create
+      ~window.createPopupMenu
       ~window.createWindowContainer
       ~window.cursor
       ~window.customEvent
@@ -59,6 +66,9 @@
       ~window.devicePixelRatioFScale
       ~window.disconnect
       ~window.disconnectNotify
+      ~window.dockOptions
+      ~window.dockWidgetArea
+      ~window.documentMode
       ~window.dragEnterEvent
       ~window.dragLeaveEvent
       ~window.dragMoveEvent
@@ -105,6 +115,7 @@
       ~window.heightMM
       ~window.hide
       ~window.hideEvent
+      ~window.iconSize
       ~window.increment
       ~window.inherits
       ~window.initPainter
@@ -113,9 +124,13 @@
       ~window.inputMethodQuery
       ~window.insertAction
       ~window.insertActions
+      ~window.insertToolBar
+      ~window.insertToolBarBreak
       ~window.installEventFilter
       ~window.isActiveWindow
       ~window.isAncestorOf
+      ~window.isAnimated
+      ~window.isDockNestingEnabled
       ~window.isEnabled
       ~window.isEnabledTo
       ~window.isFullScreen
@@ -126,6 +141,7 @@
       ~window.isModal
       ~window.isQuickItemType
       ~window.isRightToLeft
+      ~window.isSeparator
       ~window.isSignalConnected
       ~window.isVisible
       ~window.isVisibleTo
@@ -154,6 +170,8 @@
       ~window.maximumHeight
       ~window.maximumSize
       ~window.maximumWidth
+      ~window.menuBar
+      ~window.menuWidget
       ~window.metaObject
       ~window.metric
       ~window.minimumHeight
@@ -181,8 +199,10 @@
       ~window.palette
       ~window.parent
       ~window.parentWidget
+      ~window.pause
       ~window.physicalDpiX
       ~window.physicalDpiY
+      ~window.play
       ~window.play_pause
       ~window.pos
       ~window.previousInFocusChain
@@ -195,28 +215,42 @@
       ~window.releaseMouse
       ~window.releaseShortcut
       ~window.removeAction
+      ~window.removeDockWidget
       ~window.removeEventFilter
+      ~window.removeToolBar
+      ~window.removeToolBarBreak
       ~window.render
       ~window.repaint
       ~window.resize
+      ~window.resizeDocks
       ~window.resizeEvent
+      ~window.restoreDockWidget
       ~window.restoreGeometry
+      ~window.restoreState
       ~window.saveGeometry
+      ~window.saveState
       ~window.screen
       ~window.scroll
       ~window.sender
       ~window.senderSignalIndex
       ~window.setAcceptDrops
       ~window.setAccessibleDescription
+      ~window.setAccessibleIdentifier
       ~window.setAccessibleName
+      ~window.setAnimated
       ~window.setAttribute
       ~window.setAutoFillBackground
       ~window.setBackgroundRole
       ~window.setBaseSize
+      ~window.setCentralWidget
       ~window.setContentsMargins
       ~window.setContextMenuPolicy
+      ~window.setCorner
       ~window.setCursor
       ~window.setDisabled
+      ~window.setDockNestingEnabled
+      ~window.setDockOptions
+      ~window.setDocumentMode
       ~window.setEnabled
       ~window.setFixedHeight
       ~window.setFixedSize
@@ -229,6 +263,7 @@
       ~window.setGeometry
       ~window.setGraphicsEffect
       ~window.setHidden
+      ~window.setIconSize
       ~window.setInputMethodHints
       ~window.setLayout
       ~window.setLayoutDirection
@@ -237,6 +272,8 @@
       ~window.setMaximumHeight
       ~window.setMaximumSize
       ~window.setMaximumWidth
+      ~window.setMenuBar
+      ~window.setMenuWidget
       ~window.setMinimumHeight
       ~window.setMinimumSize
       ~window.setMinimumWidth
@@ -250,13 +287,19 @@
       ~window.setShortcutEnabled
       ~window.setSizeIncrement
       ~window.setSizePolicy
+      ~window.setStatusBar
       ~window.setStatusTip
+      ~window.setStep
       ~window.setStyle
       ~window.setStyleSheet
       ~window.setTabOrder
+      ~window.setTabPosition
+      ~window.setTabShape
       ~window.setTabletTracking
+      ~window.setToolButtonStyle
       ~window.setToolTip
       ~window.setToolTipDuration
+      ~window.setUnifiedTitleAndToolBarOnMac
       ~window.setUpdatesEnabled
       ~window.setVisible
       ~window.setWhatsThis
@@ -269,9 +312,9 @@
       ~window.setWindowModified
       ~window.setWindowOpacity
       ~window.setWindowRole
+      ~window.setWindowSize
       ~window.setWindowState
       ~window.setWindowTitle
-      ~window.set_step
       ~window.sharedPainter
       ~window.show
       ~window.showEvent
@@ -279,25 +322,37 @@
       ~window.showMaximized
       ~window.showMinimized
       ~window.showNormal
+      ~window.signalObject
       ~window.signalsBlocked
       ~window.size
       ~window.sizeHint
       ~window.sizeIncrement
       ~window.sizePolicy
+      ~window.splitDockWidget
       ~window.stackUnder
       ~window.startTimer
+      ~window.statusBar
       ~window.statusTip
       ~window.style
       ~window.styleSheet
+      ~window.tabPosition
+      ~window.tabShape
+      ~window.tabifiedDockWidgets
+      ~window.tabifyDockWidget
       ~window.tabletEvent
+      ~window.takeCentralWidget
       ~window.testAttribute
       ~window.thread
       ~window.timerEvent
+      ~window.toolBarArea
+      ~window.toolBarBreak
+      ~window.toolButtonStyle
       ~window.toolTip
       ~window.toolTipDuration
       ~window.tr
       ~window.underMouse
       ~window.ungrabGesture
+      ~window.unifiedTitleAndToolBarOnMac
       ~window.unsetCursor
       ~window.unsetLayoutDirection
       ~window.unsetLocale
@@ -336,12 +391,16 @@
    
       ~window.customContextMenuRequested
       ~window.destroyed
-      ~window.events
+      ~window.iconSizeChanged
       ~window.objectNameChanged
+      ~window.signal
       ~window.staticMetaObject
+      ~window.tabifiedDockWidgetActivated
+      ~window.toolButtonStyleChanged
       ~window.windowIconChanged
       ~window.windowIconTextChanged
       ~window.windowTitleChanged
       ~window.app
+      ~window.aspect_ratio
    
    

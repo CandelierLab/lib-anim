@@ -9,6 +9,7 @@ Documentation content
 .. toctree::
   installation
   quickstart
+  demos
   guide/index
 
 .. autosummary::

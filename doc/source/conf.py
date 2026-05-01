@@ -12,7 +12,7 @@
 project = 'lib-anim'
 copyright = 'Raphaël Candelier'
 author = 'Raphaël Candelier'
-release = '0.0.4'
+release = '1.0.10'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -31,6 +31,7 @@ exclude_patterns = []
 
 html_theme = 'furo'
 html_title = f'{project} <small>v{release}</small>'
+html_extra_path = ['media']
 html_sidebars = {
     "**": [
         "sidebar/scroll-start.html",

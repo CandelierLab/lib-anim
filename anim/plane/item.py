@@ -103,7 +103,8 @@ class item:
                center_of_rotation = [0,0],
                orientation = 0,
                zvalue = 0,
-               draggable = False):
+               draggable = False,
+               clickable = False):
     '''
     Constructor
     '''
@@ -140,6 +141,7 @@ class item:
     self._orientation = orientation
     self._zvalue = zvalue
     self._draggable = draggable
+    self._clickable = clickable
 
   # ────────────────────────────────────────────────────────────────────────
   def initialize(self):
@@ -177,6 +179,9 @@ class item:
     # Draggability
     if self._draggable:
       self.draggable = self._draggable
+
+    # Clickability
+    self.clickable = self._clickable
 
   # ════════════════════════════════════════════════════════════════════════
   #                              GETTERS
@@ -389,6 +394,25 @@ class item:
 
       if self._draggable:
         self.qitem.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
+        # A draggable item must also be clickable
+        self.clickable = True
+
+  # ─── Clickability ───────────────────────────────────────────────────────
+
+  ''' Whether the item accepts mouse button events '''
+
+  @property
+  def clickable(self): return self._clickable
+
+  @clickable.setter
+  def clickable(self, b):
+
+    self._clickable = b
+
+    if self.qitem is not None:
+      buttons = (Qt.MouseButton.AllButtons if b
+                 else Qt.MouseButton.NoButton)
+      self.qitem.setAcceptedMouseButtons(buttons)
       
 # ══════════════════════════════════════════════════════════════════════════
 #                        ITEMS WITH SPECIFIC PROPERTIES

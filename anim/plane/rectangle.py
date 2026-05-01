@@ -148,7 +148,8 @@ class rectangle(item, hasColor, hasStroke):
                center_of_rotation = [0,0],
                orientation = 0,
                zvalue = 0,
-               draggable = False):
+               draggable = False,
+               clickable = False):
     '''
     Rectangle item constructor
     '''  
@@ -163,7 +164,8 @@ class rectangle(item, hasColor, hasStroke):
                   center_of_rotation = center_of_rotation,
                   orientation = orientation,
                   zvalue = zvalue,
-                  draggable = draggable)
+                  draggable = draggable,
+                  clickable = clickable)
     
     hasColor.__init__(self, color = color)
 

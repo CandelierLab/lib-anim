@@ -108,7 +108,8 @@ class circle(item, hasColor, hasStroke):
                y = 0,
                position = None,
                zvalue = 0,
-               draggable = False):
+               draggable = False,
+               clickable = False):
     '''
     Circle item constructor
     '''  
@@ -120,7 +121,8 @@ class circle(item, hasColor, hasStroke):
                   y = y,
                   position = position,
                   zvalue = zvalue,
-                  draggable = draggable)
+                  draggable = draggable,
+                  clickable = clickable)
     
     hasColor.__init__(self, color = color)
     hasStroke.__init__(self,

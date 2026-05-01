@@ -89,7 +89,8 @@ class group(item):
                center_of_rotation = [0,0],
                orientation = 0,
                zvalue = 0,
-               draggable = False):
+               draggable = False,
+               clickable = False):
     '''
     Group item constructor
 
@@ -107,11 +108,21 @@ class group(item):
                   center_of_rotation = center_of_rotation,
                   orientation = orientation,
                   zvalue = zvalue,
-                  draggable = draggable)
+                  draggable = draggable,
+                  clickable = clickable)
 
     # ─── QGraphicsItem
-    
-    class QGroup(QGraphicsItemGroup, event): pass
+
+    # QGraphicsItemGroup.boundingRect() uses a cache that is only updated
+    # at addToGroup() time.  For text items the scale transform is applied
+    # *after* addToGroup (in setFont()), so the cached value is wrong
+    # (it reflects the raw, unscaled font bounding rect instead of the
+    # scaled scene-unit bounding rect).  Overriding with childrenBoundingRect()
+    # gives the correct, dynamically-computed value and fixes Qt hit-testing.
+    class QGroup(QGraphicsItemGroup, event):
+      def boundingRect(self):
+        return self.childrenBoundingRect()
+
     self.qitem = QGroup()
 
 

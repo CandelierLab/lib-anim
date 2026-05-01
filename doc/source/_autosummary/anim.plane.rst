@@ -10,6 +10,19 @@ anim.plane
    :toctree:
    :recursive:
 
-   composites
-   items
-   view
+   arrow
+   canva
+   circle
+   colorbar
+   ellipse
+   events
+   geometry
+   grid
+   group
+   image
+   item
+   line
+   path
+   polygon
+   rectangle
+   text
