@@ -1,23 +1,20 @@
-Bug
-- Visibility of the bounding box seems complicated (Demo > 2d_colorbar_in_information, no boundingbox display on the info canva)
-
-Items 
-- Improve the colorbar : possibility to update everything
-
-- Panels
-  - Timebar
-  - Parameters
 
 REACHING DECENCY
+- Improve the colorbar : possibility to update everything
 - Work on documentation
   
 DEVELOPMENTS
-- Loop mode
-- Better handling of theme styles (in particuar with information)
 - Snapshots
-
-NEW FEATURES
 - Compatibility wih matplotlib:
   - Internal plots
   - External plots
-- Let's go 3D: volume.items and volume.view
+- Panels
+  - Menu/Toolbar (record, snapshot, toggle panels: info, parameters)
+  - Bottom time bar (like an improved video bar)
+  - Parameters panel
+- Loop mode
+- Better handling of theme styles (in particular with information)
+
+3D SCENES:
+  - Develop all items, with demos
+  - 
