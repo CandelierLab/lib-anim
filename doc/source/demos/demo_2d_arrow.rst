@@ -1,5 +1,5 @@
-2D Arrow Demo
-================
+Arrow
+=====
 
 This demo presents the arrow scene in 2D and shows how the animation state evolves over time with lib-anim.
 The script defines a canva, adds the corresponding items, and updates them frame by frame to produce the final motion.

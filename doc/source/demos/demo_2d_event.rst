@@ -1,5 +1,5 @@
-2D Event Demo
-=============
+2D Event
+========
 
 This demo illustrates user events on 2D items.
 It combines a clickable group and a draggable group, then displays event feedback

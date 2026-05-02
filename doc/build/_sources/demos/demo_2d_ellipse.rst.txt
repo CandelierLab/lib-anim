@@ -1,5 +1,5 @@
-2D Ellipse Demo
-===============
+Ellipse
+=======
 
 This demo shows a dynamic grid of ellipses whose horizontal and vertical dimensions are continuously swapped over time.
 The class ``Canva`` subclasses ``anim.plane.canva`` and updates each ellipse in ``update`` using ``np.cos(t.step/20)``

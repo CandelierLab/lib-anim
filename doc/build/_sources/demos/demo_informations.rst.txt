@@ -1,5 +1,5 @@
-Informations Demo
-=================
+Informations
+============
 
 This demo shows how to drive the information panel from animation state updates.
 A `Canva` subclass updates an image size over time and writes formatted HTML metrics

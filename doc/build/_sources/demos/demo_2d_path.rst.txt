@@ -1,5 +1,5 @@
-2D Path Demo
-============
+Path
+====
 
 This demo illustrates how to animate a polyline by updating its point list at each frame.
 The `Canva` class subclasses `anim.plane.canva`, builds an `anim.plane.path` item, and recomputes

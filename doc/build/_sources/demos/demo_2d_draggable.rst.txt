@@ -1,5 +1,5 @@
-2D Draggable Demo
-=================
+2D Draggable
+============
 
 This demo illustrates user interaction with draggable items.
 The green disk can be moved with the mouse, and its color changes dynamically

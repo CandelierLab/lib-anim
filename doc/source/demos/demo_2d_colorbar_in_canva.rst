@@ -1,5 +1,5 @@
-2D Colorbar In Canva Demo
-=========================
+2D Colorbar In Canva
+====================
 
 This demo presents the colorbar in canva scene in 2D and shows how the animation state evolves over time with lib-anim.
 The script defines a canva, adds the corresponding items, and updates them frame by frame to produce the final motion.

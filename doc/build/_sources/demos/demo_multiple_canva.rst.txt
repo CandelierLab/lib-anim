@@ -1,5 +1,5 @@
-Multiple Canva Demo
-===================
+Multiple Canva
+==============
 
 This demo illustrates how to compose multiple synchronized canvae in one window.
 It creates three clock canvae for different time zones and updates each one
