@@ -1,9 +1,3 @@
-REACHING DECENCY
-- Work on documentation
-  - Reprendre la liste des démos
-  
-DEVELOPMENTS
-- Snapshots
 - Compatibility wih matplotlib:
   - Internal plots
   - External plots
@@ -15,5 +9,5 @@ DEVELOPMENTS
 - Better handling of theme styles (in particular with information)
 
 3D SCENES:
+  - 3d Grid / box
   - Develop all items, with demos
-  - 
