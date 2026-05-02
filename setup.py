@@ -3,7 +3,13 @@ from setuptools import setup, find_packages
 
 VERSION = '1.0.10'
 DESCRIPTION = 'Beautifully simple animations'
-LONG_DESCRIPTION = 'A content-oriented package to create animations'
+LONG_DESCRIPTION = (
+    'Documentation: https://candelierlab.github.io/lib-anim/\n\n'
+    'lib-anim is a Python package to create interactive 2D and 3D animations '
+    'with a simple, content-oriented API. It wraps Qt and matplotlib details '
+    'so users can focus on animation concepts such as shapes, colors, motion, '
+    'events, and scene composition.'
+)
 
 setup(
     name="lib-anim",

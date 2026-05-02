@@ -12,7 +12,7 @@
 project = 'lib-anim'
 copyright = 'Raphaël Candelier'
 author = 'Raphaël Candelier'
-release = '1.0.10'
+release = '1.0.11'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
