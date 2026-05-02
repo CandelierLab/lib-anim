@@ -38,6 +38,7 @@ class Canva(anim.plane.canva):
       dimension = [0.03, 0.4],
       colormap = self.cmap,
       ticks_number = 5,
+      ticks_fontsize = 0.03,
     )
 
   # ────────────────────────────────────────────────────────────────────────

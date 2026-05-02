@@ -8,6 +8,8 @@ This page lists runnable examples showcasing key animation objects and update pa
 	demos/demo_2d_circle
 	demos/demo_2d_colorbar_in_canva
 	demos/demo_2d_colorbar_in_information
+	demos/demo_2d_event
+	demos/demo_2d_draggable
 	demos/demo_2d_ellipse
 	demos/demo_2d_grid
 	demos/demo_2d_image_array
@@ -19,3 +21,5 @@ This page lists runnable examples showcasing key animation objects and update pa
 	demos/demo_2d_text
 	demos/demo_informations
 	demos/demo_multiple_canva
+
+

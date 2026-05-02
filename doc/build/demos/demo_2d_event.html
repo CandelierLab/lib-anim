@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="2D Colorbar In Information Demo" href="demo_2d_colorbar_in_information.html"><link rel="prev" title="2D Circle Demo" href="demo_2d_circle.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="2D Draggable Demo" href="demo_2d_draggable.html"><link rel="prev" title="2D Colorbar In Information Demo" href="demo_2d_colorbar_in_information.html">
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
-        <title>2D Colorbar In Canva Demo - lib-anim v1.0.10</title>
+        <title>2D Event Demo - lib-anim v1.0.10</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -196,8 +196,10 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../demos.html">Demos</a><input aria-label="Toggle navigation of Demos" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="demo_2d_arrow.html">2D Arrow Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_2d_circle.html">2D Circle Demo</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">2D Colorbar In Canva Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_colorbar_in_canva.html">2D Colorbar In Canva Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_2d_colorbar_in_information.html">2D Colorbar In Information Demo</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">2D Event Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_draggable.html">2D Draggable Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_2d_ellipse.html">2D Ellipse Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_2d_grid.html">2D Grid Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_2d_image_array.html">2D Image Array Demo</a></li>
@@ -277,7 +279,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/demos/demo_2d_colorbar_in_canva.rst.txt" title="View this page">
+  <a class="muted-link" href="../_sources/demos/demo_2d_event.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -295,83 +297,113 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="d-colorbar-in-canva-demo">
-<h1>2D Colorbar In Canva Demo<a class="headerlink" href="#d-colorbar-in-canva-demo" title="Link to this heading">¶</a></h1>
-<p>This demo presents the colorbar in canva scene in 2D and shows how the animation state evolves over time with lib-anim.
-The script defines a canva, adds the corresponding items, and updates them frame by frame to produce the final motion.</p>
-<img src="../media/2d_colorbar_in_canva.gif" alt="2D colorbar in canva demo" style="max-width: 100%; height: auto;" /><section id="full-code">
+          <section id="d-event-demo">
+<h1>2D Event Demo<a class="headerlink" href="#d-event-demo" title="Link to this heading">¶</a></h1>
+<p>This demo illustrates user events on 2D items.
+It combines a clickable group and a draggable group, then displays event feedback
+in real time in a central result panel (click values and drag positions).</p>
+<img src="../media/2d_event.gif" alt="2D event demo" style="max-width: 100%; height: auto;" /><section id="full-code">
 <h2>Full Code<a class="headerlink" href="#full-code" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="linenos"> 2</span><span class="sd">2D colorbar array demo</span>
-<span class="linenos"> 3</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="linenos"> 6</span><span class="kn">import</span><span class="w"> </span><span class="nn">anim</span>
-<span class="linenos"> 7</span>
-<span class="linenos"> 8</span><span class="c1"># ═══ 2D Animation canva ═══════════════════════════════════════════════════</span>
-<span class="linenos"> 9</span>
-<span class="linenos">10</span><span class="k">class</span><span class="w"> </span><span class="nc">Canva</span><span class="p">(</span><span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">canva</span><span class="p">):</span>
-<span class="linenos">11</span>
-<span class="linenos">12</span>  <span class="c1"># ────────────────────────────────────────────────────────────────────────</span>
-<span class="linenos">13</span>  <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
-<span class="linenos">14</span>
-<span class="linenos">15</span>    <span class="c1"># Number of pixels in the image</span>
-<span class="linenos">16</span>    <span class="bp">self</span><span class="o">.</span><span class="n">npix</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="linenos">17</span>
-<span class="linenos">18</span>    <span class="c1"># Colormap</span>
-<span class="linenos">19</span>    <span class="bp">self</span><span class="o">.</span><span class="n">cmap</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">colormap</span><span class="p">(</span><span class="s1">&#39;magma&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="linenos">20</span>
-<span class="linenos">21</span>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">window</span><span class="p">,</span>
-<span class="linenos">22</span>                     <span class="n">display_boundaries</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="linenos">23</span>                     <span class="n">pixelperunit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">npix</span><span class="p">)</span>
-<span class="linenos">24</span>
-<span class="linenos">25</span>    <span class="c1"># ─── display</span>
-<span class="linenos">26</span>
-<span class="linenos">27</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">image</span><span class="p">(</span>
-<span class="linenos">28</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
-<span class="linenos">29</span>      <span class="n">dimension</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
-<span class="linenos">30</span>      <span class="n">array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-<span class="linenos">31</span>      <span class="n">colormap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmap</span>
-<span class="linenos">32</span>    <span class="p">)</span>
-<span class="linenos">33</span>
-<span class="linenos">34</span>    <span class="c1"># ─── colorbar</span>
-<span class="linenos">35</span>
-<span class="linenos">36</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">cbar</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span>
-<span class="linenos">37</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
-<span class="linenos">38</span>      <span class="n">dimension</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
-<span class="linenos">39</span>      <span class="n">colormap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmap</span><span class="p">,</span>
-<span class="linenos">40</span>      <span class="n">ticks_number</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-<span class="linenos">41</span>      <span class="n">ticks_fontsize</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span>
-<span class="linenos">42</span>    <span class="p">)</span>
-<span class="linenos">43</span>
-<span class="linenos">44</span>  <span class="c1"># ────────────────────────────────────────────────────────────────────────</span>
-<span class="linenos">45</span>  <span class="k">def</span><span class="w"> </span><span class="nf">phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="linenos">46</span>
-<span class="linenos">47</span>    <span class="c1"># Base field</span>
-<span class="linenos">48</span>    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">npix</span><span class="p">)</span>
-<span class="linenos">49</span>    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="linenos">50</span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">t</span><span class="o">/</span><span class="p">(</span><span class="n">X</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">Y</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-<span class="linenos">51</span>
-<span class="linenos">52</span>  <span class="c1"># ────────────────────────────────────────────────────────────────────────</span>
-<span class="linenos">53</span>  <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="linenos">54</span>
-<span class="linenos">55</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
-<span class="linenos">56</span>
-<span class="linenos">57</span>    <span class="c1"># Confirm update</span>
-<span class="linenos">58</span>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="linenos">59</span>
-<span class="linenos">60</span><span class="c1"># ═══ Main ═════════════════════════════════════════════════════════════════</span>
-<span class="linenos">61</span>
-<span class="linenos">62</span><span class="n">W</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="s1">&#39;Colorbar animation&#39;</span><span class="p">)</span>
-<span class="linenos">63</span>
-<span class="linenos">64</span><span class="c1"># Add animation</span>
-<span class="linenos">65</span><span class="n">W</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Canva</span><span class="p">)</span>
-<span class="linenos">66</span>
-<span class="linenos">67</span><span class="c1"># Allow backward animation</span>
-<span class="linenos">68</span><span class="n">W</span><span class="o">.</span><span class="n">allow_backward</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="linenos">69</span><span class="n">W</span><span class="o">.</span><span class="n">allow_negative_time</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="linenos">70</span>
-<span class="linenos">71</span><span class="n">W</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="linenos">  2</span><span class="sd">2D event demo</span>
+<span class="linenos">  3</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="linenos">  4</span>
+<span class="linenos">  5</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  6</span><span class="kn">import</span><span class="w"> </span><span class="nn">anim</span>
+<span class="linenos">  7</span>
+<span class="linenos">  8</span><span class="c1"># ═══ 2D Animation canva ═══════════════════════════════════════════════════</span>
+<span class="linenos">  9</span>
+<span class="linenos"> 10</span><span class="k">class</span><span class="w"> </span><span class="nc">Canva</span><span class="p">(</span><span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">canva</span><span class="p">):</span>
+<span class="linenos"> 11</span>
+<span class="linenos"> 12</span>  <span class="c1"># ────────────────────────────────────────────────────────────────────────</span>
+<span class="linenos"> 13</span>  <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos"> 14</span>
+<span class="linenos"> 15</span>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> 
+<span class="linenos"> 16</span>                     <span class="n">boundaries</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span>
+<span class="linenos"> 17</span>                     <span class="n">display_boundaries</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>    
+<span class="linenos"> 18</span>                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos"> 19</span>
+<span class="linenos"> 20</span>    <span class="c1"># ─── Click</span>
+<span class="linenos"> 21</span>
+<span class="linenos"> 22</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_click</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
+<span class="linenos"> 23</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+<span class="linenos"> 24</span>      <span class="n">clickable</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="linenos"> 25</span>    <span class="p">)</span>
+<span class="linenos"> 26</span>
+<span class="linenos"> 27</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">rect_click</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span>
+<span class="linenos"> 28</span>      <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_click</span><span class="p">,</span>
+<span class="linenos"> 29</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="linenos"> 30</span>      <span class="n">dimension</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="linenos"> 31</span>    <span class="p">)</span>
+<span class="linenos"> 32</span>    
+<span class="linenos"> 33</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">text_click</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+<span class="linenos"> 34</span>      <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_click</span><span class="p">,</span>
+<span class="linenos"> 35</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="linenos"> 36</span>      <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;Click me&#39;</span><span class="p">,</span>
+<span class="linenos"> 37</span>      <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span>
+<span class="linenos"> 38</span>    <span class="p">)</span>
+<span class="linenos"> 39</span>
+<span class="linenos"> 40</span>    <span class="c1"># ─── Drag</span>
+<span class="linenos"> 41</span>
+<span class="linenos"> 42</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_drag</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
+<span class="linenos"> 43</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+<span class="linenos"> 44</span>      <span class="n">draggable</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="linenos"> 45</span>    <span class="p">)</span>
+<span class="linenos"> 46</span>
+<span class="linenos"> 47</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">rect_drag</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span>
+<span class="linenos"> 48</span>      <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_drag</span><span class="p">,</span>
+<span class="linenos"> 49</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="linenos"> 50</span>      <span class="n">dimension</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="linenos"> 51</span>    <span class="p">)</span>
+<span class="linenos"> 52</span>    
+<span class="linenos"> 53</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">text_drag</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+<span class="linenos"> 54</span>      <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_drag</span><span class="p">,</span>
+<span class="linenos"> 55</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="linenos"> 56</span>      <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;Drag me&#39;</span><span class="p">,</span>
+<span class="linenos"> 57</span>      <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span>
+<span class="linenos"> 58</span>    <span class="p">)</span>
+<span class="linenos"> 59</span>
+<span class="linenos"> 60</span>    <span class="c1"># ─── Result</span>
+<span class="linenos"> 61</span>
+<span class="linenos"> 62</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_result</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
+<span class="linenos"> 63</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+<span class="linenos"> 64</span>    <span class="p">)</span>
+<span class="linenos"> 65</span>
+<span class="linenos"> 66</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">rect_result</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span>
+<span class="linenos"> 67</span>      <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_result</span><span class="p">,</span>
+<span class="linenos"> 68</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="linenos"> 69</span>      <span class="n">dimension</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+<span class="linenos"> 70</span>      <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;white&#39;</span>
+<span class="linenos"> 71</span>    <span class="p">)</span>
+<span class="linenos"> 72</span>    
+<span class="linenos"> 73</span>    <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">text_result</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">plane</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+<span class="linenos"> 74</span>      <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_result</span><span class="p">,</span>
+<span class="linenos"> 75</span>      <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="linenos"> 76</span>      <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="linenos"> 77</span>      <span class="n">fontsize</span> <span class="o">=</span> <span class="mf">0.04</span><span class="p">,</span>
+<span class="linenos"> 78</span>      <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span>
+<span class="linenos"> 79</span>    <span class="p">)</span>
+<span class="linenos"> 80</span>
+<span class="linenos"> 81</span>
+<span class="linenos"> 82</span>  <span class="c1"># ────────────────────────────────────────────────────────────────────────</span>
+<span class="linenos"> 83</span>  <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">desc</span><span class="p">):</span>
+<span class="linenos"> 84</span>
+<span class="linenos"> 85</span>    <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_click</span><span class="o">.</span><span class="n">qitem</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+<span class="linenos"> 86</span>      <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">text_result</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+<span class="linenos"> 87</span>
+<span class="linenos"> 88</span>    <span class="k">elif</span> <span class="n">desc</span> <span class="o">==</span> <span class="s1">&#39;motion&#39;</span> <span class="ow">and</span> <span class="n">item</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_drag</span><span class="o">.</span><span class="n">qitem</span><span class="p">:</span>
+<span class="linenos"> 89</span>      <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">group_drag</span><span class="o">.</span><span class="n">qitem</span><span class="o">.</span><span class="n">pos</span><span class="p">()</span>
+<span class="linenos"> 90</span>      <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">text_result</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;position (</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="p">()</span><span class="si">:</span><span class="s1">.02f</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">()</span><span class="si">:</span><span class="s1">.02f</span><span class="si">}</span><span class="s1">)&#39;</span>
+<span class="linenos"> 91</span>    
+<span class="linenos"> 92</span><span class="c1"># ═══ Main ═════════════════════════════════════════════════════════════════</span>
+<span class="linenos"> 93</span>
+<span class="linenos"> 94</span><span class="n">W</span> <span class="o">=</span> <span class="n">anim</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="s1">&#39;Event animation&#39;</span><span class="p">)</span>
+<span class="linenos"> 95</span>
+<span class="linenos"> 96</span><span class="c1"># Add animation</span>
+<span class="linenos"> 97</span><span class="n">W</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Canva</span><span class="p">)</span>
+<span class="linenos"> 98</span>
+<span class="linenos"> 99</span><span class="n">W</span><span class="o">.</span><span class="n">autoplay</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos">100</span><span class="n">W</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -382,23 +414,23 @@ The script defines a canva, adds the corresponding items, and updates them frame
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="demo_2d_colorbar_in_information.html">
+          <a class="next-page" href="demo_2d_draggable.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">2D Colorbar In Information Demo</div>
+                <div class="title">2D Draggable Demo</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="demo_2d_circle.html">
+          <a class="prev-page" href="demo_2d_colorbar_in_information.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">2D Circle Demo</div>
+                <div class="title">2D Colorbar In Information Demo</div>
                 
               </div>
             </a>
@@ -432,7 +464,7 @@ The script defines a canva, adds the corresponding items, and updates them frame
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">2D Colorbar In Canva Demo</a><ul>
+<li><a class="reference internal" href="#">2D Event Demo</a><ul>
 <li><a class="reference internal" href="#full-code">Full Code</a></li>
 </ul>
 </li>

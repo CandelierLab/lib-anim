@@ -12,6 +12,7 @@ class colormap():
   It is mainly used to convert scaler values to colors.
   """
   
+  # ────────────────────────────────────────────────────────────────────────
   def __init__(self, name='turbo', range=[0,1], ncolors=64):
     """
     `Colormap` constructor
@@ -39,6 +40,7 @@ class colormap():
     self.cmap = None
     self.set(name)
 
+  # ────────────────────────────────────────────────────────────────────────
   def set(self, name):
     """
     Set colormap's name.
@@ -50,6 +52,7 @@ class colormap():
 
     self.cmap = cm.get_cmap(name, self.ncolors)
 
+  # ────────────────────────────────────────────────────────────────────────
   def qcolor(self, value, scaled=False):
     """
     Convert a scalar value in a Qt color (QColor).
@@ -75,6 +78,7 @@ class colormap():
 
     return QColor(int(c[0]*255), int(c[1]*255), int(c[2]*255))
 
+  # ────────────────────────────────────────────────────────────────────────
   def htmlcolor(self, value, scaled=False):
     """
     Convert a scalar value in an html color (string).
@@ -102,6 +106,7 @@ class colormap():
 
     return 'rgb({:d},{:d},{:d})'.format(int(c[0]*255), int(c[1]*255), int(c[2]*255))
 
+  # ────────────────────────────────────────────────────────────────────────
   def colortable(self):
 
     table = []
