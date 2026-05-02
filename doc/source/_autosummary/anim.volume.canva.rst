@@ -1,4 +1,4 @@
-anim.volume.canva
+﻿anim.volume.canva
 =================
 
 .. currentmodule:: anim.volume
@@ -31,6 +31,7 @@ anim.volume.canva
       ~canva.findChildren
       ~canva.inherits
       ~canva.installEventFilter
+      ~canva.isQmlExposed
       ~canva.isQuickItemType
       ~canva.isSignalConnected
       ~canva.isWidgetType

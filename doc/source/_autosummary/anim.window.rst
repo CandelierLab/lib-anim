@@ -1,4 +1,4 @@
-anim.window
+﻿anim.window
 ===========
 
 .. currentmodule:: anim
@@ -139,6 +139,7 @@ anim.window
       ~window.isMaximized
       ~window.isMinimized
       ~window.isModal
+      ~window.isQmlExposed
       ~window.isQuickItemType
       ~window.isRightToLeft
       ~window.isSeparator

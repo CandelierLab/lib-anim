@@ -3,9 +3,9 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="2D Polygon Demo" href="demo_2d_polygon.html"><link rel="prev" title="2D Line Demo" href="demo_2d_line.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="2D Circle Demo" href="demo_2d_circle.html"><link rel="prev" title="2D Line Demo" href="demo_2d_line.html">
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>2D Path Demo - lib-anim v1.0.10</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
@@ -194,21 +194,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../demos.html">Demos</a><input aria-label="Toggle navigation of Demos" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_arrow.html">2D Arrow Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_circle.html">2D Circle Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_colorbar_in_canva.html">2D Colorbar In Canva Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_colorbar_in_information.html">2D Colorbar In Information Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_ellipse.html">2D Ellipse Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_grid.html">2D Grid Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_image_array.html">2D Image Array Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_image_file.html">2D Image File Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_line.html">2D Line Demo</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">2D Path Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_polygon.html">2D Polygon Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_rectangle.html">2D Rectangle Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demo_2d_text.html">2D Text Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_informations.html">Informations Demo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="demo_multiple_canva.html">Multiple Canva Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_grid.html">2D Grid Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_line.html">2D Line Demo</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">2D Path Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_circle.html">2D Circle Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_ellipse.html">2D Ellipse Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_rectangle.html">2D Rectangle Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_polygon.html">2D Polygon Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_text.html">2D Text Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_image_array.html">2D Image Array Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_image_file.html">2D Image File Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_arrow.html">2D Arrow Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_colorbar_in_canva.html">2D Colorbar In Canva Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_colorbar_in_information.html">2D Colorbar In Information Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_draggable.html">2D Draggable Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_2d_event.html">2D Event Demo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -372,12 +374,12 @@ its points with a sinusoidal profile in <cite>update</cite>, which creates a smo
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="demo_2d_polygon.html">
+          <a class="next-page" href="demo_2d_circle.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">2D Polygon Demo</div>
+                <div class="title">2D Circle Demo</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -436,8 +438,8 @@ its points with a sinusoidal profile in <cite>update</cite>, which creates a smo
     </aside>
   </div>
 </div><script src="../_static/documentation_options.js?v=377e76b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>

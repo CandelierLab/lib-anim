@@ -1,4 +1,4 @@
-anim.plane.canva
+﻿anim.plane.canva
 ================
 
 .. currentmodule:: anim.plane
@@ -31,6 +31,7 @@ anim.plane.canva
       ~canva.findChildren
       ~canva.inherits
       ~canva.installEventFilter
+      ~canva.isQmlExposed
       ~canva.isQuickItemType
       ~canva.isSignalConnected
       ~canva.isWidgetType
