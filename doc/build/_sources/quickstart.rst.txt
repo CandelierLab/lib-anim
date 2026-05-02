@@ -1,12 +1,12 @@
 Quickstart
 ==========
 
-Let's create our first animation, consisting of a red point spinning around.
+In this tutorial, you will build a first animation: a red point rotating around a center.
 
 Creating a window
 -----------------
 
-Creating a :doc:`window <guide/windows>` is easy, we'll just use the default parameters:
+Creating a :doc:`window <guide/windows>` is straightforward. We will start with default parameters:
 
 .. code-block:: python
 
@@ -15,12 +15,13 @@ Creating a :doc:`window <guide/windows>` is easy, we'll just use the default par
   W = anim.window('Simple animation')
   W.show()
 
-When executed, this should display a small, empty window. You can close it by clicking on the close button or using the ``Esc`` shortcut.
+When you run this script, a small empty window should appear.
+You can close it either with the close button or with the ``Esc`` shortcut.
 
 Creating an animation
 ---------------------
 
-A custom animation is created by defining a children class to the :py:class:`anim.plane.canva` class:
+To create a custom animation, define a child class of :py:class:`anim.plane.canva`:
 
 .. code-block:: python
 
@@ -31,25 +32,26 @@ A custom animation is created by defining a children class to the :py:class:`ani
       # Call parent constructor
       super().__init__(window)
 
-The animation can then added to the window with the :py:func:`anim.window.add` method:
+You can then add this animation to the window with :py:func:`anim.window.add`:
 
 .. code-block:: python
 
-  # Create a window
+  # Create a window
   W = anim.window('Simple animation')
 
   # Add the animation
   W.add(myAnimation)
 
-  # Display the window and animation running
+  # Display the window and start the animation
   W.show()
 
-If you now run the script, an empty animation should appear in the window.
+If you run this script now, you should see an empty animation area in the window.
 
 Populate the animation
 ----------------------
 
-Now, you want to put different elements on the scene. The constructor of the animation view is where you define them:
+Next, add visual elements to the scene.
+The constructor of your animation class is the right place to define them:
 
 .. code-block:: python
 
@@ -90,7 +92,8 @@ Now, you want to put different elements on the scene. The constructor of the ani
 Define updates to create motion
 -------------------------------
 
-An animation is a sequence of steps, so we have to define what we'd like to change from one step to the other. This is where the :py:func:`update <anim.plane.canva.update>` method of the :py:class:`anim.plane.canva` is brought to action:
+An animation is a sequence of time steps, so you need to define what changes from one step to the next.
+This is done in the :py:func:`update <anim.plane.canva.update>` method of :py:class:`anim.plane.canva`:
 
 .. code-block:: python
 
@@ -111,7 +114,7 @@ This sets the position of the ``C`` item to time-dependent coordinates defining 
 Final code
 ----------
 
-Putting everythign together, the final code looks like:
+Putting everything together, the final script is:
 
 .. code-block:: python
   :linenos:
@@ -167,13 +170,14 @@ Putting everythign together, the final code looks like:
 
   # === Main =================================================================
 
-  # Create a window
+  # Create a window
   W = anim.window('Simple animation')
 
   # Add the animation
   W.add(myAnimation)
 
-  # Display the window and animation running
+  # Display the window and start the animation
   W.show()
 
-If you try and execute this script, you should see the animation witht the red dot moving around. 🎉 Congratulations, you have completed the quickstart tutorial !
+When you run this script, you should see the red point moving along a circular path.
+Congratulations 🎉, you have completed the quickstart tutorial.

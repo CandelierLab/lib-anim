@@ -3,7 +3,7 @@ The ``lib-anim`` toolbox aims at using minimal code to leverage the power of ``Q
 Keep your time for what matters
 -------------------------------
 
-lib-anim unleashes the power of Qt with minimal effort. The user manages meaningfull objects and variables directly related to the animation like rectangles, positions or colors, and not abstract objects like ``QGraphicsScene`` or ``QInputMethodQueryEvent`` 😱. In other words, all the complexity of ``Qt`` programming is hidden, so you can spend your time on what matters for the final result.
+lib-anim unleashes the power of ``Qt`` with minimal effort. The user manages meaningfull objects and variables directly related to the animation like rectangles, positions or colors, and not abstract objects like ``QGraphicsScene`` or ``QInputMethodQueryEvent`` 😱. In other words, all the complexity of ``Qt`` programming is hidden, so you can spend your time on what matters for the final result.
 
 Key features
 ------------
@@ -17,6 +17,10 @@ Key features
 Installation
 ------------
 
+
+
 .. code-block:: console
 
   $ pip install lib-anim
+
+More details in the :doc:`installation guide <installation>`.

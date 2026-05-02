@@ -214,23 +214,24 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="group_extras.html">Extras</a><input aria-label="Toggle navigation of Extras" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="demo_2d_colorbar_in_canva.html">2D Colorbar In Canva</a></li>
-<li class="toctree-l3"><a class="reference internal" href="demo_2d_colorbar_in_information.html">2D Colorbar In Information</a></li>
-<li class="toctree-l3"><a class="reference internal" href="demo_2d_draggable.html">2D Draggable</a></li>
-<li class="toctree-l3"><a class="reference internal" href="demo_2d_event.html">2D Event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_2d_colorbar_in_canva.html">Colorbar In Canva</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_2d_colorbar_in_information.html">Colorbar In Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_2d_draggable.html">Draggable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_2d_event.html">Event</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guide/windows.html">Windows</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guide/2D%20animations.html">2D animations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guide/information.html">2D animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/canva.html">2D canvas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/information.html">Information panel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/2D%20animations.html">2D shapes</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../_autosummary/anim.html">anim</a><input aria-label="Toggle navigation of anim" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../_autosummary/anim.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/anim.colormap.html">anim.colormap</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../_autosummary/anim.core.html">anim.core</a><input aria-label="Toggle navigation of anim.core" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/anim.core.boundingBox.html">anim.core.boundingBox</a></li>
@@ -309,13 +310,69 @@
           <section id="structure">
 <h1>Structure<a class="headerlink" href="#structure" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="demo_informations.html">Informations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_multiple_canva.html">Multiple Canva</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_2d_grid.html">2D Grid</a></li>
-</ul>
 </div>
-</section>
+<style>
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0 40px 0;
+}
+.demo-card {
+  background: #2a2d3a;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.demo-card:hover { background: #1a2744; }
+.demo-card a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 12px 12px 14px 12px;
+}
+.demo-card img {
+  width: 100%;
+  display: block;
+  border-radius: 4px;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+.demo-card-title {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.9em;
+  color: #ccc;
+  font-weight: 500;
+}
+</style>
+
+<div class="demo-grid">
+  <div class="demo-card">
+    <a href="demo_informations.html">
+      <img src="../media/thumbnails/informations.png"
+           onmouseover="this.src='../media/informations.gif'"
+           onmouseout="this.src='../media/thumbnails/informations.png'">
+      <div class="demo-card-title">Informations</div>
+    </a>
+  </div>
+  <div class="demo-card">
+    <a href="demo_multiple_canva.html">
+      <img src="../media/thumbnails/multiple_canva.png"
+           onmouseover="this.src='../media/multiple_canva.gif'"
+           onmouseout="this.src='../media/thumbnails/multiple_canva.png'">
+      <div class="demo-card-title">Multiple Canva</div>
+    </a>
+  </div>
+  <div class="demo-card">
+    <a href="demo_2d_grid.html">
+      <img src="../media/thumbnails/2d_grid.png"
+           onmouseover="this.src='../media/2d_grid.gif'"
+           onmouseout="this.src='../media/thumbnails/2d_grid.png'">
+      <div class="demo-card-title">2D Grid</div>
+    </a>
+  </div>
+</div></section>
 
         </article>
       </div>

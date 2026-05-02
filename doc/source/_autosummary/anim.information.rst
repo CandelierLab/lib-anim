@@ -7,6 +7,7 @@ anim.information
 
    
    .. automethod:: __init__
+   .. automethod:: setTime
 
    
    .. rubric:: Methods

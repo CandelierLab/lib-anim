@@ -8,11 +8,15 @@
 - The documentation is generated with sphinx. Use `sphinx-build doc/source/ doc/build` to build the documentation.
 - Before every documentation building, check that the version number (release) in doc/source/conf.py is incremented with respect to the version number (VERSION) in setup.py.
 - Build the documentation every time you make modifications to the source folder.
+- All references to modules, classes, methods or functions in the documentation should be hyperlinks pointing to the corresponding element in the API reference.
 
 ### Documentation demos
-- When I specifically ask for a video or gif rebuild, a short mp4 movie should be generated or regenerated and stored in /doc/source/media/movies. The video should be generated with the dark theme and should be compressed after creation. Then, an animated gif of size 500x500 should be created and stored in doc/build/media. The gifs ares used in the html pages of the documentation.
+- When I specifically ask for a video or gif rebuild, a short mp4 movie should be generated or regenerated and stored in /doc/source/media/movies. The video should be generated with the dark theme and should be compressed after creation. Then, an animated gif of 500 pixels width should be created and stored in doc/build/media. The gifs ares used in the html pages of the documentation.
 - The structure of a demo rst file contains the following paragraphs, in this order: 
   - Some textual explanation of what the demo is about, what concept it illustrates and how it works. Important lines can be highlighted in code snippets.
   - [Paragraph without title] The animated gif of the demo, with automatically playing.
   - The full code of the demo
  
+ ### Documentation user guide
+- La partie User Guide doit expliquer les concepts clef de l'API tout en donnant des tips pratiques d'implémentation avec des snippets courts.
+- La page guide/index.rst doit commencer par une explication courte de cela, puis lister un ensemble de sections qui seront développées dans des fichiers rst séparés.

@@ -7,6 +7,8 @@
 
    
    .. automethod:: __init__
+   .. automethod:: add
+   .. automethod:: show
 
    
    .. rubric:: Methods

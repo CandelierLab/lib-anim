@@ -1,5 +1,5 @@
-﻿anim
-====
+﻿API Reference
+=============
 
 .. automodule:: anim
 

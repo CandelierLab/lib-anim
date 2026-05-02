@@ -22,6 +22,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.napoleon',
               'sphinx.ext.githubpages']
 autosummary_generate = True
+autosummary_generate_overwrite = False
 
 templates_path = ['_templates']
 exclude_patterns = []
