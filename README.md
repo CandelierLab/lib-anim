@@ -2,6 +2,8 @@
 
 A python toolbox for creating animations.
 
+Check out the [documentation](https://candelierlab.github.io/lib-anim/demos.html) !
+
 ## Installation
 
 ```
