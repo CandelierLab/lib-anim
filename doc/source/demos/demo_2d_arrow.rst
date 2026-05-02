@@ -1,0 +1,16 @@
+2D Arrow Demo
+================
+
+This demo presents the arrow scene in 2D and shows how the animation state evolves over time with lib-anim.
+The script defines a canva, adds the corresponding items, and updates them frame by frame to produce the final motion.
+
+.. raw:: html
+
+   <img src="../media/2d_arrow.gif" alt="2D arrow demo" style="max-width: 100%; height: auto;" />
+
+Full Code
+---------
+
+.. literalinclude:: ../../../demo/2d_arrow.py
+   :language: python
+   :linenos:
