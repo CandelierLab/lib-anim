@@ -28,6 +28,8 @@ anim/plane/path.py
 anim/plane/polygon.py
 anim/plane/rectangle.py
 anim/plane/text.py
+anim/plot/__init__.py
+anim/plot/canva.py
 anim/style/dark.css
 anim/style/light.css
 anim/style/white.css

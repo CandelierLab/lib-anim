@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: lib-anim
-Version: 1.0.10
+Version: 1.0.11
 Summary: Beautifully simple animations
 Author: Raphaël Candelier
 Author-email: raphael.candelier@sorbonne-universite.fr
@@ -28,4 +28,6 @@ Dynamic: license-file
 Dynamic: requires-dist
 Dynamic: summary
 
-A content-oriented package to create animations
+Documentation: https://candelierlab.github.io/lib-anim/
+
+lib-anim is a Python package to create interactive 2D (and soon 3D) animations with a simple, content-oriented API. It wraps Qt (and soon matplotlib) details so users can focus on animation concepts such as shapes, colors, motion, events, and scene composition.

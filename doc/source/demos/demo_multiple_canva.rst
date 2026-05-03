@@ -12,6 +12,10 @@ continuously, demonstrating multi-panel layouts and independent item updates.
 Full Code
 ---------
 
+.. note::
+
+   This demo requires the `pytz` package.
+
 .. literalinclude:: ../../../demo/multiple_canva.py
    :language: python
    :linenos:

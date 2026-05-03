@@ -122,7 +122,7 @@ Putting everything together, the final script is:
   import numpy as np
   import anim
 
-  # === 2D Animation =========================================================
+  # ═══ 2D Animation canva ═══════════════════════════════════════════════════
 
   class myAnimation(anim.plane.canva):
 
@@ -168,7 +168,7 @@ Putting everything together, the final script is:
       y = self.y0 + self.R*np.sin(t.time)
       self.item['C'].position = [x, y]
 
-  # === Main =================================================================
+  # ═══ Main ═════════════════════════════════════════════════════════════════
 
   # Create a window
   W = anim.window('Simple animation')
