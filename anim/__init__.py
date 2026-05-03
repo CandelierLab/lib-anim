@@ -9,5 +9,6 @@ from .colormap import colormap
 from . import core
 from . import plane
 from . import volume
+from . import plot
 
 from .information import information

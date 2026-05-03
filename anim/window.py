@@ -157,7 +157,7 @@ class window(QMainWindow):
 
     # ─── Append canva or layout ────────────────
 
-    if isinstance(canva, (anim.plane.canva, anim.volume.canva)):
+    if isinstance(canva, (anim.plane.canva, anim.volume.canva, anim.plot.canva)):
 
       self.layout.addWidget(canva.view, row, col)
       self.signal.connect(canva.receive)

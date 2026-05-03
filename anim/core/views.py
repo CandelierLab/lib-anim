@@ -1,6 +1,8 @@
 from PyQt6.QtCore import Qt, QRectF
 from PyQt6.QtGui import QPainter, QVector3D, QColor
 from PyQt6.QtWidgets import QWidget, QGraphicsView, QGridLayout
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 from PyQt6.Qt3DCore import QEntity, QTransform
 from PyQt6.Qt3DExtras import QPhongMaterial, QSphereMesh, QTorusMesh, Qt3DWindow, QOrbitCameraController
@@ -109,4 +111,34 @@ class view3d(QWidget):
     self.camController.setLinearSpeed(50.0)
     self.camController.setLookSpeed(180.0)
     self.camController.setCamera(camera)
+
+# ══════════════════════════════════════════════════════════════════════════
+#                             MATPLOTLIB PLOT
+# ══════════════════════════════════════════════════════════════════════════
+
+class viewplot(QWidget):
+
+  def __init__(self):
+      
+    super().__init__()
+
+    # Matplotlib figure embedded in this QWidget
+    self.figure = Figure(figsize=(5, 4), tight_layout=True)
+    self.canvas = FigureCanvas(self.figure)
+
+    layout = QGridLayout()
+    layout.setContentsMargins(0, 0, 0, 0)
+    layout.addWidget(self.canvas)
+    self.setLayout(layout)
+
+    # Default curve: y = x**2
+    self.axes = self.figure.add_subplot(111)
+    x_values = [x / 10.0 for x in range(-50, 51)]
+    y_values = [x ** 2 for x in x_values]
+    self.axes.plot(x_values, y_values)
+    self.axes.set_xlabel('x')
+    self.axes.set_ylabel('y')
+    self.axes.set_title('y = x**2')
+    self.axes.grid(True)
+    self.canvas.draw()
 
