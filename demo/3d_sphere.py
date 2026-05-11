@@ -1,5 +1,8 @@
 '''
 3D demo
+
+NB: switch to pyvista (or vedo, or VTK on last resort)
+for 3D rendering.
 '''
 
 import os
